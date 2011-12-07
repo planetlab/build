@@ -39,6 +39,7 @@ kernel-RPMFLAGS:= --target i686
 else
 kernel-RPMFLAGS:= --target $(HOSTARCH)
 endif
+kernel-SPECVARS += kernelconfig=planetlab
 KERNELS += kernel
 
 kernels: $(KERNELS)
@@ -49,14 +50,12 @@ ALL += $(KERNELS)
 IN_BOOTCD += $(KERNELS)
 IN_VSERVER += $(KERNELS)
 IN_BOOTSTRAPFS += $(KERNELS)
-# turns out myplc installs kernel-vserver
-IN_MYPLC += $(KERNELS)
 
 #
 # madwifi
 #
-
-ifeq "$(PLDISTROTAGS)" "planetlab-k32-tags.mk"
+# skip this with k32/f8
+ifneq "" "$(findstring k32,$(PLDISTROTAGS))"
 ifneq "$(DISTRONAME)" "f8"
 madwifi-MODULES := madwifi
 madwifi-SPEC := madwifi.spec
@@ -71,10 +70,32 @@ endif
 endif
 
 #
+# iptables
+#
+iptables-MODULES := iptables
+iptables-SPEC := iptables.spec
+iptables-BUILD-FROM-SRPM := yes	
+iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
+ALL += iptables
+IN_BOOTSTRAPFS += iptables
+
+#
+# iproute
+#
+iproute-MODULES := iproute2
+iproute-SPEC := iproute.spec
+iproute-BUILD-FROM-SRPM := yes	
+ALL += iproute
+IN_BOOTSTRAPFS += iproute
+IN_VSERVER += iproute
+IN_BOOTCD += iproute
+
+#
 # util-vserver
 #
 util-vserver-MODULES := util-vserver
 util-vserver-SPEC := util-vserver.spec
+# starting with 0.4
 util-vserver-BUILD-FROM-SRPM := yes
 util-vserver-RPMFLAGS:= --without dietlibc --without doc
 ALL += util-vserver
@@ -184,27 +205,6 @@ ALL += mom
 IN_BOOTSTRAPFS += mom
 
 #
-# iptables
-#
-iptables-MODULES := iptables
-iptables-SPEC := iptables.spec
-iptables-BUILD-FROM-SRPM := yes	
-iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
-ALL += iptables
-IN_BOOTSTRAPFS += iptables
-
-#
-# iproute
-#
-iproute-MODULES := iproute2
-iproute-SPEC := iproute.spec
-iproute-BUILD-FROM-SRPM := yes	
-ALL += iproute
-IN_BOOTSTRAPFS += iproute
-IN_VSERVER += iproute
-IN_BOOTCD += iproute
-
-#
 # inotify-tools - local import
 # rebuild this on centos5 (not found) - see kexcludes in build.common
 #
@@ -248,6 +248,14 @@ IN_BOOTSTRAPFS += vsys
 ALL += vsys
 
 #
+# vsyssh : installed in slivers
+#
+vsyssh-MODULES := vsys
+vsyssh-SPEC := vsyssh.spec
+IN_SLIVER += vsyssh
+ALL += vsyssh
+
+#
 # vsys-scripts
 #
 vsys-scripts-MODULES := vsys-scripts
@@ -256,7 +264,7 @@ IN_BOOTSTRAPFS += vsys-scripts
 ALL += vsys-scripts
 
 #
-# PLCAPI
+# plcapi
 #
 plcapi-MODULES := plcapi
 plcapi-SPEC := PLCAPI.spec
@@ -311,6 +319,8 @@ plcrt-MODULES := PLCRT
 plcrt-SPEC := plcrt.spec
 ALL += plcrt
 
+# f12 has 0.9-1 already
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 centos5)"
 #
 # pyopenssl
 #
@@ -318,7 +328,7 @@ pyopenssl-MODULES := pyopenssl
 pyopenssl-SPEC := pyOpenSSL.spec
 pyopenssl-BUILD-FROM-SRPM := yes
 ALL += pyopenssl
-
+endif
 
 #
 # pyaspects
@@ -363,8 +373,6 @@ ALL += sface
 #
 # nodeconfig
 #
-# xxx needed when upgrading to 5.0
-#nodeconfig-MODULES := nodeconfig
 nodeconfig-MODULES := nodeconfig
 nodeconfig-SPEC := nodeconfig.spec
 ALL += nodeconfig
@@ -396,7 +404,6 @@ IN_BOOTSTRAPFS += pyplnet
 IN_MYPLC += pyplnet
 IN_BOOTCD += pyplnet
 
-
 #
 # OMF resource controller
 #
@@ -411,7 +418,6 @@ IN_VSERVER += omf-resctl
 omf-expctl-MODULES := omf
 omf-expctl-SPEC := omf-expctl.spec
 ALL += omf-expctl
-
 
 #
 # bootcd
@@ -457,7 +463,7 @@ NODEREPO_RPMS_3PLUS = $(subst $(SPACE),+++,$(NODEREPO_RPMS))
 
 noderepo-MODULES := bootstrapfs
 noderepo-SPEC := noderepo.spec
-# package requires all regular packages
+# package requires all embedded packages
 noderepo-DEPEND-PACKAGES := $(IN_BOOTSTRAPFS) $(IN_NODEREPO) $(IN_VSERVER)
 noderepo-DEPEND-FILES := RPMS/yumgroups.xml
 #export rpm list to the specfile
@@ -465,6 +471,25 @@ noderepo-SPECVARS = node_rpms_plus=$(NODEREPO_RPMS_3PLUS)
 noderepo-RPMDATE := yes
 ALL += noderepo
 IN_MYPLC += noderepo
+
+#
+# slicerepo
+#
+# all rpms resulting from packages marked as being in vserver
+SLICEREPO_RPMS = $(foreach package,$(IN_VSERVER),$($(package).rpms))
+# replace space with +++ (specvars cannot deal with spaces)
+SPACE=$(subst x, ,x)
+SLICEREPO_RPMS_3PLUS = $(subst $(SPACE),+++,$(SLICEREPO_RPMS))
+
+slicerepo-MODULES := bootstrapfs
+slicerepo-SPEC := slicerepo.spec
+# package requires all embedded packages
+slicerepo-DEPEND-PACKAGES := $(IN_VSERVER)
+slicerepo-DEPEND-FILES := RPMS/yumgroups.xml
+#export rpm list to the specfile
+slicerepo-SPECVARS = slice_rpms_plus=$(SLICEREPO_RPMS_3PLUS)
+slicerepo-RPMDATE := yes
+ALL += slicerepo
 
 #
 # MyPLC : lightweight packaging, dependencies are yum-installed in a vserver
@@ -486,4 +511,3 @@ release-MODULES := myplc
 release-SPEC := myplc-release.spec
 release-RPMDATE := yes
 ALL += release
-
