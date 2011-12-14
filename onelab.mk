@@ -57,6 +57,9 @@ ALL += ipfwslice
 #
 # madwifi
 #
+# skip this with k32/f8
+ifneq "" "$(findstring k32,$(PLDISTROTAGS))"
+ifneq "$(DISTRONAME)" "f8"
 madwifi-MODULES := madwifi
 madwifi-SPEC := madwifi.spec
 madwifi-BUILD-FROM-SRPM := yes
@@ -66,6 +69,8 @@ madwifi-SPECVARS = kernel_version=$(kernel.rpm-version) \
 	kernel_arch=$(kernel.rpm-arch)
 ALL += madwifi
 IN_BOOTSTRAPFS += madwifi
+endif
+endif
 
 #
 # comgt
@@ -96,7 +101,7 @@ ALL += umts-frontend
 #
 iptables-MODULES := iptables
 iptables-SPEC := iptables.spec
-iptables-BUILD-FROM-SRPM := yes
+iptables-BUILD-FROM-SRPM := yes	
 iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
 ALL += iptables
 IN_BOOTSTRAPFS += iptables
@@ -106,7 +111,7 @@ IN_BOOTSTRAPFS += iptables
 #
 iproute-MODULES := iproute2
 iproute-SPEC := iproute.spec
-iproute-BUILD-FROM-SRPM	:= yes	
+iproute-BUILD-FROM-SRPM := yes	
 ALL += iproute
 IN_BOOTSTRAPFS += iproute
 IN_VSERVER += iproute
@@ -211,7 +216,6 @@ DistributedRateLimiting-SPEC := DistributedRateLimiting.spec
 ALL += DistributedRateLimiting
 IN_NODEREPO += DistributedRateLimiting
 
-
 #
 # pf2slice
 #
@@ -233,6 +237,10 @@ IN_BOOTSTRAPFS += mom
 #
 local_inotify_tools=false
 ifeq "$(DISTRONAME)" "centos5"
+local_inotify_tools=true
+endif
+
+ifeq "$(DISTRONAME)" "sl6"
 local_inotify_tools=true
 endif
 
@@ -331,16 +339,6 @@ monitor-SPEC := Monitor.spec
 monitor-DEVEL-RPMS += net-snmp net-snmp-devel
 ALL += monitor
 IN_BOOTSTRAPFS += monitor
-
-#
-# zabbix
-#
-zabbix-MODULES := monitor
-zabbix-SPEC := zabbix.spec
-zabbix-BUILD-FROM-SRPM := yes
-zabbix-DEVEL-RPMS += python-cherrypy
-### turn this off as zabbix comes with stock fedora or epel
-###ALL += zabbix
 
 #
 # PLC RT
@@ -534,6 +532,7 @@ ALL += slicerepo
 #
 myplc-MODULES := myplc
 myplc-SPEC := myplc.spec
+myplc-DEPEND-FILES := myplc-release RPMS/yumgroups.xml
 ALL += myplc
 
 # myplc-docs only contains docs for PLCAPI and NMAPI, but
