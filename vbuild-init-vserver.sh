@@ -171,14 +171,14 @@ function setup_vserver () {
 	grep -q ^CAP_SYS_ADMIN $BCAPFILE || echo CAP_SYS_ADMIN >> $BCAPFILE
 	grep -q ^CAP_MKNOD $BCAPFILE || echo CAP_MKNOD >> $BCAPFILE
 	grep -q ^CAP_IPC_LOCK $BCAPFILE || echo CAP_IPC_LOCK >> $BCAPFILE
-	# useful for f15 guests that use set_cap_file 
+	# useful for f16 guests that use set_cap_file 
 	grep -q ^CAP_SETFCAP $BCAPFILE || echo CAP_SETFCAP >> $BCAPFILE
     else
 	### capabilities required for a myplc vserver
 	# for /etc/plc.d/gpg - need to init /dev/random
 	grep -q ^CAP_MKNOD $BCAPFILE || echo CAP_MKNOD >> $BCAPFILE
 	grep -q ^CAP_NET_BIND_SERVICE $BCAPFILE || echo CAP_NET_BIND_SERVICE >> $BCAPFILE
-	# useful for f15 guests that use set_cap_file 
+	# useful for f16 guests that use set_cap_file 
 	grep -q ^CAP_SETFCAP $BCAPFILE || echo CAP_SETFCAP >> $BCAPFILE
     fi
 
@@ -192,8 +192,8 @@ function setup_vserver () {
     # Enable cgroup
     mkdir /etc/vservers/$vserver/cgroup
 
-    # Set the init style of your vserver to plain for f15 and higher
-    # not working with f15 anyways, systemd requires 2.6.36 to work
+    # Set the init style of your vserver to plain for f16 and higher
+    # not working with f16 anyways, systemd requires 2.6.36 to work
     case $fcdistro in 
 	f1[5-9]) echo plain > /etc/vservers/$vserver/apps/init/style ;;
     esac

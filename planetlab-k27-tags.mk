@@ -9,7 +9,7 @@ libnl-GITPATH			:= git://git.planet-lab.org/libnl.git@libnl-1.1-2
 util-vserver-pl-GITPATH		:= git://git.planet-lab.org/util-vserver-pl.git@util-vserver-pl-0.4-26
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.0-33
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.0-34
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
@@ -35,7 +35,7 @@ pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-2
 ejabberd-GITPATH		:= git://git.planet-lab.org/ejabberd.git@ejabberd-2.1.6-2
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.0-2
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.0-4
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-5
 pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-11
@@ -47,4 +47,4 @@ vserver-reference-GITPATH       := git://git.planet-lab.org/vserver-reference.gi
 bootstrapfs-GITPATH             := git://git.planet-lab.org/bootstrapfs.git@bootstrapfs-2.0-13
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.0-19
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.0-31
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.0-32

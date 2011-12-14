@@ -44,8 +44,8 @@ pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-2
 ejabberd-GITPATH		:= git://git.planet-lab.org/ejabberd.git@ejabberd-2.1.6-2
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.0-2
-sface-GITPATH                   := git://git.planet-lab.org/sface.git@master
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.0-4
+sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-0
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-5
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxcbuild
 pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
@@ -57,4 +57,4 @@ vserver-reference-GITPATH       := git://git.planet-lab.org/vserver-reference.gi
 bootstrapfs-GITPATH             := git://git.planet-lab.org/bootstrapfs.git@bootstrapfs-2.0-13
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.0-19
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.0-31
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.0-32

@@ -4,8 +4,8 @@
 linux-2.6-BRANCH		:= rhel6
 linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@linux-2.6-32-27
 # help out spec2make on f8 and centos5, due to a bug in rpm 
-# ditto on f15 for spec2make.py - tmp hopefully
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f15 centos5)"
+# ditto on f16 for spec2make.py - tmp hopefully
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f16 centos5)"
 kernel-WHITELIST-RPMS	:= kernel-devel,kernel-headers
 endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
@@ -25,7 +25,7 @@ libnl-GITPATH			:= git://git.onelab.eu/libnl.git@libnl-1.1-2
 util-vserver-pl-GITPATH         := git://git.onelab.eu/util-vserver-pl.git@util-vserver-pl-0.4-26
 nodeupdate-GITPATH              := git://git.onelab.eu/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@lxcbuild
+nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@nodemanager-2.0-34
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.onelab.eu/codemux.git@codemux-0.1-15
 fprobe-ulog-SVNPATH             := http://svn.planet-lab.org/svn/fprobe-ulog/tags/fprobe-ulog-1.1.3-3
@@ -49,8 +49,8 @@ ejabberd-GITPATH		:= git://git.onelab.eu/ejabberd.git@ejabberd-2.1.6-2
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.0-2
-sface-GITPATH                   := git://git.onelab.eu/sface.git@master
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.0-4
+sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-0
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.0-5
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxcbuild
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
