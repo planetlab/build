@@ -186,7 +186,7 @@ IN_BOOTSTRAPFS += fprobe-ulog
 #
 libvirt-MODULES := libvirt
 libvirt-SPEC    := libvirt.spec
-libvirt-DEPEND-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel python-devel libcap-ng-devel libpciaccess-devel
+libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel python-devel libcap-ng-devel libpciaccess-devel
 ALL += libvirt
 IN_BOOTSTRAPFS += libvirt
 
