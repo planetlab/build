@@ -128,7 +128,6 @@ package: vsys-scripts
 package: monitor-client
 package: monitor-runlevelagent
 package: pyplnet
-package: libvirt
 
 # onelab specifics
 # kernel-ipfw
