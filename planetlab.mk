@@ -186,7 +186,16 @@ IN_BOOTSTRAPFS += fprobe-ulog
 #
 libvirt-MODULES := libvirt
 libvirt-SPEC    := libvirt.spec
-libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel python-devel libcap-ng-devel libpciaccess-devel
+libvirt-BUILD-FROM-SRPM := yes
+libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel yajl-devel gettext 
+libvrit-DEVEL-RPMS += python-devel libcap-ng-devel libpciaccess-devel radvd numactl-devel 
+libvirt-DEVEL-RPMS += libxslt libtasn1-devel
+libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without storage-scsi \
+	                --without storage-fs --without storage-lvm \
+	                --without polkit --without sasl --without audit --with capng --with udev \
+	                --without netcf --without avahi \
+	                --without xen --without qemu --without hyperv --without phyp --without esx \
+                    --define 'packager PlanetLab'
 ALL += libvirt
 IN_BOOTSTRAPFS += libvirt
 
