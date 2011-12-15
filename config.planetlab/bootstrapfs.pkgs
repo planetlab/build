@@ -129,3 +129,4 @@ package: monitor-client
 package: monitor-runlevelagent
 package: pyplnet
 package: libvirt
+package: libvirt-python
