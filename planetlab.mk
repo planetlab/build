@@ -197,6 +197,7 @@ libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without sto
 	                --without xen --without qemu --without hyperv --without phyp --without esx \
                     --define 'packager PlanetLab'
 ALL += libvirt
+IN_NODEREPO += libvirt
 IN_BOOTSTRAPFS += libvirt
 
 #
