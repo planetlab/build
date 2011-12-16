@@ -27,6 +27,9 @@ chroot ${vdir} /sbin/chkconfig NetworkManager off || :
 # which is the case for our k32 kernel
 # chroot ${vdir} /sbin/chkconfig vprocunhide on || :
 
+# turn ON lxc-reference.
+chroot ${vdir} /sbin/chkconfig lxc-reference on || :
+
 # turn OFF selinux if set
 # this may happen accidentally if you mention too much stuff in bootstrapfs.pkgs
 for file in /etc/sysconfig/selinux /sbin/load_policy; do
