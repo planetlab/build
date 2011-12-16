@@ -130,3 +130,4 @@ package: monitor-runlevelagent
 package: pyplnet
 package: libvirt
 package: libvirt-python
+package: lxc-reference
