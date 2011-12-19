@@ -59,3 +59,4 @@ myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.0-
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.0-32
 libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@lxcbuild
+lxc-reference-GITPATH           := git://git.planet-lab.org/lxc-reference.git@lxcbuild

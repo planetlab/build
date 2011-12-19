@@ -461,6 +461,14 @@ ALL += vserver
 IN_BOOTSTRAPFS += vserver
 
 #
+# LXC reference images
+#
+lxcref-MODULES := lxc-reference
+lxcref-SPEC    := lxc-reference.spec
+ALL += lxcref
+IN_BOOTSTRAPFS += lxcref
+
+#
 # bootstrapfs
 #
 bootstrapfs-MODULES := bootstrapfs build
