@@ -33,7 +33,7 @@ endif
 
 kernel-MODULES := linux-3
 kernel-DEVEL-RPMS += gettext elfutils-devel
-kernel-SPEC := kernel-3.1.spec
+kernel-SPEC := kernel.spec
 kernel-BUILD-FROM-SRPM := yes
 ifeq "$(HOSTARCH)" "i386"
 kernel-RPMFLAGS:= --target i686 --with upstream_branch
