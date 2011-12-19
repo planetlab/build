@@ -31,8 +31,8 @@ endif
 # so the source rpm is created by running make srpm in the codebase
 #
 
-kernel-MODULES := linux-2.6
-kernel-SPEC := kernel-2.6.spec
+kernel-MODULES := linux-3
+kernel-SPEC := kernel-3.1.spec
 kernel-BUILD-FROM-SRPM := yes
 ifeq "$(HOSTARCH)" "i386"
 kernel-RPMFLAGS:= --target i686
