@@ -36,9 +36,9 @@ kernel-SPEC := kernel-3.1.spec
 kernel-DEVEL-RPMS += gettext elfutils-devel
 kernel-BUILD-FROM-SRPM := yes
 ifeq "$(HOSTARCH)" "i386"
-kernel-RPMFLAGS:= --target i686 --without tools --without debug --without debuginfo
+kernel-RPMFLAGS:= --target i686
 else
-kernel-RPMFLAGS:= --target $(HOSTARCH) --without tools --without debug --without debuginfo
+kernel-RPMFLAGS:= --target $(HOSTARCH)
 endif
 kernel-SPECVARS += kernelconfig=planetlab
 KERNELS += kernel
