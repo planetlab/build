@@ -56,19 +56,19 @@ IN_BOOTSTRAPFS += $(KERNELS)
 # madwifi
 #
 # skip this with k32/f8
-ifneq "" "$(findstring k32,$(PLDISTROTAGS))"
-ifneq "$(DISTRONAME)" "f8"
-madwifi-MODULES := madwifi
-madwifi-SPEC := madwifi.spec
-madwifi-BUILD-FROM-SRPM := yes
-madwifi-DEPEND-DEVEL-RPMS += kernel-devel
-madwifi-SPECVARS = kernel_version=$(kernel.rpm-version) \
-	kernel_release=$(kernel.rpm-release) \
-	kernel_arch=$(kernel.rpm-arch)
-ALL += madwifi
-IN_BOOTSTRAPFS += madwifi
-endif
-endif
+#ifneq "" "$(findstring k32,$(PLDISTROTAGS))"
+#ifneq "$(DISTRONAME)" "f8"
+#madwifi-MODULES := madwifi
+#madwifi-SPEC := madwifi.spec
+#madwifi-BUILD-FROM-SRPM := yes
+#madwifi-DEPEND-DEVEL-RPMS += kernel-devel
+#madwifi-SPECVARS = kernel_version=$(kernel.rpm-version) \
+#    kernel_release=$(kernel.rpm-release) \
+#    kernel_arch=$(kernel.rpm-arch)
+#ALL += madwifi
+#IN_BOOTSTRAPFS += madwifi
+#endif
+#endif
 
 #
 # iptables
