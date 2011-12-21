@@ -12,6 +12,7 @@ package: bridge-utils
 package: dnsmasq
 package: bash-completion
 package: kernel
+package: kernel-firmware
 package: udev
 package: basesystem
 package: filesystem
