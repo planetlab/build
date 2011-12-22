@@ -1,6 +1,6 @@
 #!/usr/bin/python -u
 
-import sys, os
+import sys, os, os.path
 import re
 import time
 import tempfile
@@ -1271,7 +1271,14 @@ def release_changelog(options, buildtag_old, buildtag_new):
     except:
         print "ERROR: provide a tagfile name (eg. onelab, onelab-k27, planetlab)"
         return
-    tagfile = "%s-tags.mk" % tagfile
+    # mmh, sounds wrong to blindly add the extension 
+    # if in a build directory, guess from existing files
+    if os.path.isfile (tagfile): 
+        pass
+    elif os.path.isfile ("%s-tags.mk" % tagfile):
+        tagfile="%s-tags.mk" % tagfile
+    else:
+        tagfile = "%s-tags.mk" % tagfile
     
     print '----'
     print '----'
@@ -1328,7 +1335,7 @@ def release_changelog(options, buildtag_old, buildtag_new):
             print ' * to', second, m.repository.gitweb()
 
         print '{{{'
-        os.system("diff -u %s %s" % (tmpfile, specfile))
+        os.system("diff -u %s %s | sed -e 's,%s,[[previous version]],'" % (tmpfile, specfile,tmpfile))
         print '}}}'
 
         os.unlink(tmpfile)
@@ -1573,8 +1580,10 @@ Branches:
                 Module.html_dump_footer()
         else:
             # if we provide, say a b c d, we want to build (a,b) (b,c) and (c,d)
-            for (f,t) in zip ( args[:-1], args [1:]):
-                release_changelog(options, f,t)
+            # remember that the changelog in the twiki comes latest first, so
+            # we typically have here latest latest-1 latest-2
+            for (tag_to,tag_from) in zip ( args[:-1], args [1:]):
+                release_changelog(options, tag_from,tag_to)
             
     
 ####################

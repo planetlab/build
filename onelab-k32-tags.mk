@@ -2,7 +2,7 @@
 
 ###
 linux-2.6-BRANCH		:= rhel6
-linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@linux-2.6-32-27
+linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@32
 # help out spec2make on f8 and centos5, due to a bug in rpm 
 # ditto on f16 for spec2make.py - tmp hopefully
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f16 centos5)"
@@ -10,7 +10,7 @@ kernel-WHITELIST-RPMS	:= kernel-devel,kernel-headers
 endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
-madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-4
+madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@master
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
 # note that this should be consistently reflected in pl_getKexcludes in build.common
@@ -45,11 +45,11 @@ PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.onelab.eu/pyopenssl.git@pyopenssl-0.9-2
 ###
 pyaspects-GITPATH               := git://git.onelab.eu/pyaspects.git@pyaspects-0.4.1-2
-ejabberd-GITPATH		:= git://git.onelab.eu/ejabberd.git@ejabberd-2.1.6-2
+ejabberd-GITPATH                := git://git.onelab.eu/ejabberd.git@master
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.0-4
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.0-6
 sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-0
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.0-5
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxcbuild
