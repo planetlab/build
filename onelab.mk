@@ -211,10 +211,13 @@ IN_BOOTSTRAPFS += fprobe-ulog
 #
 # DistributedRateLimiting
 #
+# on f16 somehow configure screws up and defines LDFLAGS=-Wl,-z,relro which ld does not like..
+ifneq "$(DISTRONAME)" "f16"
 DistributedRateLimiting-MODULES := DistributedRateLimiting
 DistributedRateLimiting-SPEC := DistributedRateLimiting.spec
 ALL += DistributedRateLimiting
 IN_NODEREPO += DistributedRateLimiting
+endif
 
 #
 # pf2slice
