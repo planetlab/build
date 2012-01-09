@@ -49,8 +49,8 @@ ejabberd-GITPATH                := git://git.onelab.eu/ejabberd.git@master
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.0-6
-sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-0
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.0-9
+sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-3
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.0-5
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxcbuild
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
