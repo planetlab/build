@@ -27,8 +27,7 @@ chroot ${vdir} /sbin/chkconfig vservers-default off || :
 # which is the case for our k32 kernel
 # chroot ${vdir} /sbin/chkconfig vprocunhide on || :
 
-# fprobe doesn't work yet
-chroot ${vdir} /sbin/chkconfig fprobe-ulog off || :
+chroot ${vdir} /sbin/chkconfig fprobe-ulog on || :
 
 # turn off cgconfig
 chroot ${vdir} /sbin/chkconfig cgconfig off || :
