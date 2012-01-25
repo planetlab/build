@@ -206,10 +206,10 @@ IN_BOOTSTRAPFS += libvirt
 #
 # DistributedRateLimiting
 #
-DistributedRateLimiting-MODULES := DistributedRateLimiting
-DistributedRateLimiting-SPEC := DistributedRateLimiting.spec
-ALL += DistributedRateLimiting
-IN_NODEREPO += DistributedRateLimiting
+#DistributedRateLimiting-MODULES := DistributedRateLimiting
+#DistributedRateLimiting-SPEC := DistributedRateLimiting.spec
+#ALL += DistributedRateLimiting
+#IN_NODEREPO += DistributedRateLimiting
 
 #
 # pf2slice
