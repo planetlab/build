@@ -453,13 +453,13 @@ IN_MYPLC += bootcd
 #
 # vserver : reference image for slices
 #
-vserver-MODULES := vserver-reference build
-vserver-SPEC := vserver-reference.spec
-vserver-DEPEND-PACKAGES := $(IN_VSERVER)
-vserver-DEPEND-FILES := RPMS/yumgroups.xml
-vserver-RPMDATE := yes
-ALL += vserver
-IN_BOOTSTRAPFS += vserver
+#vserver-MODULES := vserver-reference build
+#vserver-SPEC := vserver-reference.spec
+#vserver-DEPEND-PACKAGES := $(IN_VSERVER)
+#vserver-DEPEND-FILES := RPMS/yumgroups.xml
+#vserver-RPMDATE := yes
+#ALL += vserver
+#IN_BOOTSTRAPFS += vserver
 
 #
 # LXC reference images
