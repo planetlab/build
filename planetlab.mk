@@ -31,26 +31,26 @@ endif
 # so the source rpm is created by running make srpm in the codebase
 #
 
-kernel-MODULES := linux-3
-kernel-SPEC := kernel-3.1.spec
-kernel-DEVEL-RPMS += gettext elfutils-devel
-kernel-BUILD-FROM-SRPM := yes
-ifeq "$(HOSTARCH)" "i386"
-kernel-RPMFLAGS:= --target i686 --with firmware
-else
-kernel-RPMFLAGS:= --target $(HOSTARCH) --with firmware
-endif
-kernel-SPECVARS += kernelconfig=planetlab
-KERNELS += kernel
+#kernel-MODULES := linux-3
+#kernel-SPEC := kernel-3.1.spec
+#kernel-DEVEL-RPMS += gettext elfutils-devel
+#kernel-BUILD-FROM-SRPM := yes
+#ifeq "$(HOSTARCH)" "i386"
+#kernel-RPMFLAGS:= --target i686 --with firmware
+#else
+#kernel-RPMFLAGS:= --target $(HOSTARCH) --with firmware
+#endif
+#kernel-SPECVARS += kernelconfig=planetlab
+#KERNELS += kernel
 
-kernels: $(KERNELS)
-kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
+#kernels: $(KERNELS)
+#kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
 
-ALL += $(KERNELS)
-# this is to mark on which image a given rpm is supposed to go
-IN_BOOTCD += $(KERNELS)
-IN_VSERVER += $(KERNELS)
-IN_BOOTSTRAPFS += $(KERNELS)
+#ALL += $(KERNELS)
+## this is to mark on which image a given rpm is supposed to go
+#IN_BOOTCD += $(KERNELS)
+#IN_VSERVER += $(KERNELS)
+#IN_BOOTSTRAPFS += $(KERNELS)
 
 #
 # madwifi
@@ -73,23 +73,23 @@ IN_BOOTSTRAPFS += $(KERNELS)
 #
 # iptables
 #
-iptables-MODULES := iptables
-iptables-SPEC := iptables.spec
-iptables-BUILD-FROM-SRPM := yes	
-iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
-ALL += iptables
-IN_BOOTSTRAPFS += iptables
+#iptables-MODULES := iptables
+#iptables-SPEC := iptables.spec
+#iptables-BUILD-FROM-SRPM := yes	
+#iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
+#ALL += iptables
+#IN_BOOTSTRAPFS += iptables
 
 #
 # iproute
 #
-iproute-MODULES := iproute2
-iproute-SPEC := iproute.spec
-iproute-BUILD-FROM-SRPM := yes	
-ALL += iproute
-IN_BOOTSTRAPFS += iproute
-IN_VSERVER += iproute
-IN_BOOTCD += iproute
+#iproute-MODULES := iproute2
+#iproute-SPEC := iproute.spec
+#iproute-BUILD-FROM-SRPM := yes	
+#ALL += iproute
+#IN_BOOTSTRAPFS += iproute
+#IN_VSERVER += iproute
+#IN_BOOTCD += iproute
 
 #
 # util-vserver
