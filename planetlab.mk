@@ -328,11 +328,11 @@ ALL += pcucontrol
 #
 # monitor
 #
-monitor-MODULES := monitor
-monitor-SPEC := Monitor.spec
-monitor-DEVEL-RPMS += net-snmp net-snmp-devel
-ALL += monitor
-IN_BOOTSTRAPFS += monitor
+#monitor-MODULES := monitor
+#monitor-SPEC := Monitor.spec
+#monitor-DEVEL-RPMS += net-snmp net-snmp-devel
+#ALL += monitor
+#IN_BOOTSTRAPFS += monitor
 
 #
 # PLC RT

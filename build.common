@@ -75,7 +75,7 @@ function pl_getKexcludes () {
     f8)
         echo 'kernel* util-vserver* iptables iptables-ipv6 drupal' ;;
     f16)
-        echo 'util-vserver* drupal' ;;
+        echo 'drupal' ;;
     f*)
         echo 'kernel* util-vserver* iptables iptables-ipv6 drupal linux-firmware' ;;
     centos5)
