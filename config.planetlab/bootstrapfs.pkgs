@@ -120,8 +120,8 @@ package: NodeUpdate
 package: codemux
 package: pl_sshd
 package: ipod
-package: vserver-@pldistro@-@fcdistro@-@arch@
-package: vserver-systemslices-@pldistro@-@fcdistro@-@arch@
+#package: vserver-@pldistro@-@fcdistro@-@arch@
+#package: vserver-systemslices-@pldistro@-@fcdistro@-@arch@
 package: pl_mom
 package: fprobe-ulog
 package: vsys

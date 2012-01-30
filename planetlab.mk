@@ -31,26 +31,26 @@ endif
 # so the source rpm is created by running make srpm in the codebase
 #
 
-kernel-MODULES := linux-3
-kernel-SPEC := kernel-3.1.spec
-kernel-DEVEL-RPMS += gettext elfutils-devel
-kernel-BUILD-FROM-SRPM := yes
-ifeq "$(HOSTARCH)" "i386"
-kernel-RPMFLAGS:= --target i686 --with firmware
-else
-kernel-RPMFLAGS:= --target $(HOSTARCH) --with firmware
-endif
-kernel-SPECVARS += kernelconfig=planetlab
-KERNELS += kernel
+#kernel-MODULES := linux-3
+#kernel-SPEC := kernel-3.1.spec
+#kernel-DEVEL-RPMS += gettext elfutils-devel
+#kernel-BUILD-FROM-SRPM := yes
+#ifeq "$(HOSTARCH)" "i386"
+#kernel-RPMFLAGS:= --target i686 --with firmware
+#else
+#kernel-RPMFLAGS:= --target $(HOSTARCH) --with firmware
+#endif
+#kernel-SPECVARS += kernelconfig=planetlab
+#KERNELS += kernel
 
-kernels: $(KERNELS)
-kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
+#kernels: $(KERNELS)
+#kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
 
-ALL += $(KERNELS)
-# this is to mark on which image a given rpm is supposed to go
-IN_BOOTCD += $(KERNELS)
-IN_VSERVER += $(KERNELS)
-IN_BOOTSTRAPFS += $(KERNELS)
+#ALL += $(KERNELS)
+## this is to mark on which image a given rpm is supposed to go
+#IN_BOOTCD += $(KERNELS)
+#IN_VSERVER += $(KERNELS)
+#IN_BOOTSTRAPFS += $(KERNELS)
 
 #
 # madwifi
@@ -73,23 +73,23 @@ IN_BOOTSTRAPFS += $(KERNELS)
 #
 # iptables
 #
-iptables-MODULES := iptables
-iptables-SPEC := iptables.spec
-iptables-BUILD-FROM-SRPM := yes	
-iptables-DEVEL-RPMS += kernel-devel kernel-headers
-ALL += iptables
-IN_BOOTSTRAPFS += iptables
+#iptables-MODULES := iptables
+#iptables-SPEC := iptables.spec
+#iptables-BUILD-FROM-SRPM := yes	
+#iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
+#ALL += iptables
+#IN_BOOTSTRAPFS += iptables
 
 #
 # iproute
 #
-iproute-MODULES := iproute2
-iproute-SPEC := iproute.spec
-iproute-BUILD-FROM-SRPM := yes	
-ALL += iproute
-IN_BOOTSTRAPFS += iproute
-IN_VSERVER += iproute
-IN_BOOTCD += iproute
+#iproute-MODULES := iproute2
+#iproute-SPEC := iproute.spec
+#iproute-BUILD-FROM-SRPM := yes	
+#ALL += iproute
+#IN_BOOTSTRAPFS += iproute
+#IN_VSERVER += iproute
+#IN_BOOTCD += iproute
 
 #
 # util-vserver
@@ -190,13 +190,15 @@ libvirt-SPEC    := libvirt.spec
 libvirt-BUILD-FROM-SRPM := yes
 libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel yajl-devel gettext 
 libvirt-DEVEL-RPMS += python-devel libcap-ng-devel libpciaccess-devel radvd numactl-devel 
-libvirt-DEVEL-RPMS += xhtml1-dtds libxslt libtasn1-devel systemtap-sdt-devel iptables-ipv6 augeas
+libvirt-DEVEL-RPMS += xhtml1-dtds libxslt libtasn1-devel systemtap-sdt-devel iptables-ipv6 augeas 
+libvirt-DEVEL-RPMS += libudev-devel
 libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without storage-scsi \
 	                --without storage-fs --without storage-lvm \
 	                --without polkit --without sasl --without audit --with capng --with udev \
 	                --without netcf --without avahi --without sanlock \
 	                --without xen --without qemu --without hyperv --without phyp --without esx \
-                    --define 'packager PlanetLab'
+	                --without libxl \
+	                --define 'packager PlanetLab'
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_BOOTSTRAPFS += libvirt
@@ -204,10 +206,10 @@ IN_BOOTSTRAPFS += libvirt
 #
 # DistributedRateLimiting
 #
-DistributedRateLimiting-MODULES := DistributedRateLimiting
-DistributedRateLimiting-SPEC := DistributedRateLimiting.spec
-ALL += DistributedRateLimiting
-IN_NODEREPO += DistributedRateLimiting
+#DistributedRateLimiting-MODULES := DistributedRateLimiting
+#DistributedRateLimiting-SPEC := DistributedRateLimiting.spec
+#ALL += DistributedRateLimiting
+#IN_NODEREPO += DistributedRateLimiting
 
 #
 # pf2slice
@@ -326,11 +328,11 @@ ALL += pcucontrol
 #
 # monitor
 #
-monitor-MODULES := monitor
-monitor-SPEC := Monitor.spec
-monitor-DEVEL-RPMS += net-snmp net-snmp-devel
-ALL += monitor
-IN_BOOTSTRAPFS += monitor
+#monitor-MODULES := monitor
+#monitor-SPEC := Monitor.spec
+#monitor-DEVEL-RPMS += net-snmp net-snmp-devel
+#ALL += monitor
+#IN_BOOTSTRAPFS += monitor
 
 #
 # PLC RT
@@ -453,13 +455,13 @@ IN_MYPLC += bootcd
 #
 # vserver : reference image for slices
 #
-vserver-MODULES := vserver-reference build
-vserver-SPEC := vserver-reference.spec
-vserver-DEPEND-PACKAGES := $(IN_VSERVER)
-vserver-DEPEND-FILES := RPMS/yumgroups.xml
-vserver-RPMDATE := yes
-ALL += vserver
-IN_BOOTSTRAPFS += vserver
+#vserver-MODULES := vserver-reference build
+#vserver-SPEC := vserver-reference.spec
+#vserver-DEPEND-PACKAGES := $(IN_VSERVER)
+#vserver-DEPEND-FILES := RPMS/yumgroups.xml
+#vserver-RPMDATE := yes
+#ALL += vserver
+#IN_BOOTSTRAPFS += vserver
 
 #
 # LXC reference images
