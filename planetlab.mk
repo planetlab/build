@@ -76,7 +76,7 @@ IN_BOOTSTRAPFS += $(KERNELS)
 iptables-MODULES := iptables
 iptables-SPEC := iptables.spec
 iptables-BUILD-FROM-SRPM := yes	
-iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
+iptables-DEVEL-RPMS += kernel-devel kernel-headers
 ALL += iptables
 IN_BOOTSTRAPFS += iptables
 
@@ -251,8 +251,8 @@ endif
 openvswitch-MODULES := openvswitch
 openvswitch-SPEC := openvswitch.spec
 openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
-#IN_BOOTSTRAPFS += openvswitch
-#ALL += openvswitch
+IN_BOOTSTRAPFS += openvswitch
+ALL += openvswitch
 
 #
 # vsys
