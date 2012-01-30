@@ -2,7 +2,7 @@
 
 ###
 linux-2.6-BRANCH		:= rhel6
-linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@32
+linux-2.6-GITPATH		:= git://git.planet-lab.org/linux-2.6.git@linux-2.6-32-27
 # help out spec2make on f8 and centos5, due to a bug in rpm 
 # ditto on f16 for spec2make.py - tmp hopefully
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f16 centos5)"
@@ -11,7 +11,7 @@ endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
 madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-5
-iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
+iptables-GITPATH                := git://git.onelab.eu/iptables.git@master
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
 # note that this should be consistently reflected in pl_getKexcludes in build.common
 ALL := $(filter-out iproute,$(ALL))
@@ -51,7 +51,7 @@ oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.1-1
 sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-4
-nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.0-5
+nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@master
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.0-20
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-11
