@@ -12,8 +12,8 @@ ipfw
 iproute2
 iptables
 libnl
-linux-2.6
-linux-2.6:rhel6
+linux-2.6:27
+linux-2.6:32
 madwifi
 mkinitrd
 Mom
@@ -38,6 +38,7 @@ pyopenssl
 pypcilib
 pyplnet
 sfa
+sfa:sqlalchemy
 sface
 tests
 util-vserver
