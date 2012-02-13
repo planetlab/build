@@ -1,0 +1,7 @@
+# with our kernel rebuilt for fedora14
+plcyumexclude:		drupal
+
+# fedora14
+nodeyumexclude=f14:	kernel* util-vserver* iptables iptables-ipv6 linux-firmware
+
+# fedora16 - nothing to hide for now
