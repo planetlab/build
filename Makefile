@@ -389,6 +389,10 @@ $(foreach module,$(ALL.modules),$(eval $(call target_extract_module,$(module))))
 
 ### the tests area
 # use this makefile to extract tests rather than extracting manually in vbuild-nightly
+build-clean:
+	rm -rf MODULES/build
+.PHONY: build-clean
+
 tests-clean:
 	rm -rf MODULES/tests
 .PHONY: tests-clean
