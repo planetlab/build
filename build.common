@@ -84,8 +84,10 @@ function pl_yumexclude () {
 	{ echo pl_yumexclude failed with fcdistro=$fcdistro and pldistro=$pldistro; return 1 ; }
 }
 
+# <> fcdistro pldistro builddir
 # node side : use the 'nodeyumexclude' keywork in yumexclude.pkgs
 function pl_nodeyumexclude () { pl_yumexclude 'nodeyumexclude' "$@" ; }
+# server side : use the 'plcyumexclude' keywork in yumexclude.pkgs
 function pl_plcyumexclude () { pl_yumexclude 'plcyumexclude' "$@" ; }
 
 
@@ -241,7 +243,9 @@ function pl_root_mkfedora () {
     pkgs_precious=$(pl_parsePkgs precious $fcdistro $pldistro $pkgsfile)
     # formerly related to mkfedora -k : packages to take from our own build 
     # and thus need be excluded frem the stock repos
-    SUBST_NODEYUMEXCLUDE=$(pl_nodeyumexclude $fcdistro $pldistro)
+    # locate builddir by looking for pkgs.py
+    builddir=$(dirname $(type -p pkgs.py))
+    SUBST_NODEYUMEXCLUDE=$(pl_nodeyumexclude $fcdistro $pldistro $builddir)
     pkgs_yumexclude=$(pl_parsePkgs yumexclude $fcdistro $pldistro $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
     # get mirrors if not specified with -l
     if [ -z "$mirrors" ] ; then
