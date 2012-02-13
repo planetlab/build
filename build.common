@@ -72,8 +72,13 @@ function pl_yumexclude () {
     keyword=$1; shift
     fcdistro=$1; shift
     pldistro=$1; shift
+    builddir=$1; shift
     # search for file "yumexclude.pkgs"
-    yumexclude_file=$(pl_locateDistroFile ../build/ $pldistro "yumexclude.pkgs")
+    yumexclude_file=$(pl_locateDistroFile $builddir $pldistro "yumexclude.pkgs")
+    #
+    # check if pkgs.py is in PATH
+    type -p pkgs.py >& /dev/null || export PATH=$builddir:$PATH
+
     # parse it
     pl_parsePkgs keyword $fcdistro $pldistro $yumexclude_file || \
 	{ echo pl_yumexclude failed with fcdistro=$fcdistro and pldistro=$pldistro; return 1 ; }
