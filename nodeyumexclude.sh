@@ -21,4 +21,4 @@ PLDISTRO=$1; shift
 # check if pkgs.py is in PATH
 type -p pkgs.py >& /dev/null || export PATH=$DIRNAME:$PATH
 
-pl_nodeyumexclude "$FCDISTRO" "$PLDISTRO"
+pl_nodeyumexclude "$FCDISTRO" "$PLDISTRO" "$DIRNAME"
