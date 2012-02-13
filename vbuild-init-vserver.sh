@@ -33,6 +33,7 @@ function configure_yum_in_vserver () {
 
     vserver=$1; shift
     fcdistro=$1; shift
+    pldistro=$1; shift
 
     templates=/etc/vservers/.distributions/${fcdistro}
     if [ -f ${templates}/yum/yum.conf ] ; then
@@ -63,8 +64,9 @@ function configure_yum_in_vserver () {
 	    echo "WARNING : cannot create myplc repo"
 	else
             # exclude kernel from fedora repos 
+	    yumexclude=$(pl_plcyumexclude $fcdistro $pldistro)
 	    for repo in /vservers/$vserver/etc/yum.repos.d/* ; do
-		[ -f $repo ] && yumconf_exclude $repo "exclude=$pl_KEXCLUDES" 
+		[ -f $repo ] && yumconf_exclude $repo "exclude=$yumexclude" 
 	    done
 	    # the build repo is not signed at this stage
 	    cat > /vservers/$vserver/etc/yum.repos.d/myplc.repo <<EOF
@@ -119,6 +121,7 @@ function setup_vserver () {
 
     vserver=$1; shift
     fcdistro=$1; shift
+    pldistro=$1; shift
     personality=$1; shift
 
     # check that this is a new one - see above
@@ -251,7 +254,7 @@ function setup_vserver () {
     fi
 	    
     # minimal config in the vserver for yum to work
-    [ "$pkg_method" = "yum" ] && configure_yum_in_vserver $vserver $fcdistro 
+    [ "$pkg_method" = "yum" ] && configure_yum_in_vserver $vserver $fcdistro $pldistro
 
     # set up resolv.conf
     cp /etc/resolv.conf /vservers/$vserver/etc/resolv.conf
@@ -532,7 +535,7 @@ function main () {
     [ -z "$pldistro" ] && pldistro=$DEFAULT_PLDISTRO
     [ -z "$personality" ] && personality=$DEFAULT_PERSONALITY
 
-    setup_vserver $vserver $fcdistro $personality 
+    setup_vserver $vserver $fcdistro $pldistro $personality 
     devel_or_vtest_tools $vserver $fcdistro $pldistro $personality
     post_install $vserver $personality
 

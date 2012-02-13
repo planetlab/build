@@ -1,7 +1,7 @@
 groupname: PlanetLabBootcd
 groupdesc: PlanetLab BootCD
 # packages to exclude from stock repositories
-kexclude: @KEXCLUDE@
+yumexclude: @NODEYUMEXCLUDE@
 # define packages
 package: filesystem
 package: udev

@@ -37,7 +37,9 @@ default_fcdistro='f12'
 known_fcdistros = [ 'centos5','centos6','f8', 'f9','f10','f11','f12', 'f13', 'f14', 'f16', 'sl6']
 default_pldistro='onelab'
 
-known_keywords=['groupname', 'groupdesc', 'kexclude', 'package', 'group', 'precious', 'junk', 'mirror', ]
+known_keywords=['groupname', 'groupdesc', 
+                'nodeyumexclude', 'plcyumexclude', 
+                'yumexclude', 'package', 'group', 'precious', 'junk', 'mirror', ]
 
 
 m_fcdistro_cutter = re.compile('([a-z]+)([0-9]+)')

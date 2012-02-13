@@ -104,7 +104,7 @@ IN_BOOTSTRAPFS += util-vserver
 #
 # libnl - local import
 # we need either 1.1 or at least 1.0.pre6
-# rebuild this on centos5 - see kexcludes in build.common
+# rebuild this on centos5 - see yumexclude
 #
 local_libnl=false
 ifeq "$(DISTRONAME)" "centos5"
@@ -206,7 +206,7 @@ IN_BOOTSTRAPFS += mom
 
 #
 # inotify-tools - local import
-# rebuild this on centos5 (not found) - see kexcludes in build.common
+# rebuild this on centos5 (not found) - see yumexclude
 #
 local_inotify_tools=false
 ifeq "$(DISTRONAME)" "centos5"

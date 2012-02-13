@@ -2,7 +2,7 @@
 groupname: PlanetLabSlice
 groupdesc: PlanetLab Slice Reference Image
 # packages to exclude from stock repositories
-kexclude: @KEXCLUDE@
+yumexclude: @NODEYUMEXCLUDE@
 # define packages
 package: bash
 package: coreutils

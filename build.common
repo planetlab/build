@@ -5,8 +5,9 @@
 #
 # Marc E. Fiuczynski <mef@cs.princeton.edu>
 # Copyright (C) 2007 The Trustees of Princeton University
+# Thierry Parmentelat <thierry.parmentelat@inria.fr> INRIA
 #
-# supported distros f8, f10, f12, centos5
+# supported distros f8, f10, f12, f14, f16, centos5, sl6
 #
 # for locating pkgs.py
 export PATH=.:$PATH
@@ -65,40 +66,36 @@ function pl_getReleaseName () {
     return 0
 }
 
-# on fedora 8 or above, we use libnl from the stock repos
-# on centos5 we build it locally
-function pl_getKexcludes () {
-    distroname=$1; shift
-    case $distroname in
-	# when using k27, we need our own flavour of iproute
-	# for now we build only for k32, regardless of fcdistro
-	f8)
-	    echo 'kernel* util-vserver* iptables iptables-ipv6 drupal' ;;
-	f*)
-	    echo 'kernel* util-vserver* iptables iptables-ipv6 drupal' ;;
-	centos5)
-	    echo 'kernel kernel-vserver kernel-devel kernel-headers kernel-debuginfo util-vserver* iptables drupal inotify-tools* libnl' ;;
-	sl*)
-	    echo 'kernel kernel-debug kernel-debug-devel kernel-devel kernel-doc kernel-firmware kernel-headers iptables' ;;
-	*)
-	    echo "pl_DISTRO_NAME=$pl_DISTRO_NAME not supported in getexcludes.sh" ; exit 1 ;;
-    esac
+# yum exclusions are now defined in yumexclude.pkgs
+# so they can now depend both on the linux distro and the pl distro
+function pl_yumexclude () {
+    keyword=$1; shift
+    fcdistro=$1; shift
+    pldistro=$1; shift
+    # search for file "yumexclude.pkgs"
+    yumexclude_file=$(pl_locateDistroFile ../build/ $pldistro "yumexclude.pkgs")
+    # parse it
+    pl_parsePkgs keyword $fcdistro $pldistro $yumexclude_file || \
+	{ echo pl_yumexclude failed with fcdistro=$fcdistro and pldistro=$pldistro; return 1 ; }
 }
+
+# node side : use the 'nodeyumexclude' keywork in yumexclude.pkgs
+function pl_nodeyumexclude () { pl_yumexclude 'nodeyumexclude' "$@" ; }
+function pl_plcyumexclude () { pl_yumexclude 'plcyumexclude' "$@" ; }
+
 
 # figure out which redhat distro we are using (fedora, centos, redhat)
 pl_DISTRO=$(pl_getDistro)
 
 # select basearch of the host devel environment - protected for macos for local tests
-pl_DISTRO_ARCH=$(uname -i 2>/dev/null|| echo unknownarch)
+# try arch for testing stuff on a mac
+pl_DISTRO_ARCH=$(uname -i 2>/dev/null || arch 2> /dev/null || echo unknownarch)
 
 # the release number (plain number)
 pl_DISTRO_RELEASE=$(pl_getRelease)
 
 # the release name - for vserver build ...
 pl_DISTRO_NAME=$(pl_getReleaseName $pl_DISTRO $pl_DISTRO_RELEASE)
-
-# the packages to exclude
-pl_KEXCLUDES=$(pl_getKexcludes $pl_DISTRO_NAME)
 
 # get path to appropriate yumgroups.xml file
 # Thierry: quick & dirty improvement 
@@ -239,15 +236,16 @@ function pl_root_mkfedora () {
     pkgs_precious=$(pl_parsePkgs precious $fcdistro $pldistro $pkgsfile)
     # formerly related to mkfedora -k : packages to take from our own build 
     # and thus need be excluded frem the stock repos
-    pkgs_kexcludes=$(pl_parsePkgs kexclude $fcdistro $pldistro $pkgsfile | sed -e s,@KEXCLUDE@,"$pl_KEXCLUDES",)
+    SUBST_NODEYUMEXCLUDE=$(pl_nodeyumexclude $fcdistro $pldistro)
+    pkgs_yumexcludes=$(pl_parsePkgs yumexclude $fcdistro $pldistro $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
     # get mirrors if not specified with -l
     if [ -z "$mirrors" ] ; then
 	mirrorsfile=$(pl_locateDistroFile ../build/ $pldistro "$pldistro.mirrors")
 	mirrors=$(pl_parsePkgs mirror $fcdistro $pldistro $mirrorsfile)
     fi
 
-    kexclude_line=""
-    [ -n "$pkgs_kexcludes" ] && kexclude_line="exclude=$pkgs_kexcludes"
+    yumexclude_line=""
+    [ -n "$pkgs_yumexcludes" ] && yumexclude_line="exclude=$pkgs_yumexcludes"
 
     echo "$0: candidate mirrors"
     for mirror in $mirrors ; do
@@ -256,7 +254,7 @@ function pl_root_mkfedora () {
 
     # the repo part of the final yum.conf
     yum_conf_repos=$vroot/xxxmkfedora-repos.confxxx
-    if ! yumconf_mirrors $yum_conf_repos ../build/ $fcdistro "$kexclude_line" $mirrors ; then
+    if ! yumconf_mirrors $yum_conf_repos ../build/ $fcdistro "$yumexclude_line" $mirrors ; then
 	echo xxx -- error ; return 1
     fi
     
@@ -689,7 +687,7 @@ function yumconf_mirrors () {
     dest_yumconf=$1; shift
     builddir=$1; shift
     fcdistro=$1; shift
-    kexclude_line="$1" ; shift
+    yumexclude_line="$1" ; shift
     mirrors="$@"
 
     template=$builddir/mirroring/$fcdistro/yum.repos.d/building.repo.in
@@ -701,7 +699,7 @@ function yumconf_mirrors () {
     fi
 
     for mirror in $mirrors; do
-	if yumconf_mirror $dest_yumconf $template "$kexclude_line" $mirror; then
+	if yumconf_mirror $dest_yumconf $template "$yumexclude_line" $mirror; then
 	    return 0
 	fi
     done
@@ -715,12 +713,12 @@ function yumconf_mirrors () {
 function yumconf_mirror () {
     dest_yumconf=$1; shift
     template=$1; shift
-    kexclude_line="$1" ; shift
+    yumexclude_line="$1" ; shift
     mirror=$1; shift
 
     sed -e "s,@MIRRORURL@,$mirror,g" \
 	-e "/baseurl=/i\\
-$kexclude_line" $template > $dest_yumconf
+$yumexclude_line" $template > $dest_yumconf
     
     # capture all lines defining baseurl
     baseurl_defs=$(grep '^baseurl=' $dest_yumconf)
@@ -757,8 +755,8 @@ function yumconf_gpgkey () {
 # patches a yum conf to insert an exclude line in each declared repo
 function yumconf_exclude () {
     repo=$1; shift
-    kexclude_line="$1" ; shift
+    yumexclude_line="$1" ; shift
     
     sed -i -e "/#baseurl=.*$/i\\
-$kexclude_line" $repo
+$yumexclude_line" $repo
 }

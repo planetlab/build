@@ -13,7 +13,7 @@ kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-5
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
-# note that this should be consistently reflected in pl_getKexcludes in build.common
+# note that this should be consistently reflected in nodeyumexclude
 ALL := $(filter-out iproute,$(ALL))
 ###
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-0.9-23
@@ -57,7 +57,7 @@ pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-11
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.0-11
 vserver-reference-GITPATH        := git://git.onelab.eu/vserver-reference.git@vserver-reference-5.0-6
-bootstrapfs-GITPATH             := git://git.onelab.eu/bootstrapfs.git@bootstrapfs-2.0-13
+bootstrapfs-GITPATH             := git://git.onelab.eu/bootstrapfs.git@master
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.0-19
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 

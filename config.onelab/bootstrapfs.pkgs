@@ -4,7 +4,7 @@
 groupname: PlanetLab
 groupdesc: PlanetLab Node Root
 # packages to exclude from stock repositories
-kexclude: @KEXCLUDE@
+yumexclude: @NODEYUMEXCLUDE@
 # fedora-release or centos-release are pulled from deps
 # define packages
 package: kernel
