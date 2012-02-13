@@ -80,7 +80,7 @@ function pl_yumexclude () {
     type -p pkgs.py >& /dev/null || export PATH=$builddir:$PATH
 
     # parse it
-    pl_parsePkgs keyword $fcdistro $pldistro $yumexclude_file || \
+    pl_parsePkgs $keyword $fcdistro $pldistro $yumexclude_file || \
 	{ echo pl_yumexclude failed with fcdistro=$fcdistro and pldistro=$pldistro; return 1 ; }
 }
 
