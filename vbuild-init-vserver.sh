@@ -64,7 +64,7 @@ function configure_yum_in_vserver () {
 	    echo "WARNING : cannot create myplc repo"
 	else
             # exclude kernel from fedora repos 
-	    yumexclude=$(pl_plcyumexclude $fcdistro $pldistro)
+	    yumexclude=$(pl_plcyumexclude $fcdistro $pldistro $DIRNAME)
 	    for repo in /vservers/$vserver/etc/yum.repos.d/* ; do
 		[ -f $repo ] && yumconf_exclude $repo "exclude=$yumexclude" 
 	    done
