@@ -1,7 +1,8 @@
 #!/bin/bash
 
 COMMAND=$(basename $0)
-. $(dirname $0)/build.common
+DIRNAME=$(dirname $0)
+. $DIRNAME/build.common
 
 function usage () {
     echo "Usage: $COMMAND fcdistro pldistro"
@@ -16,5 +17,8 @@ FCDISTRO=$1; shift
 [[ -z "$@" ]] && usage
 PLDISTRO=$1; shift
 [[ -n "$@" ]] && usage
+
+# check if pkgs.py is in PATH
+type -p pkgs.py >& /dev/null || export PATH=$DIRNAME:$PATH
 
 pl_nodeyumexclude "$FCDISTRO" "$PLDISTRO"
