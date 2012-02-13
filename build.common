@@ -237,7 +237,7 @@ function pl_root_mkfedora () {
     # formerly related to mkfedora -k : packages to take from our own build 
     # and thus need be excluded frem the stock repos
     SUBST_NODEYUMEXCLUDE=$(pl_nodeyumexclude $fcdistro $pldistro)
-    pkgs_yumexcludes=$(pl_parsePkgs yumexclude $fcdistro $pldistro $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
+    pkgs_yumexclude=$(pl_parsePkgs yumexclude $fcdistro $pldistro $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
     # get mirrors if not specified with -l
     if [ -z "$mirrors" ] ; then
 	mirrorsfile=$(pl_locateDistroFile ../build/ $pldistro "$pldistro.mirrors")
@@ -245,7 +245,7 @@ function pl_root_mkfedora () {
     fi
 
     yumexclude_line=""
-    [ -n "$pkgs_yumexcludes" ] && yumexclude_line="exclude=$pkgs_yumexcludes"
+    [ -n "$pkgs_yumexclude" ] && yumexclude_line="exclude=$pkgs_yumexclude"
 
     echo "$0: candidate mirrors"
     for mirror in $mirrors ; do
