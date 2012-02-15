@@ -5,14 +5,13 @@
 
 # run on several distros as we filter out duplicates anyways
 # centos5 has more of our modules, but skips sfa
-fcdistros="centos5 f12"
+fcdistros="centos5 f12 f14"
 
 ( for fcdistro in $fcdistros; do 
-#    make stage1=true PLDISTRO=planetlab PLDISTROTAGS=planetlab-tags.mk DISTRONAME=${fcdistro} module-tools ;
     make stage1=true PLDISTRO=planetlab PLDISTROTAGS=planetlab-k27-tags.mk DISTRONAME=${fcdistro} module-tools ;
     make stage1=true PLDISTRO=planetlab PLDISTROTAGS=planetlab-k32-tags.mk DISTRONAME=${fcdistro} module-tools ;
-#    make stage1=true PLDISTRO=onelab PLDISTROTAGS=onelab-k27-tags.mk DISTRONAME=${fcdistro} module-tools ;
     make stage1=true PLDISTRO=onelab PLDISTROTAGS=onelab-k32-tags.mk DISTRONAME=${fcdistro} module-tools ;
+    make stage1=true PLDISTRO=lxc PLDISTROTAGS=lxc-tags.mk DISTRONAME=${fcdistro} module-tools ;
   done 2>/dev/null ;
   echo tests
 ) | sort -uf | grep -v '^build$' 
