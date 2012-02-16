@@ -123,13 +123,13 @@ pf2slice-MODULES := pf2slice
 pf2slice-SPEC := pf2slice.spec
 ALL += pf2slice
 
-#
-# PlanetLab Mom: Cleans up your mess
-#
-mom-MODULES := Mom
-mom-SPEC := pl_mom.spec
-ALL += mom
-IN_BOOTSTRAPFS += mom
+##
+## PlanetLab Mom: Cleans up your mess
+##
+#mom-MODULES := Mom
+#mom-SPEC := pl_mom.spec
+#ALL += mom
+#IN_BOOTSTRAPFS += mom
 
 #
 # inotify-tools - local import
