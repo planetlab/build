@@ -45,7 +45,7 @@ pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcuco
 bootstrapfs-GITPATH             := git://git.planet-lab.org/bootstrapfs.git@master
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.0-11
 vserver-reference-GITPATH       := git://git.planet-lab.org/vserver-reference.git@vserver-reference-5.0-6
-bootstrapfs-GITPATH             := git://git.planet-lab.org/bootstrapfs.git@bootstrapfs-2.0-13
+bootstrapfs-GITPATH             := git://git.planet-lab.org/bootstrapfs.git@bootstrapfs-2.0-14
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.0-19
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.0-36
