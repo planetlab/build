@@ -4,6 +4,7 @@ groupdesc: PlanetLab BootCD
 kexclude: @KEXCLUDE@
 # define packages
 package: btrfs-progs
+package: bootcd-systemd
 package: filesystem
 package: udev
 package: dhclient
