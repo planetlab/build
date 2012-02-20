@@ -70,6 +70,14 @@ endif
 #endif
 #endif
 
+
+# bootcd-systemd
+#
+bootcd-systemd-MODULES := bootcd-systemd
+bootcd-systemd-SPEC := bootcd-systemd.spec
+ALL += bootcd-systemd
+IN_BOOTCD += bootcd-systemd
+
 #
 # iptables
 #
