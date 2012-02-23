@@ -35,6 +35,9 @@ chroot ${vdir} /sbin/chkconfig cgconfig off || :
 # turn ON lxc-reference.
 chroot ${vdir} /sbin/chkconfig lxc-reference on || :
 
+# Change default target.
+chroot ${vdir} ln -sf /lib/systemd/system/multi-user.target /etc/systemd/system/default.target || :
+
 # turn OFF selinux if set
 # this may happen accidentally if you mention too much stuff in bootstrapfs.pkgs
 for file in /etc/sysconfig/selinux /sbin/load_policy; do
