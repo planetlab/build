@@ -383,8 +383,9 @@ ALL += ejabberd
 endif
 
 # sfa now uses the with statement that's not supported on python-2.4 - not even through __future__
+# In addition we now use sqlalchemy and 0.5 as per f12 is not compatible with our model
 build_sfa=true
-ifeq "$(DISTRONAME)" "centos5"
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
 build_sfa=false
 endif
 
@@ -395,11 +396,11 @@ ifeq "$(build_sfa)" "true"
 sfa-MODULES := sfa
 sfa-SPEC := sfa.spec
 ALL += sfa
-endif
 
 sface-MODULES := sface
 sface-SPEC := sface.spec
 ALL += sface
+endif
 
 #
 # nodeconfig
