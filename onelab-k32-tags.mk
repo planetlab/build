@@ -11,7 +11,7 @@ endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
 madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-5
-iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
+iptables-GITPATH                := git://git.onelab.eu/iptables.git@master
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
 # note that this should be consistently reflected in nodeyumexclude
 ALL := $(filter-out iproute,$(ALL))
@@ -35,7 +35,7 @@ inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inoti
 openvswitch-GITPATH		:= git://git.onelab.eu/openvswitch.git@openvswitch-1.1.0pre2-2
 vsys-GITPATH                    := git://git.onelab.eu/vsys.git@vsys-0.99-2
 vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scripts-0.95-35
-plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.0-37
+plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.onelab.eu/plewww.git@plewww-4.3-70
 www-register-wizard-SVNPATH     := http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
@@ -55,7 +55,7 @@ nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.0-20
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-11
-bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.0-11
+bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
 vserver-reference-GITPATH        := git://git.onelab.eu/vserver-reference.git@vserver-reference-5.0-6
 bootstrapfs-GITPATH             := git://git.onelab.eu/bootstrapfs.git@bootstrapfs-2.0-14
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.0-19
