@@ -41,7 +41,6 @@ pyopenssl
 pypcilib
 pyplnet
 sfa
-sfa:sqlalchemy
 sface
 tests
 util-vserver
