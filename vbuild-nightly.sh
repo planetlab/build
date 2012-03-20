@@ -474,7 +474,7 @@ function main () {
 	    # -e foo -> run_log -e foo
 	    -e) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --exclude $2"; shift 2 ;;
 	    # -X -> run_log -X
-	    -X) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --lxc"; shift;
+	    -X) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --lxc"; shift;;
 	    # more general form to pass args to run_log
 	    # -x foo -> run_log foo
 	    -x) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS $2"; shift 2;;
