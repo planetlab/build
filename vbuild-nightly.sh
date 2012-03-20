@@ -451,7 +451,7 @@ function main () {
     SIGNYUMREPO=""
 
     OPTS_ORIG=$@
-    OPTS=$(getopt -o "f:d:p:m:s:t:b:o:c:y:x:w:W:r:M:Yg:u:K:SBTnv7i:h" -l "build-branch:" -- $@)
+    OPTS=$(getopt -o "f:d:p:m:s:t:b:o:c:y:e:Xx:w:W:r:M:Yg:u:K:SBTnv7i:h" -l "build-branch:" -- $@)
     if [ $? != 0 ]
     then
         usage
@@ -468,8 +468,17 @@ function main () {
 	    -b) BASE=$2; shift 2 ;;
 	    -o) OVERBASE=$2; shift 2 ;;
 	    -c) TESTCONFIG="$TESTCONFIG $2"; shift 2 ;;
-	    -y) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS -y $2"; shift 2 ;;
+	    ########## passing stuff to run_log
+	    # -y foo -> run_log -y foo
+	    -y) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --rspec-style $2"; shift 2 ;;
+	    # -e foo -> run_log -e foo
+	    -e) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --exclude $2"; shift 2 ;;
+	    # -X -> run_log -X
+	    -X) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --lxc"; shift;
+	    # more general form to pass args to run_log
+	    # -x foo -> run_log foo
 	    -x) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS $2"; shift 2;;
+	    ##########
 	    -w) WEBPATH=$2; shift 2 ;;
 	    -W) TESTBUILDURL=$2; shift 2 ;;
 	    -r) WEBROOT=$2; shift 2 ;;
