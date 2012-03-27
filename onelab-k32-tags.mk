@@ -35,7 +35,7 @@ inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inoti
 openvswitch-GITPATH		:= git://git.onelab.eu/openvswitch.git@openvswitch-1.1.0pre2-2
 vsys-GITPATH                    := git://git.onelab.eu/vsys.git@vsys-0.99-2
 vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scripts-0.95-36
-plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.0-37
+plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@master
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.onelab.eu/plewww.git@plewww-4.3-70
 www-register-wizard-SVNPATH     := http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
@@ -58,7 +58,7 @@ pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-1
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
 vserver-reference-GITPATH        := git://git.onelab.eu/vserver-reference.git@vserver-reference-5.0-6
 bootstrapfs-GITPATH             := git://git.onelab.eu/bootstrapfs.git@bootstrapfs-2.0-14
-myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.0-19
+myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
 # locating the right test directory - see make tests_gitpath
