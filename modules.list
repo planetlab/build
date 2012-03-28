@@ -1,6 +1,5 @@
 bootcd
 bootmanager
-bootstrapfs
 codemux
 comgt
 DistributedRateLimiting
@@ -23,6 +22,7 @@ Mom
 monitor
 myplc
 nodeconfig
+nodeimage
 nodemanager
 nodeupdate
 omf
@@ -42,10 +42,10 @@ pypcilib
 pyplnet
 sfa
 sface
+sliceimage
 tests
 util-vserver
 util-vserver-pl
-vserver-reference
 vsys
 vsys-scripts
 www-register-wizard

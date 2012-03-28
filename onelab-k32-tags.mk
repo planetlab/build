@@ -12,10 +12,6 @@ kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
 madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-5
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
-# we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
-# note that this should be consistently reflected in nodeyumexclude
-ALL := $(filter-out iproute,$(ALL))
-###
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-0.9-23
 ###
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
@@ -56,11 +52,10 @@ bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanag
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-11
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
-vserver-reference-GITPATH       := git://git.onelab.eu/vserver-reference.git@master
-bootstrapfs-GITPATH             := git://git.onelab.eu/bootstrapfs.git@master
+sliceimage-GITPATH	        := git://git.onelab.eu/sliceimage.git@master
+nodeimage-GITPATH		:= git://git.onelab.eu/nodeimage.git@master
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.onelab.eu/tests.git@master
-
