@@ -474,7 +474,7 @@ ALL += bootcd
 IN_MYPLC += bootcd
 
 #
-# vserver : reference image for slices
+# images for slices
 #
 sliceimage-MODULES := sliceimage build
 sliceimage-SPEC := sliceimage.spec
@@ -483,6 +483,15 @@ sliceimage-DEPEND-FILES := RPMS/yumgroups.xml
 sliceimage-RPMDATE := yes
 ALL += sliceimage
 IN_NODEIMAGE += sliceimage
+
+#
+# vserver-specific sliceimage initialization
+# 
+vserver-sliceimage-MODULES := sliceimage
+vserver-sliceimage-SPEC    := vserver-sliceimage.spec
+vserver-sliceimage-RPMDATE := yes
+ALL			   += vserver-sliceimage
+IN_NODEIMAGE		   += vserver-sliceimage
 
 #
 # nodeimage
