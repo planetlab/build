@@ -16,14 +16,11 @@ RENAMED_SVN_MODULES = {
     "PLCAPI": "plcapi",
     "BootManager": "bootmanager",
     "BootCD": "bootcd",
-    "VserverReference": "vserver-reference",
-    "BootstrapFS": "bootstrapfs",
     "MyPLC": "myplc",
     "CoDemux": "codemux",
     "NodeManager": "nodemanager",
     "NodeUpdate": "nodeupdate",
     "Monitor": "monitor",
-
     }
 
 def svn_to_git_name(module):

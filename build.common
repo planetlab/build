@@ -1,7 +1,7 @@
 # -*-Shell-script-*-
 #
 # Common functions for build scripts used by various packages
-# incorporated (e.g., build, myplc, myplc-devel, vserver-reference)
+# incorporated (e.g., build, bootcd, nodeimage, sliceimage)
 #
 # Marc E. Fiuczynski <mef@cs.princeton.edu>
 # Copyright (C) 2007 The Trustees of Princeton University
@@ -38,7 +38,7 @@ function pl_getRelease() {
     return 0
 }
 
-# returns stuff for vserver, i.e. something like 'f8' or 'centos5'
+# returns distro shortname, something like 'f8' or 'centos5'
 function pl_getReleaseName () {
     distro=$1; shift
     release=$1; shift
@@ -101,7 +101,7 @@ pl_DISTRO_ARCH=$(uname -i 2>/dev/null || arch 2> /dev/null || echo unknownarch)
 # the release number (plain number)
 pl_DISTRO_RELEASE=$(pl_getRelease)
 
-# the release name - for vserver build ...
+# the release name - something like 'f8' or 'sl6'
 pl_DISTRO_NAME=$(pl_getReleaseName $pl_DISTRO $pl_DISTRO_RELEASE)
 
 # get path to appropriate yumgroups.xml file
@@ -172,8 +172,6 @@ function pl_root_makedevs() {
     # For pseudo ttys
     mkdir -p $vroot/dev/pts
 
-    # (Might have to remove the following for vserver-reference.)
-
     # for tmpfs mount
     mkdir -p $vroot/dev/shm
 
@@ -182,7 +180,7 @@ function pl_root_makedevs() {
     mknod -m 600 $vroot/dev/net/tun c 10 200
 
     # For mkinitrd (in case a kernel is being installed)
-    # As well as for loop back mounting within a vserver. 
+    # As well as for loop back mounting within a vm. 
     for i in $(seq 0 255) ; do
 	mknod -m 640 $vroot/dev/loop$i b 7 $i
     done
@@ -194,7 +192,7 @@ function mkfedora_usage() {
     echo "                      Defaults are searched in <pldistro>.mirrors"
     echo "	-v		Be verbose"
     echo "	-h		This message"
-    echo " target selection (defaults based on current build vserver)"
+    echo " target selection (defaults based on current build VM context)"
     echo "	-r release	Fedora release number (default: $releasever)"
     echo "	-a arch		Fedora architecture (default: $basearch)"
     exit 1
@@ -212,7 +210,7 @@ function pl_root_mkfedora () {
 # Verbosity
     verbose=0
 
-# Release and architecture to install : defaults to current vserver's settings or previously parsed fedora_options
+# Release and architecture to install : defaults to current vm settings or previously parsed fedora_options
     releasever=$pl_DISTRO_RELEASE
     basearch=$pl_DISTRO_ARCH
 
@@ -571,7 +569,7 @@ function pl_getGroups() { pl_parsePkgs group "$@" ; }
 # 
 # values can contain @arch@, @fcdistro@ or @pldistro@ that are replaced with the current values
 #
-# the reason for the -a option is for when we build the build vserver itself; in this case
+# the reason for the -a option is for when we build the build vm itself; in this case
 # pl_DISTRO_ARCH is the one we obtain from the root context, and that's wrong
 # specify -sa arch AFTER keyword, so as to keep pl_getPackages and pl_getGroups simple
 #
