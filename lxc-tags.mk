@@ -28,10 +28,9 @@ PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopenssl-0.9-2
 ###
 pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-2
-ejabberd-GITPATH		:= git://git.planet-lab.org/ejabberd.git@ejabberd-2.1.6-2
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.0-7
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-4
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-5
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-6
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxcbuild
@@ -39,10 +38,11 @@ pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-11
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-12
-bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.0-11
-bootstrapfs-GITPATH             := git://git.planet-lab.org/bootstrapfs.git@master
+bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
+sliceimage-GITPATH	        := git://git.onelab.eu/sliceimage.git@master
+lxc-reference-GITPATH           := git://git.planet-lab.org/lxc-reference.git@master
+nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@master
 libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@lxcbuild
-lxc-reference-GITPATH           := git://git.planet-lab.org/lxc-reference.git@master

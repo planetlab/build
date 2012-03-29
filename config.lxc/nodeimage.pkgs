@@ -120,8 +120,10 @@ package: NodeUpdate
 package: codemux
 package: pl_sshd
 package: ipod
-#package: vserver-@pldistro@-@fcdistro@-@arch@
-#package: vserver-systemslices-@pldistro@-@fcdistro@-@arch@
+package: sliceimage-@pldistro@-@fcdistro@-@arch@
+package: sliceimage-system-@pldistro@-@fcdistro@-@arch@
+# show be replaced with lxc-sliceimage from the sliceimage module at some point
+package: lxc-reference
 #package: pl_mom
 package: fprobe-ulog
 package: vsys
@@ -131,6 +133,5 @@ package: monitor-runlevelagent
 package: pyplnet
 package: libvirt
 package: libvirt-python
-package: lxc-reference
 package: ebtables
 package: python-inotify

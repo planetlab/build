@@ -35,8 +35,8 @@ kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
 ALL += $(KERNELS)
 # this is to mark on which image a given rpm is supposed to go
 IN_BOOTCD += $(KERNELS)
-IN_SLIVER += $(KERNELS)
-IN_BOOTSTRAPFS += $(KERNELS)
+IN_SLICEIMAGE += $(KERNELS)
+IN_NODEIMAGE += $(KERNELS)
 endif
 
 #
@@ -45,7 +45,7 @@ endif
 nodeupdate-MODULES := nodeupdate
 nodeupdate-SPEC := NodeUpdate.spec
 ALL += nodeupdate
-IN_BOOTSTRAPFS += nodeupdate
+IN_NODEIMAGE += nodeupdate
 
 #
 # ipod
@@ -53,7 +53,7 @@ IN_BOOTSTRAPFS += nodeupdate
 ipod-MODULES := PingOfDeath
 ipod-SPEC := ipod.spec
 ALL += ipod
-IN_BOOTSTRAPFS += ipod
+IN_NODEIMAGE += ipod
 
 #
 # NodeManager
@@ -61,7 +61,7 @@ IN_BOOTSTRAPFS += ipod
 nodemanager-MODULES := nodemanager
 nodemanager-SPEC := NodeManager.spec
 ALL += nodemanager
-IN_BOOTSTRAPFS += nodemanager
+IN_NODEIMAGE += nodemanager
 
 #
 # pl_sshd
@@ -69,7 +69,7 @@ IN_BOOTSTRAPFS += nodemanager
 sshd-MODULES := pl_sshd
 sshd-SPEC := pl_sshd.spec
 ALL += sshd
-IN_BOOTSTRAPFS += sshd
+IN_NODEIMAGE += sshd
 
 #
 # codemux: Port 80 demux
@@ -77,7 +77,7 @@ IN_BOOTSTRAPFS += sshd
 codemux-MODULES := codemux
 codemux-SPEC   := codemux.spec
 ALL += codemux
-IN_BOOTSTRAPFS += codemux
+IN_NODEIMAGE += codemux
 
 #
 # fprobe-ulog
@@ -85,7 +85,7 @@ IN_BOOTSTRAPFS += codemux
 fprobe-ulog-MODULES := fprobe-ulog
 fprobe-ulog-SPEC := fprobe-ulog.spec
 ALL += fprobe-ulog
-IN_BOOTSTRAPFS += fprobe-ulog
+IN_NODEIMAGE += fprobe-ulog
 
 #
 # libvirt
@@ -106,7 +106,7 @@ libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without sto
 	                --define 'packager PlanetLab'
 ALL += libvirt
 IN_NODEREPO += libvirt
-IN_BOOTSTRAPFS += libvirt
+IN_NODEIMAGE += libvirt
 
 #
 # DistributedRateLimiting
@@ -129,11 +129,11 @@ ALL += pf2slice
 #mom-MODULES := Mom
 #mom-SPEC := pl_mom.spec
 #ALL += mom
-#IN_BOOTSTRAPFS += mom
+#IN_NODEIMAGE += mom
 
 #
 # inotify-tools - local import
-# rebuild this on centos5 (not found) - see kexcludes in build.common
+# rebuild this on centos5 (not found) - see yumexclude
 #
 local_inotify_tools=false
 ifeq "$(DISTRONAME)" "centos5"
@@ -148,7 +148,7 @@ ifeq "$(local_inotify_tools)" "true"
 inotify-tools-MODULES := inotify-tools
 inotify-tools-SPEC := inotify-tools.spec
 inotify-tools-BUILD-FROM-SRPM := yes
-IN_BOOTSTRAPFS += inotify-tools
+IN_NODEIMAGE += inotify-tools
 ALL += inotify-tools
 endif
 
@@ -158,8 +158,8 @@ endif
 openvswitch-MODULES := openvswitch
 openvswitch-SPEC := openvswitch.spec
 openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
-#IN_BOOTSTRAPFS += openvswitch
-#ALL += openvswitch
+IN_NODEIMAGE += openvswitch
+ALL += openvswitch
 
 #
 # vsys
@@ -171,7 +171,7 @@ vsys-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
 ifeq "$(local_inotify_tools)" "true"
 vsys-DEPEND-DEVEL-RPMS += inotify-tools inotify-tools-devel
 endif
-IN_BOOTSTRAPFS += vsys
+IN_NODEIMAGE += vsys
 ALL += vsys
 
 #
@@ -179,7 +179,7 @@ ALL += vsys
 #
 vsyssh-MODULES := vsys
 vsyssh-SPEC := vsyssh.spec
-IN_SLIVER += vsyssh
+IN_SLICEIMAGE += vsyssh
 ALL += vsyssh
 
 #
@@ -187,7 +187,7 @@ ALL += vsyssh
 #
 vsys-scripts-MODULES := vsys-scripts
 vsys-scripts-SPEC := vsys-scripts.spec
-IN_BOOTSTRAPFS += vsys-scripts
+IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
 #
@@ -237,7 +237,7 @@ ALL += pcucontrol
 #monitor-SPEC := Monitor.spec
 #monitor-DEVEL-RPMS += net-snmp net-snmp-devel
 #ALL += monitor
-#IN_BOOTSTRAPFS += monitor
+#IN_NODEIMAGE += monitor
 
 #
 # PLC RT
@@ -265,22 +265,10 @@ pyaspects-SPEC := pyaspects.spec
 pyaspects-BUILD-FROM-SRPM := yes
 ALL += pyaspects
 
-#
-# ejabberd
-#
-ejabberd-MODULES := ejabberd
-ejabberd-SPEC := ejabberd.spec
-ejabberd-BUILD-FROM-SRPM := yes
-ejabberd-DEVEL-RPMS += erlang pam-devel hevea
-# not needed anymore on f12 and above, that come with 2.1.5, and we had 2.1.3
-# so, this is relevant on f8 and centos5 only
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 centos5)"
-ALL += ejabberd
-endif
-
 # sfa now uses the with statement that's not supported on python-2.4 - not even through __future__
+# In addition we now use sqlalchemy and 0.5 as per f12 is not compatible with our model
 build_sfa=true
-ifeq "$(DISTRONAME)" "centos5"
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
 build_sfa=false
 endif
 
@@ -291,11 +279,11 @@ ifeq "$(build_sfa)" "true"
 sfa-MODULES := sfa
 sfa-SPEC := sfa.spec
 ALL += sfa
-endif
 
 sface-MODULES := sface
 sface-SPEC := sface.spec
 ALL += sface
+endif
 
 #
 # nodeconfig
@@ -327,7 +315,7 @@ IN_BOOTCD += pypcilib
 pyplnet-MODULES := pyplnet
 pyplnet-SPEC := pyplnet.spec
 ALL += pyplnet
-IN_BOOTSTRAPFS += pyplnet
+IN_NODEIMAGE += pyplnet
 IN_MYPLC += pyplnet
 IN_BOOTCD += pyplnet
 
@@ -337,7 +325,7 @@ IN_BOOTCD += pyplnet
 omf-resctl-MODULES := omf
 omf-resctl-SPEC := omf-resctl.spec
 ALL += omf-resctl
-IN_SLIVER += omf-resctl
+IN_SLICEIMAGE += omf-resctl
 
 #
 # OMF exp controller
@@ -358,37 +346,48 @@ ALL += bootcd
 IN_MYPLC += bootcd
 
 #
+# images for slices
+#
+sliceimage-MODULES := sliceimage build
+sliceimage-SPEC := sliceimage.spec
+sliceimage-DEPEND-PACKAGES := $(IN_SLICEIMAGE)
+sliceimage-DEPEND-FILES := RPMS/yumgroups.xml
+sliceimage-RPMDATE := yes
+ALL += sliceimage
+IN_NODEIMAGE += sliceimage
+
+#
 # LXC reference images
 #
 lxcref-MODULES := lxc-reference
 lxcref-SPEC    := lxc-reference.spec
 ALL += lxcref
-IN_BOOTSTRAPFS += lxcref
+IN_NODEIMAGE += lxcref
 
 #
-# bootstrapfs
+# nodeimage
 #
-bootstrapfs-MODULES := bootstrapfs build
-bootstrapfs-SPEC := bootstrapfs.spec
-bootstrapfs-DEPEND-PACKAGES := $(IN_BOOTSTRAPFS)
-bootstrapfs-DEPEND-FILES := RPMS/yumgroups.xml
-bootstrapfs-RPMDATE := yes
-ALL += bootstrapfs
-IN_MYPLC += bootstrapfs
+nodeimage-MODULES := nodeimage build
+nodeimage-SPEC := nodeimage.spec
+nodeimage-DEPEND-PACKAGES := $(IN_NODEIMAGE)
+nodeimage-DEPEND-FILES := RPMS/yumgroups.xml
+nodeimage-RPMDATE := yes
+ALL += nodeimage
+IN_MYPLC += nodeimage
 
 #
 # noderepo
 #
-# all rpms resulting from packages marked as being in bootstrapfs and vserver
-NODEREPO_RPMS = $(foreach package,$(IN_BOOTSTRAPFS) $(IN_NODEREPO) $(IN_SLIVER),$($(package).rpms))
+# all rpms resulting from packages marked as being in nodeimage and sliceimage
+NODEREPO_RPMS = $(foreach package,$(IN_NODEIMAGE) $(IN_NODEREPO) $(IN_SLICEIMAGE),$($(package).rpms))
 # replace space with +++ (specvars cannot deal with spaces)
 SPACE=$(subst x, ,x)
 NODEREPO_RPMS_3PLUS = $(subst $(SPACE),+++,$(NODEREPO_RPMS))
 
-noderepo-MODULES := bootstrapfs
+noderepo-MODULES := nodeimage
 noderepo-SPEC := noderepo.spec
 # package requires all embedded packages
-noderepo-DEPEND-PACKAGES := $(IN_BOOTSTRAPFS) $(IN_NODEREPO) $(IN_SLIVER)
+noderepo-DEPEND-PACKAGES := $(IN_NODEIMAGE) $(IN_NODEREPO) $(IN_SLICEIMAGE)
 noderepo-DEPEND-FILES := RPMS/yumgroups.xml
 #export rpm list to the specfile
 noderepo-SPECVARS = node_rpms_plus=$(NODEREPO_RPMS_3PLUS)
@@ -400,15 +399,15 @@ IN_MYPLC += noderepo
 # slicerepo
 #
 # all rpms resulting from packages marked as being in vserver
-SLICEREPO_RPMS = $(foreach package,$(IN_SLIVER),$($(package).rpms))
+SLICEREPO_RPMS = $(foreach package,$(IN_SLICEIMAGE),$($(package).rpms))
 # replace space with +++ (specvars cannot deal with spaces)
 SPACE=$(subst x, ,x)
 SLICEREPO_RPMS_3PLUS = $(subst $(SPACE),+++,$(SLICEREPO_RPMS))
 
-slicerepo-MODULES := bootstrapfs
+slicerepo-MODULES := nodeimage
 slicerepo-SPEC := slicerepo.spec
 # package requires all embedded packages
-slicerepo-DEPEND-PACKAGES := $(IN_SLIVER)
+slicerepo-DEPEND-PACKAGES := $(IN_SLICEIMAGE)
 slicerepo-DEPEND-FILES := RPMS/yumgroups.xml
 #export rpm list to the specfile
 slicerepo-SPECVARS = slice_rpms_plus=$(SLICEREPO_RPMS_3PLUS)
