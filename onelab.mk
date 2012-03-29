@@ -372,19 +372,6 @@ pyaspects-SPEC := pyaspects.spec
 pyaspects-BUILD-FROM-SRPM := yes
 ALL += pyaspects
 
-#
-# ejabberd
-#
-ejabberd-MODULES := ejabberd
-ejabberd-SPEC := ejabberd.spec
-ejabberd-BUILD-FROM-SRPM := yes
-ejabberd-DEVEL-RPMS += erlang pam-devel hevea
-# not needed anymore on f12 and above, that come with 2.1.5, and we had 2.1.3
-# so, this is relevant on f8 and centos5 only
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 centos5)"
-ALL += ejabberd
-endif
-
 # sfa now uses the with statement that's not supported on python-2.4 - not even through __future__
 # In addition we now use sqlalchemy and 0.5 as per f12 is not compatible with our model
 build_sfa=true
