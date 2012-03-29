@@ -115,8 +115,9 @@ package: NodeUpdate
 package: codemux
 package: pl_sshd
 package: ipod
-package: vserver-@pldistro@-@fcdistro@-@arch@
-package: vserver-systemslices-@pldistro@-@fcdistro@-@arch@
+package: sliceimage-@pldistro@-@fcdistro@-@arch@
+package: sliceimage-system-@pldistro@-@fcdistro@-@arch@
+package: vserver-sliceimage
 package: pl_mom
 package: fprobe-ulog
 package: vsys
