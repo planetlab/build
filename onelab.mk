@@ -286,7 +286,7 @@ ALL += vsys
 #
 vsyssh-MODULES := vsys
 vsyssh-SPEC := vsyssh.spec
-IN_SLIVER += vsyssh
+IN_SLICEIMAGE += vsyssh
 ALL += vsyssh
 
 #
