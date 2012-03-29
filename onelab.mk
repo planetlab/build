@@ -264,9 +264,11 @@ endif
 openvswitch-MODULES := openvswitch
 openvswitch-SPEC := openvswitch.spec
 openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
-# maybe not in production yet
-#IN_NODEIMAGE += openvswitch
+
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14 f15 f16)"
+IN_NODEIMAGE += openvswitch
 ALL += openvswitch
+endif
 
 #
 # vsys
