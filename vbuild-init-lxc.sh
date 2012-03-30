@@ -10,13 +10,15 @@ DIRNAME=$(dirname $0)
 PATH=$(dirname $0):$PATH export PATH
 . build.common
 
-DEFAULT_FCDISTRO=f8
+DEFAULT_FCDISTRO=f16
 DEFAULT_PLDISTRO=planetlab
-DEFAULT_PERSONALITY=linux32
+DEFAULT_PERSONALITY=linux64
 DEFAULT_IFNAME=eth0
 
 COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
+
+lxc_version="0.8.0-rc2"
 
 function bridge_init () {
 
@@ -47,9 +49,6 @@ function bridge_init () {
 
     # take extra arg for ifname, if provided
     [ -n "$1" ] && { INTERFACE_LAN=$1; shift ; }
-
-    ### Checking
-    type -p brctl &> /dev/null || { echo "brctl not found, please install bridge-utils" ; exit 1 ; }
 
     #if we have already configured the same host_box no need to do it again
     /sbin/ifconfig $INTERFACE_BRIDGE &> /dev/null && {
@@ -127,53 +126,56 @@ echo $cidr
 
 }
 
+function check_yum_installed () {
+    package=$1; shift
+    rpm -q $package >& /dev/null || yum -y install $package
+}
+
+function check_yumgroup_installed () {
+    group="$1"; shift
+    yum grouplist "$group" | grep -q Installed || { yum -y groupinstall "$group" ; }
+}
+
 function prepare_host() {
         
-	#Bridge init
-	isInstalled=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
-	if [ "$isInstalled" != "br0" ] ; then
-	   bridge_init
-           sleep5
-        fi
+    #################### lxc-tools : rebuild as current fedora release has flaws
+    #install development tools
+    check_yumgroup_installed "Development Tools"
+    #install libcap-devel, libvirt
+    check_yum_installed libcap-devel
+    check_yum_installed libvirt
 
- 	#install development tools
-        isInstalled=$(yum grouplist "Development Tools" | grep Installed)
-        if [ -z "$isInstalled" ] ; then
-                echo "Installing Development Tools ..."
-                yum -y groupinstall "Development Tools"
-	fi
+    #retrieve and install lxc from sources 
+    raw_version=$(lxc-version ||: )
+    lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
+    if [ "$lxc_installed_version" != "$lxc_version" ] ; then
+	echo "Expecting version" '['$lxc_version']'
+	echo "Found version" '['$lxc_installed_version']'
+	exit 1
+        echo "Installing lxc ..."
+        cd /root
+        git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
+        cd lxc
+	git checkout $lxc_version
+        ./autogen.sh
+        ./configure --prefix=/usr
+        make
+        make install
+    fi
+ 
+#    #create a placeholder (just a hack to make lxc works)
+#    [ -d "/usr/local/var/lib" ] || mkdir -p /usr/local/var/lib
 
-        #install libcap-devel, libvirt
-        isInstalled=$(rpm -qa | grep libcap-devel)
-        if [ -z "$isInstalled" ] ; then
-                echo "Installing libcap-devel ..."
-                yum -y install libcap-devel
-        fi
+    #################### bride initialization
+    check_yum_installed bridge-utils
+    #Bridge init
+    isInstalled=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
+    if [ "$isInstalled" != "br0" ] ; then
+	bridge_init
+        sleep5
+    fi
 
-        isInstalled=$(rpm -qa | grep libvirt)
-        if [ -z "$isInstalled" ] ; then
-                echo "Installing libvirt ..."
-                yum -y install libvirt
-        fi
-
-        #retreive and install lxc from sources 
-        isInstalled=$(lxc-version | cut -d: -f2 | grep "0.8.0-rc1")
-        if [ -z "$isInstalled" ] ; then
-                echo "Installing lxc ..."
-                cd /root
-                git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
-                cd lxc
-                ./autogen.sh
-                ./configure
-                make
-                make install
-        fi
-        
-        #create a symlink (just a hack to make lxc works)
-        [ ! -d "/usr/local/var/lib" ] && mkdir -p /usr/local/var/lib
-        #[ ! -f "/usr/local/var/lib/lxc" ] && ln -s /var/lib/lxc /usr/local/var/lib/lxc
-
-	return 0
+    return 0
 }
 
 
@@ -315,7 +317,7 @@ set -x
 
 
 function install_fedora() {
-set -x
+    set -x
 
     mkdir -p /var/lock/subsys/
     (
@@ -510,8 +512,6 @@ function setup_lxc() {
     pldistro=$1; shift
     personality=$1; shift
 
-
-
     # create lxc container 
     copy_configuration
     if [ $? -ne 0 ]; then
@@ -537,7 +537,6 @@ function setup_lxc() {
     else
         configure_fedora_systemd
     fi
-
 
     # Enable cgroup
     mkdir $rootfs_path/cgroup
@@ -858,6 +857,9 @@ function main () {
           exit 1
     fi
 
+    # need lxc installed before we can run lxc-ls
+    prepare_host
+    
     if [ ! -z "$(lxc-ls | grep $lxc)" ];then
         echo "container $lxc exists"
         exit 1
@@ -872,14 +874,11 @@ function main () {
     root_password=root
 
 
-    prepare_host
-
     setup_lxc $lxc $fcdistro $pldistro $personality 
 
     devel_or_vtest_tools $lxc $fcdistro $pldistro $personality
 
     post_install $lxc $personality
-
     
 
     echo $COMMAND Done
