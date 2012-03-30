@@ -151,7 +151,6 @@ function prepare_host() {
     if [ "$lxc_installed_version" != "$lxc_version" ] ; then
 	echo "Expecting version" '['$lxc_version']'
 	echo "Found version" '['$lxc_installed_version']'
-	exit 1
         echo "Installing lxc ..."
         cd /root
         git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
