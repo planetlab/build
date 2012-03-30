@@ -27,7 +27,7 @@ function bridge_init () {
     INTERFACE_BRIDGE=br0
 
     # Default Value for INTERFACE_LAN
-    INTERFACE_LAN=eth0
+    INTERFACE_LAN=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
 
 
     echo "========== $COMMAND: entering start - beg"
@@ -130,7 +130,11 @@ echo $cidr
 function prepare_host() {
         
 	#Bridge init
-	bridge_init
+	isInstalled=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
+	if [ "$isInstalled" != "br0" ] ; then
+	   bridge_init
+           sleep5
+        fi
 
  	#install development tools
         isInstalled=$(yum grouplist "Development Tools" | grep Installed)
@@ -553,6 +557,7 @@ function setup_lxc() {
 
     # rpm --rebuilddb
     chroot $rootfs_path rpm --rebuilddb
+    #ssh -o "StrictHostKeyChecking no" $IP "rpm --rebuilddb"
 
     configure_yum_in_lxc $lxc $fcdistro $pldistro
 
