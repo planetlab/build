@@ -92,16 +92,20 @@ package: python-simplejson
 package: ocaml.@arch@
 # use local inotify-tools on centos
 package>=f8:inotify-tools-devel 
+### ##########
+### ## for util-vserver-pl
+### # use local libnl on centos
+### package>=f8: libnl-devel
+### # for util-vserver
+### package: ctags
+### #
+### package=f8: e2fsprogs-devel.@arch@
+### package>=f12: e2fsprogs-devel
+### package>=f14: e2fsprogs nss-devel
 ##########
-## for util-vserver-pl
-# use local libnl on centos
-package>=f8: libnl-devel
-# for util-vserver
-package: ctags
-#
-package=f8: e2fsprogs-devel.@arch@
-package>=f12: e2fsprogs-devel
-package>=f14: e2fsprogs nss-devel
+# openvswitch
+# starting with f16 we use the stock kernel, and openvswitch needs kernel-devel
+package>=f16: kernel-devel
 ##########
 # zabbix/monitor
 package=centos5: krb5-devel.@arch@ e2fsprogs-devel.@arch@ libidn-devel.@arch@
