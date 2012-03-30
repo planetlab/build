@@ -153,11 +153,12 @@ function prepare_host() {
 	echo "Found version" '['$lxc_installed_version']'
         echo "Installing lxc ..."
         cd /root
-        git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
+	[ -d lxc ] || git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
         cd lxc
+	git pull
 	git checkout $lxc_version
         ./autogen.sh
-        ./configure --prefix=/usr
+        ./configure --prefix=/usr --exec-prefix=/usr
         make
         make install
     fi
