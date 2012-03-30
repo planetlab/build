@@ -159,7 +159,10 @@ openvswitch-MODULES := openvswitch
 openvswitch-SPEC := openvswitch.spec
 openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
 IN_NODEIMAGE += openvswitch
+# build only on f14 as f16 has this natively
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14)"
 ALL += openvswitch
+endif
 
 #
 # vsys
