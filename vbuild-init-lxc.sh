@@ -860,11 +860,9 @@ function main () {
     # need lxc installed before we can run lxc-ls
     prepare_host
     
-    if [ ! -z "$(lxc-ls | grep $lxc)" ];then
-        echo "container $lxc exists"
-        exit 1
-    fi
-
+    # be strict on lxc-lines matching name exactly using ^<name>$
+    # as otherwise the timestamps may show up here
+    lxc-ls | grep -q '^'"$lxc"'$' && { echo "container $lxc already exists - exiting" ; exit 1 ; }
     
     path=/var/lib/lxc
     rootfs_path=$path/$lxc/rootfs
