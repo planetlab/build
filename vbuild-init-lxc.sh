@@ -5,6 +5,7 @@
 
 COMMAND=$(basename $0)
 DIRNAME=$(dirname $0)
+BUILD_DIR=$(pwd)
 
 # pkgs parsing utilities
 PATH=$(dirname $0):$PATH export PATH
@@ -146,11 +147,12 @@ function prepare_host() {
     check_yum_installed libvirt
 
     #retrieve and install lxc from sources 
-    raw_version=$(lxc-version ||: )
-    lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
-    if [ "$lxc_installed_version" != "$lxc_version" ] ; then
-	echo "Expecting version" '['$lxc_version']'
-	echo "Found version" '['$lxc_installed_version']'
+    #raw_version=$(lxc-version ||: )
+    #lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
+    #if [ "$lxc_installed_version" != "$lxc_version" ] ; then
+    if [ ! -f /usr/bin/lxc-ls ] ; then
+	#echo "Expecting version" '['$lxc_version']'
+	#echo "Found version" '['$lxc_installed_version']'
         echo "Installing lxc ..."
         cd /root
 	[ -d lxc ] || git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
@@ -161,6 +163,9 @@ function prepare_host() {
         ./configure --prefix=/usr --exec-prefix=/usr
         make
         make install
+        mkdir -p /usr/var/lib/
+        [ -d /usr/var/lib/lxc ] || ln -s /var/lib/lxc /usr/var/lib/lxc
+	cd $BUILD_DIR
     fi
  
 #    #create a placeholder (just a hack to make lxc works)
@@ -172,7 +177,7 @@ function prepare_host() {
     isInstalled=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
     if [ "$isInstalled" != "br0" ] ; then
 	bridge_init
-        sleep5
+        sleep 5
     fi
 
     return 0
@@ -824,7 +829,10 @@ function main () {
         echo "Unknown personality: $personality"
     fi
 
-    
+    # need lxc installed before we can run lxc-ls
+    # need bridge installed
+    prepare_host    
+
     if [ -n "$VBUILD_MODE" ] ; then
 
 	# Bridge IP affectation
@@ -857,9 +865,6 @@ function main () {
           exit 1
     fi
 
-    # need lxc installed before we can run lxc-ls
-    prepare_host
-    
     # be strict on lxc-lines matching name exactly using ^<name>$
     # as otherwise the timestamps may show up here
     lxc-ls | grep -q '^'"$lxc"'$' && { echo "container $lxc already exists - exiting" ; exit 1 ; }
