@@ -867,7 +867,7 @@ function main () {
 
     # be strict on lxc-lines matching name exactly using ^<name>$
     # as otherwise the timestamps may show up here
-    lxc-ls | grep -q '^'"$lxc"'$' && { echo "container $lxc already exists - exiting" ; exit 1 ; }
+    lxc-ls -1 | grep -q '^'"$lxc"'$' && { echo "container $lxc already exists - exiting" ; exit 1 ; }
     
     path=/var/lib/lxc
     rootfs_path=$path/$lxc/rootfs
