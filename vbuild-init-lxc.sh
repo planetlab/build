@@ -555,9 +555,20 @@ function setup_lxc() {
     mkdir $rootfs_path/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
+    # start container
     lxc-start -d -n $lxc
 
-    sleep 20
+    lxc-wait -n $lxc -s RUNNING
+
+    for i in $(seq 1 5); do
+        echo "ssh ..."
+        ssh_up=$(ssh -o "StrictHostKeyChecking no" $IP 'uname -i')
+        [ -n $ssh_up ] && break
+	sleep 3
+    done
+
+    [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
+     
 
     # rpm --rebuilddb
     chroot $rootfs_path rpm --rebuilddb
@@ -865,17 +876,16 @@ function main () {
           exit 1
     fi
 
-    # be strict on lxc-lines matching name exactly using ^<name>$
-    # as otherwise the timestamps may show up here
-    lxc-ls -1 | grep -q '^'"$lxc"'$' && { echo "container $lxc already exists - exiting" ; exit 1 ; }
-    
     path=/var/lib/lxc
     rootfs_path=$path/$lxc/rootfs
     config_path=$path/$lxc
     cache_base=/var/cache/lxc/fedora/$arch
     cache=$cache_base/$release
     root_password=root
-
+    
+    # check whether the rootfs directory is created to know if the container exists
+    # bacause /var/lib/lxc/$lxc is already created while putting $lxc.timestamp
+    [ -d $rootfs_path ] && { echo "container $lxc already exists - exiting" ; exit 1 ; }
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
 
