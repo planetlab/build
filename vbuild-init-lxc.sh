@@ -381,6 +381,7 @@ lxc.network.link = $lxc_network_link
 lxc.network.name = $IFNAME
 lxc.network.mtu = 1500
 lxc.network.ipv4 = $IP/$CIDR
+lxc.network.veth.pair = $veth_pair
 #cgroups
 #lxc.cgroup.devices.deny = a
 # /dev/null and zero
@@ -562,11 +563,13 @@ function setup_lxc() {
 
     echo $IP is up, waiting for ssh...
 
+    
     ssh_up=""
-    for i in $(seq 1 10); do
-        echo "ssh attempt $i ..."
-        ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; break ; } || :
-	sleep 2
+
+    while true; do
+         echo "ssh attempt ..."
+         ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
+         sleep 10
     done
 
     [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
@@ -859,6 +862,7 @@ function main () {
 	
         lxc_network_type=veth
         lxc_network_link=virbr0
+	veth_pair="veth$z"
         echo "the IP address of container $lxc is $IP "
     else
         [[ -z "$REPO_URL" ]] && usage
@@ -868,6 +872,7 @@ function main () {
         [[ -z "$HOSTNAME" ]] && usage
         lxc_network_type=veth
         lxc_network_link=br0
+        veth_pair="i$(echo $HOSTNAME | cut -d. -f1)"
     fi
 
     CIDR=$(cidr_notation $NETMASK)
