@@ -560,11 +560,12 @@ function setup_lxc() {
 
     lxc-wait -n $lxc -s RUNNING
 
-    for i in $(seq 1 5); do
-        echo "ssh ..."
-        ssh_up=$(ssh -o "StrictHostKeyChecking no" $IP 'uname -i')
-        [ -n $ssh_up ] && break
-	sleep 3
+    echo $IP is up, waiting for ssh...
+
+    for i in $(seq 1 10); do
+        echo "ssh attempt $i ..."
+        ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && break || :
+	sleep 2
     done
 
     [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
