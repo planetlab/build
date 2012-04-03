@@ -562,9 +562,10 @@ function setup_lxc() {
 
     echo $IP is up, waiting for ssh...
 
+    ssh_up=""
     for i in $(seq 1 10); do
         echo "ssh attempt $i ..."
-        ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && break || :
+        ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; break ; } || :
 	sleep 2
     done
 
