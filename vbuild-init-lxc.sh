@@ -563,13 +563,16 @@ function setup_lxc() {
 
     echo $IP is up, waiting for ssh...
 
-    
+    # wait max 5 min for sshd to start 
     ssh_up=""
+    stop_time=$(($(date +%s) + 300))
+    current_time=$(date +%s)
 
-    while true; do
+    while [ "$current_time" -lt "$stop_time" ] ; do
          echo "ssh attempt ..."
          ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
          sleep 10
+         current_time=$(($current_time + 10))
     done
 
     [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
