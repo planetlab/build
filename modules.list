@@ -1,10 +1,10 @@
 bootcd
+bootcd:lxc
 bootmanager
 codemux
 comgt
 DistributedRateLimiting
 drupal
-ejabberd
 fprobe-ulog
 inotify-tools
 ipfw
