@@ -45,7 +45,7 @@ omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.1-4
-sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-5
+sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-6
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.0-6
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@master
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
