@@ -50,7 +50,9 @@ nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@master
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-11
-bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
+#bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
+#tmp trying out lxc branch (that contains master) with the stock version
+bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@lxc
 sliceimage-GITPATH	        := git://git.onelab.eu/sliceimage.git@master
 nodeimage-GITPATH		:= git://git.onelab.eu/nodeimage.git@master
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
