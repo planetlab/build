@@ -360,12 +360,13 @@ ALL += sliceimage
 IN_NODEIMAGE += sliceimage
 
 #
-# LXC reference images
-#
-lxcref-MODULES := lxc-reference
-lxcref-SPEC    := lxc-reference.spec
-ALL += lxcref
-IN_NODEIMAGE += lxcref
+# lxc-specific sliceimage initialization
+# 
+lxc-sliceimage-MODULES	:= sliceimage
+lxc-sliceimage-SPEC	:= lxc-sliceimage.spec
+lxc-sliceimage-RPMDATE	:= yes
+ALL			+= lxc-sliceimage
+IN_NODEIMAGE		+= lxc-sliceimage
 
 #
 # nodeimage
