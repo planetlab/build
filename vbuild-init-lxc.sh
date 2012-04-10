@@ -82,7 +82,8 @@ broadcast=$(/sbin/ip addr show $INTERFACE_LAN | grep -v inet6 | grep inet | head
     sleep 2
     echo "Setting bridge address=$address broadcast=$broadcast"
     # static
-    /sbin/ifconfig $INTERFACE_BRIDGE $address broadcast $broadcast up
+    #/sbin/ifconfig $INTERFACE_BRIDGE $address broadcast $broadcast up
+    dhclient $INTERFACE_BRIDGE
     sleep 1
 
     #Reconfigure the routing table
@@ -147,12 +148,11 @@ function prepare_host() {
     check_yum_installed libvirt
 
     #retrieve and install lxc from sources 
-    #raw_version=$(lxc-version ||: )
-    #lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
-    #if [ "$lxc_installed_version" != "$lxc_version" ] ; then
-    if [ ! -f /usr/bin/lxc-ls ] ; then
-	#echo "Expecting version" '['$lxc_version']'
-	#echo "Found version" '['$lxc_installed_version']'
+    raw_version=$(lxc-version ||: )
+    lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
+    if [ "$lxc_installed_version" != "$lxc_version" ] ; then
+	echo "Expecting version" '['$lxc_version']'
+	echo "Found version" '['$lxc_installed_version']'
         echo "Installing lxc ..."
         cd /root
 	[ -d lxc ] || git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
