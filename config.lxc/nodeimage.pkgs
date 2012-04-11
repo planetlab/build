@@ -122,8 +122,7 @@ package: pl_sshd
 package: ipod
 package: sliceimage-@pldistro@-@fcdistro@-@arch@
 package: sliceimage-system-@pldistro@-@fcdistro@-@arch@
-# show be replaced with lxc-sliceimage from the sliceimage module at some point
-package: lxc-reference
+package: lxc-sliceimage
 #package: pl_mom
 package: fprobe-ulog
 package: vsys
