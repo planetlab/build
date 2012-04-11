@@ -1,6 +1,7 @@
 bootcd
 bootcd:lxc
 bootmanager
+bootmanager:lxc_devel
 codemux
 comgt
 DistributedRateLimiting
@@ -15,7 +16,6 @@ libvirt
 linux-2.6:27
 linux-2.6:32
 linux-3
-lxc-reference
 madwifi
 mkinitrd
 Mom
