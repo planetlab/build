@@ -134,3 +134,6 @@ package: libvirt
 package: libvirt-python
 package: ebtables
 package: python-inotify
+### convenience
+package: less
+package: emacs-nox
