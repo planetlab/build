@@ -1,5 +1,4 @@
 bootcd
-bootcd:lxc
 bootmanager
 bootmanager:lxc_devel
 codemux
