@@ -7,7 +7,6 @@ yumexclude: @NODEYUMEXCLUDE@
 package: bash
 package: coreutils
 package: iputils
-package: kernel-vserver
 package: bzip2
 package: crontabs
 package: diffutils
@@ -34,7 +33,7 @@ package: findutils
 package: filesystem
 package: vsyssh
 # libvirt lxc containers need this so they can start up their network
-package: openssh-server, dhclient
+package: openssh-server dhclient
 
 package<=f8 package=centos5: vixie-cron
 package>=f10: cronie
