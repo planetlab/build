@@ -23,6 +23,7 @@ myplc
 nodeconfig
 nodeimage
 nodemanager
+nodemanager:lxc_devel
 nodeupdate
 omf
 oml

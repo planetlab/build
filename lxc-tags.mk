@@ -5,6 +5,7 @@ linux-3-GITPATH 		:= git://git.planet-lab.org/linux-3.git@lxcbuild
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
+nodemanager-BRANCH		:= lxc_devel
 nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@lxc_devel
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
