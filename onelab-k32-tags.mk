@@ -53,7 +53,7 @@ pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-1
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-1
 sliceimage-GITPATH	        := git://git.onelab.eu/sliceimage.git@master
 nodeimage-GITPATH		:= git://git.onelab.eu/nodeimage.git@master
-myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
+myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.1-1
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
 # locating the right test directory - see make tests_gitpath
