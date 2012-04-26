@@ -232,10 +232,10 @@ openvswitch-MODULES := openvswitch
 openvswitch-SPEC := openvswitch.spec
 openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
 
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14 f15 f16)"
-IN_NODEIMAGE += openvswitch
-ALL += openvswitch
-endif
+#ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14 f15 f16)"
+#IN_NODEIMAGE += openvswitch
+#ALL += openvswitch
+#endif
 
 #
 # vsys
