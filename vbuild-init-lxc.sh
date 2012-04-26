@@ -20,6 +20,7 @@ COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
 
 lxc_version="0.8.0-rc2"
+lxc_git_repo="git://lxc.git.sourceforge.net/gitroot/lxc/lxc"
 
 function bridge_init () {
 
@@ -155,7 +156,7 @@ function prepare_host() {
 	echo "Found version" '['$lxc_installed_version']'
         echo "Installing lxc ..."
         cd /root
-	[ -d lxc ] || git clone git://lxc.git.sourceforge.net/gitroot/lxc/lxc 
+	[ -d lxc ] || git clone "$lxc_git_repo"
         cd lxc
 	git pull
 	git checkout $lxc_version
