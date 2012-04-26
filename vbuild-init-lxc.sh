@@ -559,8 +559,6 @@ function setup_lxc() {
     # start container
     lxc-start -d -n $lxc
 
-    lxc-wait -n $lxc -s RUNNING
-
     echo $IP is up, waiting for ssh...
 
     # wait max 5 min for sshd to start 
