@@ -6,17 +6,12 @@ comgt
 DistributedRateLimiting
 drupal
 fprobe-ulog
-inotify-tools
 ipfw
-iproute2
 iptables
-libnl
 libvirt
-linux-2.6:27
 linux-2.6:32
 linux-3
 madwifi
-mkinitrd
 Mom
 monitor
 myplc
@@ -27,7 +22,6 @@ nodemanager:lxc_devel
 nodeupdate
 omf
 oml
-openvswitch
 pcucontrol
 pf2slice
 PingOfDeath
@@ -37,7 +31,6 @@ PLCRT
 plewww
 pl_sshd
 pyaspects
-pyopenssl
 pypcilib
 pyplnet
 sfa
