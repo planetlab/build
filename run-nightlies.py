@@ -78,6 +78,7 @@ def concrete_build_to_commandline(concrete_build):
         -f %(fcdistro)s 
         -m %(mailto)s 
         -p %(personality)s
+        -d %(pldistro)s
         -r %(webpath)s
         -s %(scmpath)s
         -t %(tags)s
