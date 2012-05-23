@@ -177,7 +177,6 @@ config.$(1): config.$(1).svnpath
 	svn export $$($(1).config.SVNPATH) config.$(1)
 endef
 
-FOO=@
 # fetching with git
 define remote_pldistro_fetch_git
 $(1).config.GITPATH := $(shell grep -v "^#" config.$(1).gitpath)
@@ -210,6 +209,7 @@ $(eval $(call remote_pldistro_fetch_$(3),$(1)))
 endef
 
 $(eval $(call remote_pldistro,wextoolbox,wextoolbox-tags,git))
+$(eval $(call remote_pldistro,wexlxc,wexlxc-tags,git))
 
 ########## stage1 and stage1iter
 # extract specs and compute .mk files by running 
