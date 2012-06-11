@@ -9,45 +9,10 @@
 #
 
 #
-# kernel
-#
-# use a package name with srpm in it:
-# so the source rpm is created by running make srpm in the codebase
-#
-
-# rebuild kernel-3.1 on fedora14 due to instabilities of the stock kernel
-ifeq "$(DISTRONAME)" "f14"
-kernel-MODULES := linux-3
-kernel-SPEC := kernel-3.1.spec
-kernel-DEVEL-RPMS += gettext elfutils-devel
-kernel-BUILD-FROM-SRPM := yes
-ifeq "$(HOSTARCH)" "i386"
-kernel-RPMFLAGS:= --target i686 --with firmware
-else
-kernel-RPMFLAGS:= --target $(HOSTARCH) --with firmware
-endif
-kernel-SPECVARS += kernelconfig=planetlab
-KERNELS += kernel
-
-kernels: $(KERNELS)
-kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
-
-ALL += $(KERNELS)
-# this is to mark on which image a given rpm is supposed to go
-IN_BOOTCD += $(KERNELS)
-IN_SLICEIMAGE += $(KERNELS)
-IN_NODEIMAGE += $(KERNELS)
-endif
-
-#
 # ipfw: root context module, and slice companion
 #
 ipfwroot-MODULES := ipfw
 ipfwroot-SPEC := planetlab/ipfwroot.spec
-#ipfwroot-DEPEND-DEVEL-RPMS += kernel-devel
-#ipfwroot-SPECVARS = kernel_version=$(kernel.rpm-version) \
-#        kernel_release=$(kernel.rpm-release) \
-#        kernel_arch=$(kernel.rpm-arch)
 ALL += ipfwroot
 IN_NODEIMAGE += ipfwroot
 
