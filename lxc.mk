@@ -9,6 +9,14 @@
 #
 
 #
+# transforward: root context module for transparent port forwarding
+#
+transforward-MODULES := transforward
+transforward-SPEC := transforward.spec
+ALL += transforward
+IN_NODEIMAGE += transforward
+
+#
 # ipfw: root context module, and slice companion
 #
 ipfwroot-MODULES := ipfw

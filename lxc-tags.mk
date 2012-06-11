@@ -1,8 +1,6 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
-# lxcbuild is a tag
-#linux-3-GITPATH 		:= git://git.planet-lab.org/linux-3.git@lxcbuild
-kernel-DEVEL-RPMS		+= elfutils-libelf-devel
+transforward-GITPATH		:= git://git.onelab.eu/transforward.git@master
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@master
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
