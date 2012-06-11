@@ -3,6 +3,7 @@
 # lxcbuild is a tag
 linux-3-GITPATH 		:= git://git.planet-lab.org/linux-3.git@lxcbuild
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
+ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@master
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 nodemanager-BRANCH		:= lxc_devel
