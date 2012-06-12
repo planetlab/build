@@ -80,7 +80,7 @@ function pl_yumexclude () {
     type -p pkgs.py >& /dev/null || export PATH=$builddir:$PATH
 
     # parse it
-    pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro $keyword $yumexclude_file || \
+    pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro $keyword $yumexclude_file || \
 	{ echo pl_yumexclude failed with fcdistro=$fcdistro and pldistro=$pldistro; return 1 ; }
 }
 
@@ -233,23 +233,23 @@ function pl_root_mkfedora () {
 
     # parse pkgsfile and add to local vars
     fcdistro=${pl_DISTRO_NAME}
-    pkgs_packages=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro package $pkgsfile) 
-    pkgs_groups=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro group $pkgsfile)
+    pkgs_packages=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro package $pkgsfile) 
+    pkgs_groups=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro group $pkgsfile)
     # what can get trashed to save space
-    pkgs_junk=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro junk $pkgsfile)
+    pkgs_junk=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro junk $pkgsfile)
     # but not this
-    pkgs_precious=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro precious $pkgsfile)
+    pkgs_precious=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro precious $pkgsfile)
     # formerly related to mkfedora -k : packages to take from our own build 
     # and thus need be excluded frem the stock repos
     # locate builddir by looking for pkgs.py
     builddir=$(dirname $(type -p pkgs.py))
     SUBST_NODEYUMEXCLUDE=$(pl_nodeyumexclude $fcdistro $pldistro $builddir)
-    pkgs_yumexclude=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro yumexclude $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
+    pkgs_yumexclude=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro yumexclude $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
     # get mirrors if not specified with -l
     if [ -z "$mirrors" ] ; then
 	mirrorsfile=$(pl_locateDistroFile ../build/ $pldistro "$pldistro.mirrors")
 	# do not sort mirrors, keep order from input
-	mirrors=$(pkgs.py -u -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro mirror $mirrorsfile)
+	mirrors=$(pkgs.py -u -a $pl_DISTRO_ARCH -f $fcdistro -d $pldistro mirror $mirrorsfile)
     fi
 
     yumexclude_line=""
