@@ -165,12 +165,14 @@ class PkgsParser:
             included += i
             excluded += e
             ok = ok and o
-        results = list (set(included).difference(set(excluded)))
+        # avoid set operations that would not preserve order
+        results = [ x for x in included if x not in excluded ]
         
         results = [ x.replace('@arch@',self.arch).\
                         replace('@fcdistro@',self.fcdistro).\
                         replace('@pldistro@',self.pldistro) for x in results]
-        results.sort()
+        if self.options.sort_results:
+            results.sort()
         # default is space-separated
         if not self.options.new_line:
             print " ".join(results)
@@ -192,6 +194,8 @@ def main ():
                        help='verbose when using qualifiers')
     parser.add_option ('-n', '--new-line',dest='new_line',action='store_true',default=False,
                        help='print outputs separated with newlines rather than with a space')
+    parser.add_option ('-u', '--no-sort',dest='sort_results',default=True,action='store_false',
+                       help='keep results in the same order as in the inputs')
     (options,args) = parser.parse_args()
     
     if len(args) <=1 :

@@ -248,7 +248,8 @@ function pl_root_mkfedora () {
     # get mirrors if not specified with -l
     if [ -z "$mirrors" ] ; then
 	mirrorsfile=$(pl_locateDistroFile ../build/ $pldistro "$pldistro.mirrors")
-	mirrors=$(pl_parsePkgs mirror $fcdistro $pldistro $mirrorsfile)
+	# do not sort mirrors, keep order from input
+	mirrors=$(pl_parsePkgs -u mirror $fcdistro $pldistro $mirrorsfile)
     fi
 
     yumexclude_line=""
