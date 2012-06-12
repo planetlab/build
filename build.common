@@ -80,7 +80,7 @@ function pl_yumexclude () {
     type -p pkgs.py >& /dev/null || export PATH=$builddir:$PATH
 
     # parse it
-    pl_parsePkgs $keyword $fcdistro $pldistro $yumexclude_file || \
+    pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro $keyword $yumexclude_file || \
 	{ echo pl_yumexclude failed with fcdistro=$fcdistro and pldistro=$pldistro; return 1 ; }
 }
 
@@ -233,23 +233,23 @@ function pl_root_mkfedora () {
 
     # parse pkgsfile and add to local vars
     fcdistro=${pl_DISTRO_NAME}
-    pkgs_packages=$(pl_parsePkgs package $fcdistro $pldistro $pkgsfile) 
-    pkgs_groups=$(pl_parsePkgs group $fcdistro $pldistro $pkgsfile)
+    pkgs_packages=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro package $pkgsfile) 
+    pkgs_groups=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro group $pkgsfile)
     # what can get trashed to save space
-    pkgs_junk=$(pl_parsePkgs junk $fcdistro $pldistro $pkgsfile)
+    pkgs_junk=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro junk $pkgsfile)
     # but not this
-    pkgs_precious=$(pl_parsePkgs precious $fcdistro $pldistro $pkgsfile)
+    pkgs_precious=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro precious $pkgsfile)
     # formerly related to mkfedora -k : packages to take from our own build 
     # and thus need be excluded frem the stock repos
     # locate builddir by looking for pkgs.py
     builddir=$(dirname $(type -p pkgs.py))
     SUBST_NODEYUMEXCLUDE=$(pl_nodeyumexclude $fcdistro $pldistro $builddir)
-    pkgs_yumexclude=$(pl_parsePkgs yumexclude $fcdistro $pldistro $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
+    pkgs_yumexclude=$(pkgs.py -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro yumexclude $pkgsfile | sed -e s,@NODEYUMEXCLUDE@,"$SUBST_NODEYUMEXCLUDE",)
     # get mirrors if not specified with -l
     if [ -z "$mirrors" ] ; then
 	mirrorsfile=$(pl_locateDistroFile ../build/ $pldistro "$pldistro.mirrors")
 	# do not sort mirrors, keep order from input
-	mirrors=$(pl_parsePkgs -u mirror $fcdistro $pldistro $mirrorsfile)
+	mirrors=$(pkgs.py -u -a $pl_DISTRO_ARCH -f $fcdistro -p $pldistro mirror $mirrorsfile)
     fi
 
     yumexclude_line=""
@@ -545,6 +545,8 @@ function pl_fixdirs() {
 ########## .pkgs format
 # Usage: pl_parsePkgs keyword [-a arch] fcdistro pldistro pkgs-file[..s]
 # pkgs.py should be found in PATH, like this file build.common
+# only usage should be for pl_getPackages and pl_getGroups,
+# which in turn are usednow be in {node,slice}image/build.sh
 function pl_parsePkgs () {
     target_arch=$pl_DISTRO_ARCH
     keyword=$1;shift
@@ -559,45 +561,6 @@ function pl_parsePkgs () {
 function pl_getPackages() { pl_parsePkgs package "$@" ; }
 function pl_getGroups() { pl_parsePkgs group "$@" ; }
 
-##############################
-### temporary - only for checking the new python version
-# for a given keyword like 'package' :
-# we support fcdistro-dependant format, for tokens (pkgname) without whitespace
-# you can e.g. use
-# package: pkg1 .. pkgn 
-# package+f8: pkg1 .. pkgn
-# package-f8: pkg1 .. pkgn
-# 
-# values can contain @arch@, @fcdistro@ or @pldistro@ that are replaced with the current values
-#
-# the reason for the -a option is for when we build the build vm itself; in this case
-# pl_DISTRO_ARCH is the one we obtain from the root context, and that's wrong
-# specify -sa arch AFTER keyword, so as to keep pl_getPackages and pl_getGroups simple
-#
-function pl_parsePkgs_old () {
-
-    target_arch=$pl_DISTRO_ARCH
-    keyword=$1;shift
-    [ "$1" == "-a" ] && { shift; target_arch="$1"; shift; }
-    fcdistro=$1; shift
-    pldistro=$1; shift
-    # remaining arguments are paths to the pkgs files
-
-    # grab regular descriptions
-    all=$(grep -v '^#' "$@" | grep --regexp="^${keyword}:" | sed -e "s,${keyword}:,,")
-    # grab additions
-    add=$(grep -v '^#' "$@" | grep --regexp="^${keyword}+${fcdistro}:" | sed -e "s,${keyword}+${fcdistro}:,,")
-    # grab exclusions
-    sub=$(grep -v '^#' "$@" | grep --regexp="^${keyword}-${fcdistro}:" | sed -e "s,${keyword}-${fcdistro}:,,")
-
-    for rpm in $all $add; do
-	for exclude in $sub; do
-	    [ "$rpm" = "$exclude" ] && continue 2
-	done
-	echo "${rpm} " | sed -e "s,@arch@,${target_arch},g" -e "s,@fcdistro@,$fcdistro,g" -e "s,@pldistro@,$pldistro,g"
-    done
-    return 0
-}
 ##############################
 
 # locates a pldistro-dependant file

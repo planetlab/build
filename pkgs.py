@@ -185,7 +185,7 @@ def main ():
     usage="Usage: %prog [options] keyword input[...]"
     parser=OptionParser (usage=usage)
     parser.add_option ('-a','--arch',dest='arch',action='store',default=default_arch,
-                       help='target arch, e.g. i386 or x86_64')
+                       help='target arch, e.g. i386 or x86_64, default=%s'%default_arch)
     parser.add_option ('-f','--fcdistro',dest='fcdistro',action='store', default=default_fcdistro,
                        help='fcdistro, e.g. f12 or centos5')
     parser.add_option ('-d','--pldistro',dest='pldistro',action='store', default=default_pldistro,
