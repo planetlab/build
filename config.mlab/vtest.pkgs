@@ -1,0 +1,10 @@
+#
+groupname: PlanetLabNative
+groupdesc: Test Vserver for MyPlc Native
+package: openssh-clients curl
+package: emacs-nox
+package: bind-utils
+package: file 
+
+# while runing the tests, try to work around a glitch with yum by running yum=complete-transaction
+package: yum-utils

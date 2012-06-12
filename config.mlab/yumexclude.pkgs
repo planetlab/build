@@ -1,0 +1,10 @@
+## feb. 2012 -- this used to be hard-wired in build.common
+
+# plexclude: to exclude on the myplc side - typially drupal
+plcyumexclude:		drupal
+
+# excludes on the node side
+nodeyumexclude=f8:	kernel* util-vserver* iptables iptables-ipv6 
+nodeyumexclude>=f12:	kernel* util-vserver* iptables iptables-ipv6 
+nodeyumexclude=centos5:	kernel kernel-vserver kernel-devel kernel-headers kernel-debuginfo util-vserver* iptables inotify-tools* libnl
+nodeyumexclude=sl6:	kernel kernel-debug kernel-debug-devel kernel-devel kernel-doc kernel-firmware kernel-headers iptables

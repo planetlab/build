@@ -1,0 +1,5 @@
+#
+groupname: PlanetFlowReference
+groupdesc: PlanetFlow Reference Image
+package: rsync
+package: pf2slice
