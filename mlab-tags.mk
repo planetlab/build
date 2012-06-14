@@ -13,7 +13,7 @@ iptables-GITPATH                := git://git.planet-lab.org/iptables.git@iptable
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
 # note that this should be consistently reflected in yumexclude
 ALL := $(filter-out iproute,$(ALL))
-util-vserver-GITPATH		:= git://git.planet-lab.org/util-vserver.git@util-vserver-0.30.216-20
+util-vserver-GITPATH		:= git://git.planet-lab.org/util-vserver.git@util-vserver-0.30.216-19
 libnl-GITPATH			:= git://git.planet-lab.org/libnl.git@libnl-1.1-2
 util-vserver-pl-GITPATH		:= git://git.planet-lab.org/util-vserver-pl.git@util-vserver-pl-0.4-26
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
@@ -54,6 +54,6 @@ pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcuco
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@master
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
-myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
+myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.0-19
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-6
