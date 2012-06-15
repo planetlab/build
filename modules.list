@@ -10,7 +10,6 @@ ipfw
 iptables
 libvirt
 linux-2.6:32
-linux-3
 madwifi
 Mom
 monitor
@@ -37,6 +36,7 @@ sfa
 sface
 sliceimage
 tests
+transforward
 util-vserver
 util-vserver-pl
 vsys
