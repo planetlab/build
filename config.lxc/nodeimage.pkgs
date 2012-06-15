@@ -6,6 +6,7 @@ groupdesc: PlanetLab Node Root
 # our own modules
 package: ipfw
 package: transforward
+package: procprotect
 # packages to exclude from stock repositories
 yumexclude: @NODEYUMEXCLUDE@
 # fedora-release or centos-release are pulled from deps
