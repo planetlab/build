@@ -17,6 +17,14 @@ ALL += transforward
 IN_NODEIMAGE += transforward
 
 #
+# procprotect: root context module for protecting against weaknesses in /proc
+#
+procprotect-MODULES := procprotect
+procprotect-SPEC := procprotect.spec
+ALL += procprotect
+IN_NODEIMAGE += procprotect
+
+#
 # ipfw: root context module, and slice companion
 #
 ipfwroot-MODULES := ipfw

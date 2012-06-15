@@ -29,6 +29,7 @@ plcapi
 PLCRT
 plewww
 pl_sshd
+procprotect
 pyaspects
 pypcilib
 pyplnet
