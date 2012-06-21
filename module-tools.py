@@ -955,7 +955,7 @@ that for other purposes than tagging""" % options.workdir
             if not prompt ("No pending difference in module %s, want to tag anyway"%self.pathname,False):
                 return
 
-        # side effect in trunk's specfile
+        # side effect in head's specfile
         self.patch_spec_var(spec_dict)
 
         # prepare changelog file 
@@ -1367,11 +1367,11 @@ module-tools : a set of tools to manage subversion tags and specfile
   * define *version* and *taglevel*
   OR alternatively 
   * define redirection variables module_version_varname / module_taglevel_varname
-Trunk:
-  by default, the trunk of modules is taken into account
+Master:
+  by default, the 'master' branch of modules is the target
   in this case, just mention the module name as <module_desc>
 Branches:
-  if you wish to work on a branch rather than on the trunk, 
+  if you wish to work on another branch, 
   you can use something like e.g. Mom:2.1 as <module_desc>
 """
     release_usage="""Usage: %prog [options] tag1 .. tagn
