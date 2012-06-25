@@ -116,6 +116,7 @@ package: codemux
 package: pl_sshd
 package: ipod
 package: sliceimage-@pldistro@-@fcdistro@-@arch@
+package: sliceimage-planetlab-@fcdistro@-@arch@
 package: sliceimage-system-@pldistro@-@fcdistro@-@arch@
 package: vserver-sliceimage
 package: pl_mom
