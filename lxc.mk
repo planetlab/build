@@ -56,12 +56,17 @@ ALL += ipod
 IN_NODEIMAGE += ipod
 
 #
-# NodeManager
+# nodemanager
 #
-nodemanager-MODULES := nodemanager
-nodemanager-SPEC := NodeManager.spec
-ALL += nodemanager
-IN_NODEIMAGE += nodemanager
+nodemanager-lib-MODULES := nodemanager
+nodemanager-lib-SPEC := nodemanager-lib.spec
+ALL += nodemanager-lib
+IN_NODEIMAGE += nodemanager-lib
+
+nodemanager-lxc-MODULES := nodemanager
+nodemanager-lxc-SPEC := nodemanager-lxc.spec
+ALL += nodemanager-lxc
+IN_NODEIMAGE += nodemanager-lxc
 
 #
 # pl_sshd

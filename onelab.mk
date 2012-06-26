@@ -180,7 +180,7 @@ ALL += ipod
 IN_NODEIMAGE += ipod
 
 #
-# NodeManager
+# nodemanager
 #
 nodemanager-lib-MODULES := nodemanager
 nodemanager-lib-SPEC := nodemanager-lib.spec

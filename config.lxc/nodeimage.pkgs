@@ -119,7 +119,7 @@ package: wireless-tools
 #package: util-vserver-legacy
 #package: util-vserver-pl
 #package: util-python
-package: NodeManager
+package: nodemanager-lxc
 package: NodeUpdate
 package: codemux
 package: pl_sshd

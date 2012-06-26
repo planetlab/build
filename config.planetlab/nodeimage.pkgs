@@ -110,9 +110,6 @@ package: util-vserver-sysv
 package: util-vserver-legacy
 package: util-vserver-pl
 #package: util-python
-# temporary, so we can build planetlab and onelab
-package: NodeManager
-# temporary
 package: nodemanager-vs
 package: NodeUpdate
 package: codemux
