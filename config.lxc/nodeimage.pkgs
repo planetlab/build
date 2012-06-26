@@ -100,6 +100,8 @@ package: PyXML
 package>=f8: rsyslog
 package=centos5: sysklogd
 
+# starting with fedora16 this is called simply util-linux again
+# however this gets pulled somehow so no worries
 package>=f8: util-linux-ng
 package=centos5: util-linux
 
