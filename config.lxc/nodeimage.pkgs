@@ -4,7 +4,7 @@
 groupname: PlanetLab
 groupdesc: PlanetLab Node Root
 # our own modules
-package: ipfw
+package: ipfwroot
 package: transforward
 package: procprotect
 # packages to exclude from stock repositories
