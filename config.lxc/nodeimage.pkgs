@@ -113,14 +113,6 @@ package>=f10: cronie
 #
 #package: madwifi
 package: wireless-tools
-#package: util-vserver
-#package: util-vserver-build
-#package: util-vserver-lib
-#package: util-vserver-core
-#package: util-vserver-sysv
-#package: util-vserver-legacy
-#package: util-vserver-pl
-#package: util-python
 package: nodemanager-lxc
 package: NodeUpdate
 package: codemux
@@ -135,11 +127,6 @@ package: vsys
 package: vsys-scripts
 package: monitor-client
 package: monitor-runlevelagent
-package: pyplnet
-package: libvirt
-package: libvirt-python
-package: ebtables
-package: python-inotify
 ### convenience
 package: less
 package: emacs-nox
