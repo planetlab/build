@@ -89,6 +89,13 @@ fprobe-ulog-SPEC := fprobe-ulog.spec
 ALL += fprobe-ulog
 IN_NODEIMAGE += fprobe-ulog
 
+#################### libvirt on f16 is too old, sounds like f17 has something fine
+local_libvirt=false
+ifeq "$(DISTRONAME)" "f16"
+local_libvirt=true
+endif
+
+ifeq "$(local_libvirt)" "true"
 #
 # libvirt
 #
@@ -109,6 +116,7 @@ libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without sto
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
+endif
 
 #
 # DistributedRateLimiting
