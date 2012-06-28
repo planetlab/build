@@ -21,7 +21,7 @@ openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@master
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-2
 vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-41
 # somehow this won't mirror
-portforward-GITPATH		:= git://git.onelab.eu/portforward@master
+portforward-GITPATH		:= git://git.onelab.eu/portforward.git@master
 plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH			:= git://git.planet-lab.org/plewww@plewww-4.3-72
