@@ -49,9 +49,6 @@ IN_NODEIMAGE += ipfwroot
 
 ipfwslice-MODULES := ipfw
 ipfwslice-SPEC := planetlab/ipfwslice.spec
-ipfwslice-SPECVARS = kernel_version=$(kernel.rpm-version) \
-        kernel_release=$(kernel.rpm-release) \
-        kernel_arch=$(kernel.rpm-arch)
 ALL += ipfwslice
 
 #
