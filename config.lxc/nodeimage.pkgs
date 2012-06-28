@@ -111,7 +111,7 @@ package>=f10: cronie
 #
 # planetlab
 #
-#package: madwifi
+package: madwifi
 package: wireless-tools
 package: nodemanager-lxc
 package: NodeUpdate

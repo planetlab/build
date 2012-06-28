@@ -34,10 +34,17 @@ IN_NODEIMAGE += ipfwroot
 
 ipfwslice-MODULES := ipfw
 ipfwslice-SPEC := planetlab/ipfwslice.spec
-ipfwslice-SPECVARS = kernel_version=$(kernel.rpm-version) \
-        kernel_release=$(kernel.rpm-release) \
-        kernel_arch=$(kernel.rpm-arch)
 ALL += ipfwslice
+
+#
+# madwifi
+#
+madwifi-MODULES := madwifi
+madwifi-SPEC := madwifi.spec
+madwifi-BUILD-FROM-SRPM := yes
+madwifi-DEPEND-DEVEL-RPMS += kernel-devel
+ALL += madwifi
+IN_NODEIMAGE += madwifi
 
 #
 # NodeUpdate
