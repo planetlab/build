@@ -414,7 +414,7 @@ class Repository:
 # support for tagged module is minimal, and is for the Build class only
 class Module:
 
-    svn_magic_line="--This line, and those below, will be ignored--"
+    edit_magic_line="--This line, and those below, will be ignored--"
     setting_tag_format = "Setting tag %s"
     
     redirectors=[ # ('module_name_varname','name'),
@@ -784,7 +784,7 @@ that for other purposes than tagging""" % options.workdir
         result=[]
         white_line_matcher = re.compile("\A\s*\Z")
         for logline in file(logfile).readlines():
-            if logline.strip() == Module.svn_magic_line:
+            if logline.strip() == Module.edit_magic_line:
                 break
             elif white_line_matcher.match(logline):
                 continue
@@ -793,7 +793,7 @@ that for other purposes than tagging""" % options.workdir
         return result
 
     # creates a copy of the input with only the unignored lines
-    def stripped_magic_line_filename (self, filein, fileout ,new_tag_name):
+    def strip_magic_line_filename (self, filein, fileout ,new_tag_name):
        f=file(fileout,'w')
        f.write(self.setting_tag_format%new_tag_name + '\n')
        for line in self.unignored_lines(filein):
@@ -959,32 +959,32 @@ that for other purposes than tagging""" % options.workdir
         self.patch_spec_var(spec_dict)
 
         # prepare changelog file 
-        # we use the standard subversion magic string (see svn_magic_line)
+        # we use the standard subversion magic string (see edit_magic_line)
         # so we can provide useful information, such as version numbers and diff
         # in the same file
-        changelog="/tmp/%s-%d.edit"%(self.name,os.getpid())
-        changelog_svn="/tmp/%s-%d.svn"%(self.name,os.getpid())
+        changelog_plain="/tmp/%s-%d.edit"%(self.name,os.getpid())
+        changelog_strip="/tmp/%s-%d.strip"%(self.name,os.getpid())
         setting_tag_line=Module.setting_tag_format%new_tag_name
-        file(changelog,"w").write("""
+        file(changelog_plain,"w").write("""
 %s
 %s
 Please write a changelog for this new tag in the section above
-"""%(Module.svn_magic_line,setting_tag_line))
+"""%(Module.edit_magic_line,setting_tag_line))
 
         if not self.options.verbose or prompt('Want to see diffs while writing changelog',True):
-            file(changelog,"a").write('DIFF=========\n' + diff_output)
+            file(changelog_plain,"a").write('DIFF=========\n' + diff_output)
         
         if self.options.debug:
             prompt('Proceed ?')
 
         # edit it        
-        self.run("%s %s"%(self.options.editor,changelog))
+        self.run("%s %s"%(self.options.editor,changelog_plain))
         # strip magic line in second file - looks like svn has changed its magic line with 1.6
         # so we do the job ourselves
-        self.stripped_magic_line_filename(changelog,changelog_svn,new_tag_name)
+        self.strip_magic_line_filename(changelog_plain,changelog_strip,new_tag_name)
         # insert changelog in spec
         if self.options.changelog:
-            self.insert_changelog (changelog,old_tag_name,new_tag_name)
+            self.insert_changelog (changelog_plain,old_tag_name,new_tag_name)
 
         ## update build
         build_path = os.path.join(self.options.workdir,
@@ -1049,14 +1049,14 @@ n: move to next file"""%locals()
             build.commit(log)
 
         self.run_prompt("Review module and build", diff_all_changes)
-        self.run_prompt("Commit module and build", commit_all_changes, changelog_svn)
-        self.run_prompt("Create tag", self.repository.tag, new_tag_name, changelog_svn)
+        self.run_prompt("Commit module and build", commit_all_changes, changelog_strip)
+        self.run_prompt("Create tag", self.repository.tag, new_tag_name, changelog_strip)
 
         if self.options.debug:
-            print 'Preserving',changelog,'and stripped',changelog_svn
+            print 'Preserving',changelog_plain,'and stripped',changelog_strip
         else:
-            os.unlink(changelog)
-            os.unlink(changelog_svn)
+            os.unlink(changelog_plain)
+            os.unlink(changelog_strip)
 
 
 ##############################
