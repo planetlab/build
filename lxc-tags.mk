@@ -6,7 +6,7 @@ ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-1
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 nodemanager-BRANCH		:= lxc_devel
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@lxc_devel
+nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@lxc_devel
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
@@ -20,7 +20,8 @@ inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inoti
 openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@master
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-2
 vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-41
-portforward-GITPATH		:= git://git.planet-lab.org/portforward@master
+# somehow this won't mirror
+portforward-GITPATH		:= git://git.onelab.eu/portforward@master
 plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH			:= git://git.planet-lab.org/plewww@plewww-4.3-72
