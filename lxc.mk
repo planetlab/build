@@ -42,7 +42,6 @@ ALL += ipfwslice
 madwifi-MODULES := madwifi
 madwifi-SPEC := madwifi.spec
 madwifi-BUILD-FROM-SRPM := yes
-madwifi-DEPEND-DEVEL-RPMS += kernel-devel
 ALL += madwifi
 IN_NODEIMAGE += madwifi
 
