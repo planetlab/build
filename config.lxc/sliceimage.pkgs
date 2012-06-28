@@ -32,6 +32,7 @@ package: tar
 package: findutils
 package: filesystem
 package: vsyssh
+package: portforward
 # libvirt lxc containers need this so they can start up their network
 package: openssh-server dhclient
 

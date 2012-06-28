@@ -204,6 +204,14 @@ IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
 #
+# portforward
+#
+portforward-MODULES := portforward
+portforward-SPEC := portforward.spec
+IN_SLICEIMAGE += portforward
+ALL += portforward
+
+#
 # plcapi
 #
 plcapi-MODULES := plcapi
