@@ -37,15 +37,6 @@ ipfwslice-SPEC := planetlab/ipfwslice.spec
 ALL += ipfwslice
 
 #
-# madwifi
-#
-madwifi-MODULES := madwifi
-madwifi-SPEC := madwifi.spec
-madwifi-BUILD-FROM-SRPM := yes
-ALL += madwifi
-IN_NODEIMAGE += madwifi
-
-#
 # NodeUpdate
 #
 nodeupdate-MODULES := nodeupdate
