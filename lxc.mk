@@ -204,12 +204,12 @@ IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
 #
-# portforward
+# bind_public
 #
-portforward-MODULES := portforward
-portforward-SPEC := portforward.spec
-IN_SLICEIMAGE += portforward
-ALL += portforward
+bind_public-MODULES := bind_public
+bind_public-SPEC := bind_public.spec
+IN_SLICEIMAGE += bind_public
+ALL += bind_public
 
 #
 # plcapi
