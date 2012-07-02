@@ -5,8 +5,7 @@ procprotect-GITPATH		:= git://git.onelab.eu/procprotect.git@master
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-1
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
-nodemanager-BRANCH		:= lxc_devel
-nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@lxc_devel
+nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@master
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk

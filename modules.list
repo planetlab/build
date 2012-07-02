@@ -1,3 +1,4 @@
+bind_public
 bootcd
 bootmanager
 bootmanager:lxc_devel
@@ -17,7 +18,7 @@ myplc
 nodeconfig
 nodeimage
 nodemanager
-nodemanager:lxc_devel
+nodemanager:2.0
 nodeupdate
 omf
 oml
