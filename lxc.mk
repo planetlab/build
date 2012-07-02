@@ -53,6 +53,14 @@ ALL += ipod
 IN_NODEIMAGE += ipod
 
 #
+# plnode_utils
+# 
+plnode-utils-MODULES := plnode-utils
+plnode-utils-SPEC := plnode-utils.spec
+ALL += plnode-utils
+IN_NODEIMAGE += plnode-utils
+
+#
 # nodemanager
 #
 nodemanager-lib-MODULES := nodemanager
