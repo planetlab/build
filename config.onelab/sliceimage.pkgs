@@ -35,6 +35,7 @@ package: filesystem
 package: planetlab-umts-tools-frontend
 package: ipfwslice
 package: vsyssh
+package: sliver-openvswitch
 
 package<=f8 package=centos5: vixie-cron
 package>=f10: cronie

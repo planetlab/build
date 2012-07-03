@@ -301,6 +301,11 @@ vsys-scripts-SPEC := vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
+sliver-openvswitch-MODULES := sliver-openvswitch
+sliver-openvswitch-SPEC := sliver-openvswitch.spec
+IN_SLICEIMAGE += sliver-openvswitch
+ALL += sliver-openvswitch
+
 #
 # plcapi
 #
