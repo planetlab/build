@@ -55,11 +55,6 @@
 # (*) package-DEVEL-RPMS
 #     a set of stock rpms that this package needs at build-time
 #     this can also be set in config.<distro>/devel.pkgs or config.planetlab/devel.pkgs as appropriate
-# (*) package-EXCLUDE-DEVEL-RPMS
-#     a set of stock *rpms* that the build will rpm-uninstall before building <package>
-#     this is intended to denote stock rpms, and the build will attempt to yum-install them
-#     back after the package is rebuilt
-#     This feature is not used at the moment and kept only just in case
 # (*) package-DEPEND-DEVEL-RPMS
 #     a set of local *rpms* that the build will rpm-install before building <package>
 #     the build will attempt to uninstall those once the package is built, this is not fatal though
@@ -538,16 +533,14 @@ define handle_stock_devel_rpms_pre
 	$(if $($(1)-DEVEL-RPMS), echo "Installing for $(1)-DEVEL-RPMS" ; $(YUM-INSTALL-DEVEL) $($(1)-DEVEL-RPMS))
 endef
 
-### these macro handles the DEPEND-DEVEL-RPMS and EXCLUDE-DEVEL-RPMS tags for a hiven package
-# before building : rpm-install DEPEND-DEVEL-RPMS and rpm-uninstall EXCLUDE
+### these macro handles the DEPEND-DEVEL-RPMS tags for a given package
+# before building : rpm-install DEPEND-DEVEL-RPMS 
 define handle_local_devel_rpms_pre 
 	$(if $($(1).all-devel-rpm-paths), echo "Installing for $(1)-DEPEND-DEVEL-RPMS" ; $(RPM-INSTALL-DEVEL) $($(1).all-devel-rpm-paths)) 
-	$(if $($(1)-EXCLUDE-DEVEL-RPMS), echo "Uninstalling for $(1)-EXCLUDE-DEVEL-RPMS" ; $(RPM-UNINSTALL-DEVEL) $($(1)-EXCLUDE-DEVEL-RPMS))
 endef
 
 define handle_local_devel_rpms_post
 	-$(if $($(1)-DEPEND-DEVEL-RPMS), echo "Unstalling for $(1)-DEPEND-DEVEL-RPMS" ; $(RPM-UNINSTALL-DEVEL) $($(1)-DEPEND-DEVEL-RPMS))
-	$(if $($(1)-EXCLUDE-DEVEL-RPMS), "Reinstalling for $(1)-EXCLUDE-DEVEL-RPMS" ; $(YUM-INSTALL-DEVEL) $($(1)-EXCLUDE-DEVEL-RPMS) )
 endef
 
 # usage: target_source_rpm package
