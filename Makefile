@@ -60,6 +60,9 @@
 #     the build will attempt to uninstall those once the package is built, this is not fatal though
 #     this is intended to denote local rpms, i.e. ones that are results of our own build
 #     stock rpms should be mentioned in DEVEL-RPMS or in devel.pkgs as described above
+# (*) package-DEPEND-DEVEL-RPMS-UPDATES
+#     like package-DEPEND-DEVEL-RPMS but for crucial packages (like autoconf) that only need an update from our build
+#     rpms in this area will *not* be uninstalled after the target is made, because that would ruin the build vm for good
 # (*) package-DEPEND-FILES
 #     a set of files that the package depends on - and that make needs to know about
 #     if this contains RPMS/yumgroups.xml, then the toplevel RPMS's index 
@@ -461,7 +464,7 @@ all: envfrompreviousrun
 define stage2_variables
 ### devel dependencies
 $(1).rpmbuild = $(RPMBUILD) $($(1)-RPMFLAGS)
-$(1).all-devel-rpm-paths := $(foreach rpm,$($(1)-DEPEND-DEVEL-RPMS),$($(rpm).rpm-path))
+$(1).all-devel-rpm-paths := $(foreach rpm,$($(1)-DEPEND-DEVEL-RPMS) $($(1)-DEPEND-DEVEL-RPMS-UPDATES),$($(rpm).rpm-path))
 $(1).depend-devel-packages := $(sort $(foreach rpm,$($(1)-DEPEND-DEVEL-RPMS),$($(rpm).package)))
 ALL-DEVEL-RPMS += $($(1)-DEPEND-DEVEL-RPMS)
 endef
@@ -533,7 +536,7 @@ define handle_stock_devel_rpms_pre
 	$(if $($(1)-DEVEL-RPMS), echo "Installing for $(1)-DEVEL-RPMS" ; $(YUM-INSTALL-DEVEL) $($(1)-DEVEL-RPMS))
 endef
 
-### these macro handles the DEPEND-DEVEL-RPMS tags for a given package
+### these macro handles the DEPEND-DEVEL-RPMS and DEPEND-DEVEL-RPMS-UPDATES tags for a given package
 # before building : rpm-install DEPEND-DEVEL-RPMS 
 define handle_local_devel_rpms_pre 
 	$(if $($(1).all-devel-rpm-paths), echo "Installing for $(1)-DEPEND-DEVEL-RPMS" ; $(RPM-INSTALL-DEVEL) $($(1).all-devel-rpm-paths)) 
