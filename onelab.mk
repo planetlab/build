@@ -312,7 +312,7 @@ endif
 sliver-openvswitch-MODULES := sliver-openvswitch
 sliver-openvswitch-SPEC := sliver-openvswitch.spec
 ifeq "$(DISTRONAME)" "f12"
-sliver-openvswitch-DEPEND-DEVEL-RPMS := autoconf
+sliver-openvswitch-DEPEND-DEVEL-RPMS-UPDATES := autoconf
 endif
 IN_SLICEIMAGE += sliver-openvswitch
 ALL += sliver-openvswitch
