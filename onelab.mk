@@ -301,8 +301,15 @@ vsys-scripts-SPEC := vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
+# openvswitch requires an autoconf more recent than what f12 has
+autoconf-MODULES := autoconf
+autoconf-SPEC := autoconf.spec
+autoconf-BUILD-FROM-SRPM := yes
+ALL += autoconf
+
 sliver-openvswitch-MODULES := sliver-openvswitch
 sliver-openvswitch-SPEC := sliver-openvswitch.spec
+sliver-openvswitch-DEPEND-DEVEL-RPMS := autoconf
 IN_SLICEIMAGE += sliver-openvswitch
 ALL += sliver-openvswitch
 
