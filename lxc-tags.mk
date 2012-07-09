@@ -2,7 +2,7 @@
 
 transforward-GITPATH		:= git://git.onelab.eu/transforward.git@master
 procprotect-GITPATH		:= git://git.onelab.eu/procprotect.git@master
-ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-1
+ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH		:= git://git.onelab.eu/plnode-utils@master
