@@ -19,7 +19,7 @@ Mom-GITPATH                     := git://git.planet-lab.org/mom.git@Mom-2.3-4
 inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inotify-tools-3.13-2
 openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@master
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-2
-vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-41
+vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-42
 # somehow this won't mirror
 bind_public-GITPATH		:= git://git.onelab.eu/bind_public.git@master
 plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
