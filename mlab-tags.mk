@@ -53,7 +53,7 @@ pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-2
-sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-1
+sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-2
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-2.1-1
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.1-2
 # locating the right test directory - see make tests_gitpath
