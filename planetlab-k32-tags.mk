@@ -56,4 +56,4 @@ sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@maste
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.1-3
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-6
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-7
