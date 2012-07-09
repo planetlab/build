@@ -29,6 +29,7 @@ planetlab-umts-tools
 plcapi
 PLCRT
 plewww
+plnode-utils
 pl_sshd
 procprotect
 pyaspects
@@ -37,6 +38,7 @@ pyplnet
 sfa
 sface
 sliceimage
+sliver-openvswitch
 tests
 transforward
 util-vserver
