@@ -8,6 +8,8 @@
 # see doc in Makefile  
 #
 
+### the madwifi drivers ahip with fedora16's kernel rpm
+
 #
 # transforward: root context module for transparent port forwarding
 #
