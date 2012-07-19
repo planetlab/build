@@ -199,7 +199,7 @@ ALL += pf2slice
 #
 # PlanetLab Mom: Cleans up your mess
 #
-mom-MODULES := Mom
+mom-MODULES := mom
 mom-SPEC := pl_mom.spec
 ALL += mom
 IN_NODEIMAGE += mom
