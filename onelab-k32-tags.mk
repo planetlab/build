@@ -11,7 +11,7 @@ endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-2
-madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-5
+madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@master
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
 ###
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
@@ -33,9 +33,9 @@ vsys-GITPATH                    := git://git.onelab.eu/vsys.git@vsys-0.99-2
 vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scripts-0.95-43
 autoconf-GITPATH		:= git://git.onelab.eu/autoconf@autoconf-2.69-1
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-0.1-1
-plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.1-2
+plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
-plewww-GITPATH                  := git://git.onelab.eu/plewww.git@plewww-4.3-73
+plewww-GITPATH                  := git://git.onelab.eu/plewww.git@master
 www-register-wizard-SVNPATH     := http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
 pcucontrol-GITPATH              := git://git.onelab.eu/pcucontrol.git@pcucontrol-1.0-13
 monitor-GITPATH                 := git://git.onelab.eu/monitor.git@monitor-3.1-6
