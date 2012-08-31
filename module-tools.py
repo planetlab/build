@@ -1262,36 +1262,38 @@ def modules_diff(first, second):
 
 def release_changelog(options, buildtag_old, buildtag_new):
 
-    try:
-        tagfile = options.distrotags[0]
-        if not tagfile: raise 
-    except:
-        print "ERROR: provide a tagfile name (eg. onelab, onelab-k27, planetlab)"
-        return
-    # mmh, sounds wrong to blindly add the extension 
-    # if in a build directory, guess from existing files
-    if os.path.isfile (tagfile): 
-        pass
-    elif os.path.isfile ("%s-tags.mk" % tagfile):
-        tagfile="%s-tags.mk" % tagfile
+    # the command line expects new old, so we treat the tagfiles in the same order
+    nb_tags=len(options.distrotags)
+    if nb_tags==1:
+        tagfile_new=tagfile_old=options.distrotags[0]
+    elif nb_tags==2:
+        [tagfile_new,tagfile_old]=options.distrotags
     else:
-        tagfile = "%s-tags.mk" % tagfile
-    
+        print "ERROR: provide one or two tagfile name (eg. onelab-k32-tags.mk)"
+        print "two tagfiles can be mentioned when a tagfile has been renamed"
+        return
+
+    if options.dry_run:
+        print "------------------------------ Computing Changelog from"
+        print "buildtag_old",buildtag_old,"tagfile_old",tagfile_old
+        print "buildtag_new",buildtag_new,"tagfile_new",tagfile_new
+        return
+
     print '----'
     print '----'
     print '----'
     print '= build tag %s to %s =' % (buildtag_old, buildtag_new)
-    print '== distro %s (%s to %s) ==' % (tagfile, buildtag_old, buildtag_new)
+    print '== distro %s (%s to %s) ==' % (tagfile_new, buildtag_old, buildtag_new)
 
     build = Build("build@%s" % buildtag_old, options)
     build.init_module_dir()
-    first = build.get_modules(tagfile)
+    first = build.get_modules(tagfile_old)
 
     print ' * from', buildtag_old, build.repository.gitweb()
 
     build = Build("build@%s" % buildtag_new, options)
     build.init_module_dir()
-    second = build.get_modules(tagfile)
+    second = build.get_modules(tagfile_new)
 
     print ' * to', buildtag_new, build.repository.gitweb()
 
@@ -1306,7 +1308,7 @@ def release_changelog(options, buildtag_old, buildtag_new):
 
 
     for module in diff:
-        print '=== %s - %s to %s : package %s ===' % (tagfile, buildtag_old, buildtag_new, module)
+        print '=== %s - %s to %s : package %s ===' % (tagfile_new, buildtag_old, buildtag_new, module)
 
         first, second = diff[module]
         m = get_module(module, first)
@@ -1338,10 +1340,10 @@ def release_changelog(options, buildtag_old, buildtag_new):
         os.unlink(tmpfile)
 
     for module in new_modules:
-        print '=== %s : new package in build %s ===' % (tagfile, module)
+        print '=== %s : new package in build %s ===' % (tagfile_new, module)
 
     for module in removed_modules:
-        print '=== %s : removed package from build %s ===' % (tagfile, module)
+        print '=== %s : removed package from build %s ===' % (tagfile_new, module)
 
 
 def adopt_tag (options, args):
@@ -1382,6 +1384,8 @@ Branches:
       release-changelog :4.2 4.2-rc25
   You can refer to the build trunk by just mentioning 'trunk', e.g.
       release-changelog -t coblitz-tags.mk coblitz-2.01-rc6 trunk
+  You can use 2 different tagfile names if that was renamed meanwhile
+      release-changelog -t onelab-tags.mk 5.0-rc29 -t onelab-k32-tags.mk 5.0-rc28
 """
     adopt_usage="""Usage: %prog [options] tag-file[s]
   With this command you can adopt a specifi tag or branch in your tag files
@@ -1579,8 +1583,8 @@ Branches:
             # if we provide, say a b c d, we want to build (a,b) (b,c) and (c,d)
             # remember that the changelog in the twiki comes latest first, so
             # we typically have here latest latest-1 latest-2
-            for (tag_to,tag_from) in zip ( args[:-1], args [1:]):
-                release_changelog(options, tag_from,tag_to)
+            for (tag_new,tag_old) in zip ( args[:-1], args [1:]):
+                release_changelog(options, tag_old, tag_new)
             
     
 ####################
