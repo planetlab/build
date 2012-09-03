@@ -305,7 +305,7 @@ ALL += vsyssh
 # vsys-scripts
 #
 vsys-scripts-MODULES := vsys-scripts
-vsys-scripts-SPEC := vsys-scripts.spec
+vsys-scripts-SPEC := root-context/vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
