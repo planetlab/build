@@ -2,7 +2,7 @@
 
 ###
 linux-2.6-BRANCH		:= 32
-linux-2.6-GITPATH		:= git://git.onelab.eu/linux-2.6.git@linux-2.6-32-33
+linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@32
 # help out spec2make on f8 and centos5, due to a bug in rpm 
 # ditto on f16 for spec2make.py - tmp hopefully
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f16 centos5)"
@@ -11,7 +11,7 @@ endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-2
-madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-5
+madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@master
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
 ###
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
@@ -30,7 +30,7 @@ pf2slice-SVNPATH		:= http://svn.planet-lab.org/svn/pf2slice/tags/pf2slice-1.0-2
 mom-GITPATH                     := git://git.onelab.eu/mom.git@mom-2.3-5
 inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inotify-tools-3.13-2
 vsys-GITPATH                    := git://git.onelab.eu/vsys.git@vsys-0.99-2
-vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scripts-0.95-42
+vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@master
 autoconf-GITPATH		:= git://git.onelab.eu/autoconf@autoconf-2.69-1
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-0.1-1
 plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.1-3
