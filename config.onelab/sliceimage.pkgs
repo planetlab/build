@@ -32,10 +32,12 @@ package: python-devel
 package: tar
 package: findutils
 package: filesystem
+
+package<=f8 package=centos5: vixie-cron
+package>=f10: cronie
+
 package: planetlab-umts-tools-frontend
 package: ipfwslice
 package: vsyssh
 package: sliver-openvswitch
-
-package<=f8 package=centos5: vixie-cron
-package>=f10: cronie
+package: vsys-wrapper
