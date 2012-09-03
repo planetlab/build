@@ -309,6 +309,11 @@ vsys-scripts-SPEC := root-context/vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
+vsys-wrapper-MODULES := vsys-scripts
+vsys-wrapper-SPEC := slice-context/vsys-wrapper.spec
+IN_SLICEIMAGE += vsys-wrapper
+ALL += vsys-wrapper
+
 # openvswitch requires an autoconf more recent than what f12 has
 ifeq "$(DISTRONAME)" "f12"
 autoconf-MODULES := autoconf
