@@ -32,7 +32,7 @@ kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
 ALL += $(KERNELS)
 # this is to mark on which image a given rpm is supposed to go
 IN_BOOTCD += $(KERNELS)
-IN_SLICEIMAGE += $(KERNELS)
+#IN_SLICEIMAGE += $(KERNELS)
 IN_NODEIMAGE += $(KERNELS)
 
 #

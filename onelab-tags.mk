@@ -54,7 +54,7 @@ pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-14
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.1-2
 sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@sliceimage-5.1-2
-nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-2.1-1
+nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@master
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.1-4
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
