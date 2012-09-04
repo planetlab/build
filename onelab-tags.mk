@@ -11,7 +11,7 @@ endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-2
-madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@master
+madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-6
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
 ###
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
