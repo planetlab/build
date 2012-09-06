@@ -5,6 +5,8 @@ groupname: PlanetLab
 groupdesc: PlanetLab Node Root
 # our own modules
 package: ipfwroot
+package: lxctools
+package: lxcsu
 package: transforward
 package: procprotect
 # packages to exclude from stock repositories

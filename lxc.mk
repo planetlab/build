@@ -11,6 +11,23 @@
 ### the madwifi drivers ahip with fedora16's kernel rpm
 
 #
+# lxctools: scripts for entering containers
+#
+lxctools-MODULES := transforward
+lxctools-SPEC := transforward.spec
+ALL += lxctools
+IN_NODEIMAGE += lxctools
+
+#
+# lxcsu: root context module for entering namespaces
+#
+lxcsu-MODULES := lxcsu
+lxcsu-SPEC := lxcsu.spec
+ALL += lxcsu
+IN_NODEIMAGE += lxcsu
+
+#
+#
 # transforward: root context module for transparent port forwarding
 #
 transforward-MODULES := transforward
