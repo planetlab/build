@@ -13,8 +13,8 @@
 #
 # lxctools: scripts for entering containers
 #
-lxctools-MODULES := transforward
-lxctools-SPEC := transforward.spec
+lxctools-MODULES := lxctools
+lxctools-SPEC := lxctools.spec
 ALL += lxctools
 IN_NODEIMAGE += lxctools
 
