@@ -51,4 +51,4 @@ nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-7
-libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@openvswitch
+libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@master
