@@ -1,6 +1,7 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@master
+lxctools-BRANCH			:= openvswitch
 lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@openvswitch
 transforward-GITPATH		:= git://git.onelab.eu/transforward.git@master
 procprotect-GITPATH		:= git://git.onelab.eu/procprotect.git@master
@@ -8,6 +9,7 @@ ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH		:= git://git.onelab.eu/plnode-utils@master
+nodeupdate-BRANCH		:= openvswitch
 nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@openvswitch
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
@@ -41,10 +43,12 @@ nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
 bootmanager-BRANCH		:= lxc_devel
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxc_devel
 pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
+pyplnet-BRANCH			:= openvswitch
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@openvswitch
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
+sliceimage-BRANCH		:= openvswitch
 sliceimage-GITPATH	        := git://git.planet-lab.org/sliceimage.git@openvswitch
 lxc-reference-GITPATH           := git://git.planet-lab.org/lxc-reference.git@master
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
