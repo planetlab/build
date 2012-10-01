@@ -35,7 +35,7 @@ pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopen
 pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-2
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-15
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-16
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-8
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
 bootmanager-BRANCH		:= lxc_devel
