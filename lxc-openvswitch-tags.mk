@@ -1,15 +1,15 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
-lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@master
+lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
 lxctools-BRANCH			:= openvswitch
 lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@openvswitch
-transforward-GITPATH		:= git://git.onelab.eu/transforward.git@master
+transforward-GITPATH		:= git://git.onelab.eu/transforward.git@transforward-0.1-2
 procprotect-GITPATH             := git://git.onelab.eu/procprotect.git@procprotect-0.1-3
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
-plnode-utils-GITPATH		:= git://git.onelab.eu/plnode-utils@master
-nodeupdate-BRANCH		:= openvswitch
+plnode-utils-GITPATH		:= git://git.onelab.eu/plnode-utils@plnode-utils-0.2-1
+nodemanager-BRANCH		:= openvswitch
 nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@openvswitch
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
@@ -18,6 +18,7 @@ NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/tru
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.planet-lab.org/codemux.git@codemux-0.1-15
 fprobe-ulog-GITPATH             := git://git.planet-lab.org/fprobe-ulog.git@fprobe-ulog-1.1.4-2
+libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@master
 pf2slice-SVNPATH		:= http://svn.planet-lab.org/svn/pf2slice/tags/pf2slice-1.0-2
 mom-GITPATH                     := git://git.planet-lab.org/mom.git@mom-2.3-5
 inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inotify-tools-3.13-2
@@ -55,4 +56,3 @@ nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-7
-libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@master
