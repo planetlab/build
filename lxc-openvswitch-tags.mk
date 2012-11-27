@@ -1,16 +1,14 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
-lxctools-BRANCH			:= openvswitch
-lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@openvswitch
+lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@master
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.1-3
 ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH		:= git://git.planet-lab.org/plnode-utils@plnode-utils-0.2-1
-nodemanager-BRANCH		:= openvswitch
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@openvswitch
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@master
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
