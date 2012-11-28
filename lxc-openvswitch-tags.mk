@@ -1,14 +1,14 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
-lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@master
+lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@lxctools-0.9-1
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.1-3
 ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH		:= git://git.planet-lab.org/plnode-utils@plnode-utils-0.2-1
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@master
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.1-13
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
@@ -39,15 +39,12 @@ omf-GITPATH                     := git://git.planet-lab.org/omf.git@omf-5.3-11
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-17
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
-bootmanager-BRANCH		:= lxc_devel
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.1-3
 pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
-pyplnet-BRANCH			:= openvswitch
-pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@openvswitch
+pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-15
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-2
-sliceimage-BRANCH		:= openvswitch
 sliceimage-GITPATH	        := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-2.1-3
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.1-4
