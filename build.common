@@ -576,7 +576,11 @@ function pl_locateDistroFile () {
     if [ ! -d $configdir ] ; then
 	if [ -f "${configdir}.svnpath" -o -f "${configdir}.gitpath" ] ; then
 	    echo 1>&2 "Invoking make to extract remote config.${pldistro}"
-	    make 1>&2 --silent --no-print-directory -C $builddir stage1=true config.${pldistro}
+	    # we set PLDISTROTAGS here to /dev/null because when dealing with remote distros
+	    # at a very early stage (like searching for devel.pkgs even before the build VM is created)
+	    # then make screams because it cannot find a mandatory include file
+	    # OTOH this mechanism here is not intended to depend on tags specifically
+	    make 1>&2 --no-print-directory -C $builddir stage1=true config.${pldistro} PLDISTROTAGS=/dev/null
 	fi
     fi
     # locate it
