@@ -13,7 +13,6 @@ libvirt
 linux-2.6:32
 lxcsu
 lxctools
-lxctools:openvswitch
 madwifi
 mom
 monitor
@@ -23,7 +22,6 @@ nodeimage
 nodemanager
 nodemanager:2.0
 nodeupdate
-nodeupdate:openvswitch
 omf
 oml
 pcucontrol
@@ -39,11 +37,9 @@ procprotect
 pyaspects
 pypcilib
 pyplnet
-pyplnet:openvswitch
 sfa
 sface
 sliceimage
-sliceimage:openvswitch
 sliver-openvswitch
 tests
 transforward
