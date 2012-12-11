@@ -3,7 +3,7 @@
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
 lxctools-GITPATH		:= git://git.planet-lab.org/lxctools.git@lxctools-0.9-1
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
-procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.1-3
+procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master
 ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
@@ -16,7 +16,7 @@ NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/tru
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.planet-lab.org/codemux.git@codemux-0.1-15
 fprobe-ulog-GITPATH             := git://git.planet-lab.org/fprobe-ulog.git@fprobe-ulog-1.1.4-2
-libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@libvirt-0.9.12-1
+libvirt-GITPATH                 := git://git.planet-lab.org/libvirt.git@master
 pf2slice-SVNPATH		:= http://svn.planet-lab.org/svn/pf2slice/tags/pf2slice-1.0-2
 mom-GITPATH                     := git://git.planet-lab.org/mom.git@mom-2.3-5
 inotify-tools-GITPATH		:= git://git.planet-lab.org/inotify-tools.git@inotify-tools-3.13-2
@@ -38,7 +38,8 @@ omf-GITPATH                     := git://git.planet-lab.org/omf.git@omf-5.3-11
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-21
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
-# this module still has changes that won't run on the mainstream distrib
+# this modu
+le still has changes that won't run on the mainstream distrib
 bootmanager-BRANCH		:= lxc_devel
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.1-3
 pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
