@@ -132,7 +132,7 @@ libvirt-BUILD-FROM-SRPM := yes
 libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel yajl-devel gettext 
 libvirt-DEVEL-RPMS += python-devel libcap-ng-devel libpciaccess-devel radvd numactl-devel 
 libvirt-DEVEL-RPMS += xhtml1-dtds libxslt libtasn1-devel systemtap-sdt-devel iptables-ipv6 augeas 
-libvirt-DEVEL-RPMS += libudev-devel libpcap-devel libnl-devel ebtables scrub
+libvirt-DEVEL-RPMS += libudev-devel libpcap-devel libnl-devel ebtables scrub ceph-devel
 libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without storage-scsi \
 	                --without storage-fs --without storage-lvm \
 	                --without polkit --without sasl --without audit --with capng --with udev \
