@@ -33,8 +33,11 @@ import re
 
 default_arch='x86_64'
 known_arch = ['i386','x86_64']
-default_fcdistro='f12'
-known_fcdistros = [ 'centos5','centos6','f8', 'f9','f10','f11','f12', 'f13', 'f14', 'f16', 'sl6']
+default_fcdistro='f14'
+known_fcdistros = [ 'centos5','centos6',
+                    'f8', 'f10','f12', 'f14', 'f16', 'f17',
+                    'sl6', 
+                    'lenny','squeeze','wheezy','jessie' ]
 default_pldistro='onelab'
 
 known_keywords=['groupname', 'groupdesc', 
@@ -58,7 +61,12 @@ class PkgsParser:
         ok=False
         for known in known_fcdistros:
             if fcdistro == known:
-                (distro,version)=m_fcdistro_cutter.match(fcdistro).groups()
+                try:
+                    (distro,version)=m_fcdistro_cutter.match(fcdistro).groups()
+                # debian-like names can't use numbering
+                except:
+                    distro=fcdistro
+                    version=0
                 ok=True
         if ok:
             self.distro=distro
