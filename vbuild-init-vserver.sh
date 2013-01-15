@@ -10,9 +10,9 @@ DIRNAME=$(dirname $0)
 PATH=$(dirname $0):$PATH export PATH
 . build.common
 
-DEFAULT_FCDISTRO=f8
+DEFAULT_FCDISTRO=f14
 DEFAULT_PLDISTRO=planetlab
-DEFAULT_PERSONALITY=linux32
+DEFAULT_PERSONALITY=linux64
 DEFAULT_IFNAME=eth0
 
 COMMAND_VBUILD="vbuild-init-vserver.sh"
