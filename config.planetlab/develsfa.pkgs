@@ -11,7 +11,7 @@ package: git make
 package: bzip2 gzip
 #
 # debian packaging tools
-package: build-essential dpatch
+package: build-essential dpatch debhelper
 #package: devscripts
 #
 # our needs
