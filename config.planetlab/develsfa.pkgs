@@ -2,9 +2,21 @@
 # primarily targets debian
 # incuding stuff like mysql here seems to trigger interactive install screens - e.g. prompting for passwords
 # so we're much better off this way - and it's of course much faster
+#
+# rpm is unfortunately required at a very early stage..
 package: rpm python-rpm
-package: build-essential
-#package: devscripts
+#
+# populating
 package: git make 
 package: bzip2 gzip
+#
+# debian packaging tools
+package: build-essential dpatch
+#package: devscripts
+#
+# our needs
 package: python python-devel 
+# required for the wsdl stage
+package: python-dateutil python-openssl python-m2crypto python-lxml xsltproc
+# xmlbuilder
+package: python-setuptools
