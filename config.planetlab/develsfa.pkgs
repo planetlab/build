@@ -18,9 +18,13 @@ package: build-essential dpatch debhelper
 package: devscripts
 #
 # our needs
-package: python python-devel 
+package: python 
+# apparently this is not required yet
+# package: python-dev 
+# 
 # required for the wsdl stage
 package: python-dateutil python-openssl python-m2crypto python-lxml xsltproc
+# 
 # xmlbuilder
 package: python-setuptools
 #
