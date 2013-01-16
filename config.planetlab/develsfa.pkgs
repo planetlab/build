@@ -1,0 +1,5 @@
+# a trimmed set of devel packages for sfa only
+# primariy targets debian
+package: rpm python-rpm
+package: git make 
+package: python python-devel 

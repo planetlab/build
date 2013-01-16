@@ -17,10 +17,12 @@ function pl_getDistro() {
     if [ -f "/etc/redhat-release" ] ; then
 	distro=$(awk ' { print $1 } ' /etc/redhat-release)
 	case $distro in Scientific*) distro="SL" ; esac
-    else
-	echo "build.common.pl_getDistro-unknown"
-	exit 1
+    elif [ -f /etc/debian_version ] ; then
+	for known in lenny squeeze wheezy jessie; do
+	    grep -q $known /etc/os-release && distro=$known
+	done
     fi
+    [ -z "$distro" ] && { echo "build.common.pl_getDistro-unknown"; exit 1; }
     echo "$distro"
     return 0
 }
@@ -55,6 +57,9 @@ function pl_getReleaseName () {
 	    ;;
 	[Ss]L*)
 	    releasename=sl$release
+	    ;;
+	lenny|squeeze|wheezy|jessie)
+	    releasename=$distro
 	    ;;
 	*)
 	    releasename="unknown-name-for-${pl_DISTRO}-please-edit-build.common"

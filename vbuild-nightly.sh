@@ -453,7 +453,7 @@ function main () {
     SIGNYUMREPO=""
 
     OPTS_ORIG=$@
-    OPTS=$(getopt -o "f:d:p:m:s:t:b:o:c:y:e:Xx:w:W:r:M:Yg:u:K:SBTnv7i:h" -l "build-branch:" -- $@)
+    OPTS=$(getopt -o "f:d:p:m:s:t:b:o:c:y:e:Xx:w:W:r:M:Yg:u:K:SBTnv7i:P:h" -l "build-branch:" -- $@)
     if [ $? != 0 ]
     then
         usage
@@ -496,6 +496,7 @@ function main () {
 	    -v) set -x ; VERBOSE="-v" ; shift ;;
 	    -7) BASE="$(date +%a|tr A-Z a-z)-@FCDISTRO@" ; shift ;;
 	    -i) IFNAME=$2; shift 2 ;;
+	    -P) PREINSTALLED=$2; shift 2;;
 	    -h) usage ; shift ;;
             --) shift; break ;;
 	esac
@@ -654,7 +655,7 @@ function main () {
 	    fi
             # Create vserver
 	    cd $tmpdir
-	    ./vbuild-init-vserver.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${BASE} 
+	    ./vbuild-init-vserver.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} -P ${PREINSTALLED} ${BASE} 
 	    # cleanup
 	    cd -
 	    rm -rf $tmpdir
