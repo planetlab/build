@@ -663,7 +663,7 @@ $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 define target_debian
 $(1)-debian: $(1)-tarball
 	mkdir -p DEBIAN/$(1)
-	rsync -av MODULES/$(1)/ DEBIAN/$(1)/
+	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
 	make -C DEBIAN/$(1) "TARBALL=$(HOME)/$($(1).tarballs)" debian
 endef
 
