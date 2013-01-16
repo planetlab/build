@@ -1,8 +1,10 @@
 # a trimmed set of devel packages for sfa only
-# primariy targets debian
+# primarily targets debian
 # incuding stuff like mysql here seems to trigger interactive install screens - e.g. prompting for passwords
 # so we're much better off this way - and it's of course much faster
 package: rpm python-rpm
+package: build-essential
+#package: devscripts
 package: git make 
 package: bzip2 gzip
 package: python python-devel 
