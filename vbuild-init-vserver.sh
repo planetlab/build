@@ -316,6 +316,7 @@ function devel_or_vtest_tools () {
 	    ;;
 	debootstrap)
 	    $personality vserver $vserver exec apt-get update
+	    $personality vserver $vserver exec apt-get install -y locales
 	    for package in $packages ; do 
 		$personality vserver $vserver exec apt-get install -y $package || \
 		    { echo "WARNING - missing package on debian $package - ignored" ; true; }
