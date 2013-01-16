@@ -659,12 +659,12 @@ endef
 $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 
 ####################
-# very rough for now (one module per package), targets only sfa
+# very rough for now (one module per package), targets only sfa for now
 define target_debian
-$(1).debian:
+$(1)-debian: $(1)-tarball
 	mkdir -p DEBIAN/$(1)
 	rsync -av MODULES/$(1)/ DEBIAN/$(1)/
-	make -C DEBIAN/$(1) debian
+	make -C DEBIAN/$(1) "TARBALL=$(HOME)/$($(1).tarballs)" debian
 endef
 
 $(foreach package,$(ALL),$(eval $(call target_debian,$(package))))
