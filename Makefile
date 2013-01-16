@@ -663,7 +663,7 @@ $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 define target_debian
 $(1).debian:
 	mkdir -p DEBIAN/$(1)
-	rsync -av MODULES/$(1) DEBIAN/$(1)
+	rsync -av MODULES/$(1)/ DEBIAN/$(1)/
 	make -C DEBIAN/$(1) debian
 endef
 
