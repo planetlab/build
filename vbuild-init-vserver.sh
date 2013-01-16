@@ -316,8 +316,13 @@ function devel_or_vtest_tools () {
 	    ;;
 	debootstrap)
 	    $personality vserver $vserver exec apt-get update
+	    # handle this one firt off to be sure 
+	    $personality vserver $vserver exec apt-get install -y locales
+	    # all in a single batch 
+	    $personality vserver $vserver exec apt-get install -y --ignore-missing $packages
+	    # check it up a bit 
 	    for package in $packages ; do 
-		$personality vserver $vserver exec apt-get install -y $package || \
+		$personality vserver $vserver exec dpkg -l $package >& /dev/null || \
 		    { echo "WARNING - missing package on debian $package - ignored" ; true; }
 	    done
 	    ### xxx todo install groups with apt..
