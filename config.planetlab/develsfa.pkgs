@@ -1,7 +1,10 @@
 # a trimmed set of devel packages for sfa only
 # primarily targets debian
-# incuding stuff like mysql here seems to trigger interactive install screens - e.g. prompting for passwords
+# including stuff like mysql here seems to trigger interactive install screens - e.g. prompting for passwords
 # so we're much better off this way - and it's of course much faster
+#
+# keep perl from whining all the time
+package: locales
 #
 # rpm is unfortunately required at a very early stage..
 package: rpm python-rpm
