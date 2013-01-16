@@ -658,6 +658,17 @@ endef
 
 $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 
+####################
+# very rough for now (one module per package), targets only sfa
+define target_debian
+$(1).debian:
+	mkdir -p DEBIAN/$(1)
+	rsync -av MODULES/$(1) DEBIAN/$(1)
+	make -C DEBIAN/$(1) debian
+endef
+
+$(foreach package,$(ALL),$(eval $(call target_debian,$(package))))
+
 ### clean target
 # usage: target_clean package
 define target_clean
