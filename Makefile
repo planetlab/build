@@ -695,7 +695,11 @@ $(1)-clean-srpm:
 	rm -rf $($(1).srpm)
 .PHONY: $(1)-clean-srpm
 CLEANS += $(1)-clean-srpm
-$(1)-codeclean: $(1)-clean-source $(1)-clean-tarball $(1)-clean-build $(1)-clean-rpms $(1)-clean-srpm
+$(1)-clean-debian:
+	rm -rf DEBIAN/$(1)
+.PHONY: $(1)-clean-srpm
+CLEANS += $(1)-clean-srpm
+$(1)-codeclean: $(1)-clean-source $(1)-clean-tarball $(1)-clean-build $(1)-clean-rpms $(1)-clean-srpm $(1)-clean-debian
 $(1)-clean: $(1)-clean-modules $(1)-codeclean
 .PHONY: $(1)-codeclean $(1)-clean 
 $(1)-clean-spec:
