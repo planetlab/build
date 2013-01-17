@@ -496,7 +496,7 @@ function main () {
 	    -v) set -x ; VERBOSE="-v" ; shift ;;
 	    -7) BASE="$(date +%a|tr A-Z a-z)-@FCDISTRO@" ; shift ;;
 	    -i) IFNAME=$2; shift 2 ;;
-	    -P) PREINSTALLED=$2; shift 2;;
+	    -P) PREINSTALLED="-P $2"; shift 2;;
 	    -h) usage ; shift ;;
             --) shift; break ;;
 	esac
@@ -655,7 +655,7 @@ function main () {
 	    fi
             # Create vserver
 	    cd $tmpdir
-	    ./vbuild-init-vserver.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} -P ${PREINSTALLED} ${BASE} 
+	    ./vbuild-init-vserver.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${PREINSTALLED} ${BASE} 
 	    # cleanup
 	    cd -
 	    rm -rf $tmpdir
