@@ -5,9 +5,9 @@ COMMANDPATH=$0
 COMMAND=$(basename $0)
 
 # default values, tunable with command-line options
-DEFAULT_FCDISTRO=centos5
+DEFAULT_FCDISTRO=f14
 DEFAULT_PLDISTRO=planetlab
-DEFAULT_PERSONALITY=linux32
+DEFAULT_PERSONALITY=linux64
 DEFAULT_BASE="@DATE@--@PLDISTRO@-@FCDISTRO@-@PERSONALITY@"
 DEFAULT_BUILD_SCM_URL="git://git.onelab.eu/build"
 DEFAULT_IFNAME=eth0
@@ -113,11 +113,15 @@ EOF
 # utilities for handling the pushed material (rpms, logfiles, ...)
 function webpublish_misses_dir () { ssh root@${WEBHOST}  "bash -c \"test \! -d $1\"" ; }
 function webpublish () { ssh root@${WEBHOST} "$@" ; }
-function webpublish_rsync_dir () { rsync --archive --delete $VERBOSE $1 root@${WEBHOST}:$2 ; }
-function webpublish_rsync_file () { rsync $VERBOSE $1 root@${WEBHOST}:$2 ; }
 function webpublish_cp_local_to_remote () { scp $1 root@${WEBHOST}:$2 ; }
 function webpublish_cp_stdin_to_file () { ssh root@${WEBHOST} cat \> $1; }
 function webpublish_append_stdin_to_file () { ssh root@${WEBHOST} cat \>\> $1; }
+# provide remote dir as first argument, so any number of local files can be passed next
+function webpublish_rsync_dir () { rsync --archive --delete $VERBOSE $2 root@${WEBHOST}:$1 ; }
+function webpublish_rsync_files () {
+    remote="$1"; shift
+    rsync --archive $VERBOSE "$@" root@${WEBHOST}:"$remote" ;
+}
 
 # Notify recipient of failure or success, manage various stamps 
 function failure() {
@@ -287,7 +291,7 @@ function run_log () {
     rsync --verbose --archive ${testmaster_ssh}:$BASE/logs/ /vservers/$BASE/build/testlogs
     # push them to the build web
     chmod -R a+r /vservers/$BASE/build/testlogs/
-    webpublish_rsync_dir /vservers/$BASE/build/testlogs/ $WEBPATH/$BASE/testlogs/
+    webpublish_rsync_dir $WEBPATH/$BASE/testlogs/ /vservers/$BASE/build/testlogs/
 
     echo  "============================== END $COMMAND:run_log on $(date)"
 
@@ -705,12 +709,18 @@ function main () {
 	# publish to the web so run_log can find them
 	set +e
 	webpublish rm -rf $WEBPATH/$BASE 
-	webpublish mkdir -p $WEBPATH/$BASE/{RPMS,SRPMS}
-	webpublish_rsync_dir /vservers/$BASE/build/RPMS/ $WEBPATH/$BASE/RPMS/
-	[[ -n "$PUBLISH_SRPMS" ]] && webpublish_rsync_dir /vservers/$BASE/build/SRPMS/ $WEBPATH/$BASE/SRPMS/
+	# guess if we've been doing any debian-related build
+	if [ ! -d /vservers/$BASE/DEBIAN ] ; then
+	    webpublish mkdir -p $WEBPATH/$BASE/{RPMS,SRPMS}
+	    webpublish_rsync_dir $WEBPATH/$BASE/RPMS/ /vservers/$BASE/build/RPMS/
+	    [[ -n "$PUBLISH_SRPMS" ]] && webpublish_rsync_dir $WEBPATH/$BASE/SRPMS/ /vservers/$BASE/build/SRPMS/
+	else
+	    webpublish mkdir -p $WEBPATH/$BASE/DEBIAN
+	    webpublish_rsync_files $WEBPATH/$BASE/DEBIAN/ /vservers/$BASE/build/DEBIAN/*.deb
+	fi
 	# publish myplc-release if this exists
 	release=/vservers/$BASE/build/myplc-release
-	[ -f $release ] && webpublish_rsync_file $release $WEBPATH/$BASE
+	[ -f $release ] && webpublish_rsync_files $WEBPATH/$BASE $release
 	set -e
 
         # create yum repo and sign packages.
