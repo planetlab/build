@@ -710,7 +710,7 @@ function main () {
 	set +e
 	webpublish rm -rf $WEBPATH/$BASE 
 	# guess if we've been doing any debian-related build
-	if [ ! -d /vservers/$BASE/DEBIAN ] ; then
+	if [ ! -d /vservers/$BASE/etc/debian_version  ] ; then
 	    webpublish mkdir -p $WEBPATH/$BASE/{RPMS,SRPMS}
 	    webpublish_rsync_dir $WEBPATH/$BASE/RPMS/ /vservers/$BASE/build/RPMS/
 	    [[ -n "$PUBLISH_SRPMS" ]] && webpublish_rsync_dir $WEBPATH/$BASE/SRPMS/ /vservers/$BASE/build/SRPMS/
