@@ -32,6 +32,7 @@ package: python-devel
 package: tar
 package: findutils
 package: filesystem
+package: vim-enhanced
 
 package<=f8 package=centos5: vixie-cron
 package>=f10: cronie

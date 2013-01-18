@@ -32,7 +32,7 @@ package: rootfiles
 package: rpm
 package: setserial
 package: setup
-package: vim-minimal
+package: vim-enhanced
 package: shadow-utils
 package>=centos5: anacron
 package<=f10: anacron
@@ -126,3 +126,4 @@ package: vsys-scripts
 package: monitor-client
 package: monitor-runlevelagent
 package: pyplnet
+package: plnode-utils
