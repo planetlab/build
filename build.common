@@ -17,6 +17,9 @@ function pl_getDistro() {
     if [ -f "/etc/redhat-release" ] ; then
 	distro=$(awk ' { print $1 } ' /etc/redhat-release)
 	case $distro in Scientific*) distro="SL" ; esac
+    elif [ -f /etc/lsb-release ] ; then
+	. /etc/lsb-release
+	echo $DISTRIB_CODENAME 
     elif [ -f /etc/debian_version ] ; then
 	case $(cat /etc/debian_version) in
 	    6.0.6) distro=squeeze ;;
@@ -60,7 +63,7 @@ function pl_getReleaseName () {
 	[Ss]L*)
 	    releasename=sl$release
 	    ;;
-	squeeze|wheezy|oneiric|quantal)
+	squeeze|wheezy|oneiric|precise|quantal)
 	    releasename=$distro
 	    ;;
 	*)

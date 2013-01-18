@@ -85,10 +85,24 @@ function package_method () {
     fcdistro=$1; shift
     case $fcdistro in
 	f[0-9]*|centos[0-9]*|sl[0-9]*) echo yum ;;
-	squeeze|wheezy|oneiric|quantal) echo debootstrap ;;
+	squeeze|wheezy|oneiric|precise|quantal) echo debootstrap ;;
 	*) echo Unknown distro $fcdistro ;;
     esac 
 }
+
+# need to specify the right mirror for debian variants like ubuntu and the like
+function debian_mirror () {
+    fcdistro=$1; shift
+    case $fcdistro in
+	squeeze|wheezy) 
+	    echo http://ftp2.fr.debian.org/debian/ ;;
+	oneiric|precise|quantal) 
+	    echo http://mir1.ovh.net/ubuntu/ubuntu/ ;;
+	*) echo unknown distro $fcdistro; exit 1;;
+    esac
+}
+
+
 
 # return arch from debian distro and personality
 function canonical_arch () {
@@ -137,7 +151,8 @@ function setup_vserver () {
 	    ;;
 	debootstrap)
 	    arch=$(canonical_arch $personality $fcdistro)
-	    build_options="-m debootstrap -- -d $fcdistro -- --arch $arch"
+	    debmirror=$(debian_mirror $fcdistro)
+	    build_options="-m debootstrap -- -d $fcdistro -m $debmirror -- --arch $arch"
 	    ;;
 	*)
 	    build_options="something wrong" ;;
