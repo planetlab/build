@@ -37,7 +37,10 @@ default_fcdistro='f14'
 known_fcdistros = [ 'centos5','centos6',
                     'f8', 'f10','f12', 'f14', 'f16', 'f17',
                     'sl6', 
-                    'lenny','squeeze','wheezy','jessie' ]
+                    # debians
+                    'squeeze','wheezy',
+                    # ubuntus
+                    'oneiric', 'quantal' ]
 default_pldistro='onelab'
 
 known_keywords=['groupname', 'groupdesc', 

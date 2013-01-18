@@ -85,7 +85,7 @@ function package_method () {
     fcdistro=$1; shift
     case $fcdistro in
 	f[0-9]*|centos[0-9]*|sl[0-9]*) echo yum ;;
-	lenny|squeeze|wheezy|jessie) echo debootstrap ;;
+	squeeze|wheezy|oneiric|quantal) echo debootstrap ;;
 	*) echo Unknown distro $fcdistro ;;
     esac 
 }

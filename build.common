@@ -21,7 +21,7 @@ function pl_getDistro() {
 	case $(cat /etc/debian_version) in
 	    6.0.6) distro=squeeze ;;
 	    7.0)   distro=wheezy  ;;
-	    *)	   distro=unknown.debian.in.ubild.common ;;
+	    *)	   distro=unknown.debian.in.build.common ;;
 	esac
     fi
     [ -z "$distro" ] && { echo "build.common.pl_getDistro-unknown"; exit 1; }
@@ -60,7 +60,7 @@ function pl_getReleaseName () {
 	[Ss]L*)
 	    releasename=sl$release
 	    ;;
-	lenny|squeeze|wheezy|jessie)
+	squeeze|wheezy|oneiric|quantal)
 	    releasename=$distro
 	    ;;
 	*)
