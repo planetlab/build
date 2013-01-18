@@ -155,7 +155,7 @@ function setup_vserver () {
 	    build_options="-m debootstrap -- -d $fcdistro -m $debmirror -- --arch $arch"
 	    ;;
 	*)
-	    build_options="something wrong" ;;
+	    build_options="undefined-package_method" ;;
     esac
 
     # create it
