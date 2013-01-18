@@ -18,9 +18,11 @@ function pl_getDistro() {
 	distro=$(awk ' { print $1 } ' /etc/redhat-release)
 	case $distro in Scientific*) distro="SL" ; esac
     elif [ -f /etc/debian_version ] ; then
-	for known in lenny squeeze wheezy jessie; do
-	    grep -q $known /etc/os-release && distro=$known
-	done
+	case $(cat /etc/debian_version) in
+	    6.0.6) distro=squeeze ;;
+	    7.0)   distro=wheezy  ;;
+	    *)	   distro=unknown.debian.in.ubild.common ;;
+	esac
     fi
     [ -z "$distro" ] && { echo "build.common.pl_getDistro-unknown"; exit 1; }
     echo "$distro"
