@@ -334,11 +334,18 @@ function devel_or_vtest_tools () {
 	    # handle this one firt off to be sure 
 	    $personality vserver $vserver exec apt-get install -y locales
 	    # all in a single batch 
-	    $personality vserver $vserver exec apt-get install -y --ignore-missing $packages
+	    [ -n "$packages" ] $personality vserver $vserver exec apt-get install -y --ignore-missing $packages || :
+	    # of course, on ubuntu apt-get --ignore-missing .. does not ignore missing packages !
 	    # check it up a bit 
 	    for package in $packages ; do 
-		$personality vserver $vserver exec dpkg -l $package >& /dev/null || \
-		    { echo "WARNING - missing package on debian $package - ignored" ; true; }
+		if ! $personality vserver $vserver exec dpkg -l $package >& /dev/null ; then
+		    # try to install it individually - so this is for ubuntu
+		    $personality vserver $vserver exec apt-get install -y $package || :
+		    # still not there ?
+		    if ! $personality vserver $vserver exec dpkg -l $package >& /dev/null ; then
+			echo "WARNING - missing package on debian $package - ignored" 
+		    fi
+		fi
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
