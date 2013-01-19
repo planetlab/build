@@ -290,9 +290,18 @@ function setup_vserver () {
 
     # set up resolv.conf
     cp /etc/resolv.conf /vservers/$vserver/etc/resolv.conf
+    cp /etc/resolv.conf /vservers/$vserver/etc/resolv.conf.preserve
     # and /etc/hosts for at least localhost
     [ -f /vservers/$vserver/etc/hosts ] || echo "127.0.0.1 localhost localhost.localdomain" > /vservers/$vserver/etc/hosts
 
+}
+
+# debugging
+# on precise it looks like at some point when installing additional packages we're losing /etc/resolv.conf
+function status_resolv () {
+    echo "xxxxxxxxxxxxxxxxxxxx" status_resolv "$@"
+    ls -l /etc/resolv.conf* || :
+    echo "xxxxxxxxxxxxxxxxxxxx" status_resolv "$@"
 }
 
 function devel_or_vtest_tools () {
@@ -309,6 +318,8 @@ function devel_or_vtest_tools () {
     pkg_method=$(package_method $fcdistro)
 
     pkgsfile=$(pl_locateDistroFile $DIRNAME $pldistro $PREINSTALLED)
+
+    status_resolv "entering devel_or_vtest_tools"
 
     ### install individual packages, then groups
     # get target arch - use uname -i here (we want either x86_64 or i386)
@@ -338,12 +349,14 @@ function devel_or_vtest_tools () {
 	        # also adding a link to updates sounds about right
 		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
 	    fi
+	    status_resolv "before apt-get update & upgrade"
 	    $personality vserver $vserver exec apt-get update
 	    $personality vserver $vserver exec apt-get -y upgrade
 	    # handle this one firt off to be sure; mostly cosmetic but avoid a huge amount of warnings
 	    $personality vserver $vserver exec apt-get install -y locales
 	    # install required packages
 	    # all in a single batch 
+	    status_resolv "before apt-get install all packages"
 	    [ -n "$packages" ] && $personality vserver $vserver exec apt-get install -y --ignore-missing $packages || :
 	    # of course, on ubuntu apt-get --ignore-missing .. does not ignore missing packages !
 	    # check it up a bit 
@@ -352,6 +365,7 @@ function devel_or_vtest_tools () {
 		    echo "==========(debian) package $package OK (1)"
 		else
 		    # try to install it individually - so this is for ubuntu
+		    status_resolv "before apt-get install specific to $package"
 		    $personality vserver $vserver exec apt-get install -y $package || :
 		    # still not there ?
 		    if $personality vserver $vserver exec dpkg -l $package >& /dev/null ; then
@@ -361,6 +375,7 @@ function devel_or_vtest_tools () {
 		    fi
 		fi
 	    done
+	    status_resolv "Done"
 	    ### xxx todo install groups with apt..
 	    ;;
 	*)
