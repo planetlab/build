@@ -331,7 +331,7 @@ function devel_or_vtest_tools () {
 	    ;;
 	debootstrap)
 	    # for ubuntu
-	    if grep -iq /vservers/$vserver/etc/lsb-release 2> /dev/null; then
+	    if grep -iq ubuntu /vservers/$vserver/etc/lsb-release 2> /dev/null; then
 		# on ubuntu, at this point we end up with a single feed in /etc/apt/sources.list
  	        # we need at least to add the 'universe' feed for python-rpm
 		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
