@@ -330,9 +330,18 @@ function devel_or_vtest_tools () {
 	    $personality vserver $vserver exec rpm -aq > /vservers/$vserver/init-vserver.rpms
 	    ;;
 	debootstrap)
+	    # for ubuntu
+	    if grep -iq /vservers/$vserver/etc/lsb-release 2> /dev/null; then
+		# on ubuntu, at this point we end up with a single feed in /etc/apt/sources.list
+ 	        # we need at least to add the 'universe' feed for python-rpm
+		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
+	        # also adding a link to updates sounds about right
+		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/universe.list )
+	    fi
 	    $personality vserver $vserver exec apt-get update
-	    # handle this one firt off to be sure 
+	    # handle this one firt off to be sure; mostly cosmetic but avoid a huge amount of warnings
 	    $personality vserver $vserver exec apt-get install -y locales
+	    # install required packages
 	    # all in a single batch 
 	    [ -n "$packages" ] && $personality vserver $vserver exec apt-get install -y --ignore-missing $packages || :
 	    # of course, on ubuntu apt-get --ignore-missing .. does not ignore missing packages !
