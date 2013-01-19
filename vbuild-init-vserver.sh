@@ -336,7 +336,7 @@ function devel_or_vtest_tools () {
  	        # we need at least to add the 'universe' feed for python-rpm
 		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
 	        # also adding a link to updates sounds about right
-		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/universe.list )
+		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
 	    fi
 	    $personality vserver $vserver exec apt-get update
 	    $personality vserver $vserver exec apt-get -y upgrade
