@@ -339,6 +339,7 @@ function devel_or_vtest_tools () {
 		( cd /vservers/$vserver/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/universe.list )
 	    fi
 	    $personality vserver $vserver exec apt-get update
+	    $personality vserver $vserver exec apt-get -y upgrade
 	    # handle this one firt off to be sure; mostly cosmetic but avoid a huge amount of warnings
 	    $personality vserver $vserver exec apt-get install -y locales
 	    # install required packages
