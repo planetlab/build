@@ -354,7 +354,7 @@ function devel_or_vtest_tools () {
 	    status_resolv $vserver "before apt-get update"
 	    $personality vserver $vserver exec apt-get update
 	    status_resolv $vserver "before apt-get upgrade"
-	    $personality vserver $vserver exec apt-get -y upgrade
+sc	    $personality vserver $vserver exec apt-get -y upgrade ||:
 	    # handle this one firt off to be sure; mostly cosmetic but avoid a huge amount of warnings
 	    $personality vserver $vserver exec apt-get install -y locales
 	    # install required packages
