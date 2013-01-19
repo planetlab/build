@@ -302,6 +302,7 @@ function status_resolv () {
     vserver=$1; shift
     echo "xxxxxxxxxxxxxxxxxxxx" status_resolv "$@"
     ls -l /vservers/$vserver/etc/resolv.conf* || :
+    ls -lL /vservers/$vserver/etc/resolv.conf* || :
     echo "xxxxxxxxxxxxxxxxxxxx" status_resolv "$@"
 }
 
