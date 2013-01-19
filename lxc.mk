@@ -133,6 +133,10 @@ libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel yajl-devel 
 libvirt-DEVEL-RPMS += python-devel libcap-ng-devel libpciaccess-devel radvd numactl-devel 
 libvirt-DEVEL-RPMS += xhtml1-dtds libxslt libtasn1-devel systemtap-sdt-devel iptables-ipv6 augeas 
 libvirt-DEVEL-RPMS += libudev-devel libpcap-devel libnl-devel ebtables scrub ceph-devel
+# added for 0.10.2 
+libvirt-DEVEL-RPMS += xen-devel sanlock-devel avahi-devel cyrus-sasl-devel polkit qemu-img lvm2
+libvirt-DEVEL-RPMS += iscsi-initiator-utils parted-devel libssh2-devel netcf-devel libwsman-devel
+libvirt-DEVEL-RPMS += audit-libs-devel nfs-utils libblkid-devel
 # The --without options are breaking spec2make
 #libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without storage-scsi \
 #	                --without storage-fs --without storage-lvm \
