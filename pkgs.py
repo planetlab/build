@@ -32,7 +32,7 @@ from optparse import OptionParser
 import re
 
 default_arch='x86_64'
-known_arch = ['i386','x86_64']
+known_arch = ['i386', 'i686', 'x86_64']
 default_fcdistro='f14'
 known_fcdistros = [ 'centos5','centos6',
                     'f8', 'f10','f12', 'f14', 'f16', 'f17',
@@ -218,6 +218,7 @@ def main ():
         print >> stderr, 'Unsupported arch',options.arch
         parser.print_help(file=stderr)
         sys.exit(1)
+    if options.arch == 'i686': options.arch='i386'
     if not options.fcdistro in known_fcdistros:
         print >> stderr, 'Unsupported fcdistro',options.fcdistro
         parser.print_help(file=stderr)
