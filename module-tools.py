@@ -968,7 +968,7 @@ that for other purposes than tagging""" % options.workdir
         file(changelog_plain,"w").write("""
 %s
 %s
-Please write a changelog for this new tag in the section above
+Please write a changelog for this new tag in the section below
 """%(Module.edit_magic_line,setting_tag_line))
 
         if not self.options.verbose or prompt('Want to see diffs while writing changelog',True):
