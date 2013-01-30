@@ -7,7 +7,7 @@
 # Copyright (C) 2007 The Trustees of Princeton University
 # Thierry Parmentelat <thierry.parmentelat@inria.fr> INRIA
 #
-# supported distros f8, f10, f12, f14, f16, centos5, sl6
+# supported distros f8, f12, f14, f16, f18, centos5, sl6
 #
 # for locating pkgs.py
 export PATH=.:$PATH
