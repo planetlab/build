@@ -120,3 +120,5 @@ package: python-dateutil
 package: python-lxml
 # DistributedRateLimiting
 package: libxml2-devel
+# myplc-docs
+package>=f18: texlive-ec
