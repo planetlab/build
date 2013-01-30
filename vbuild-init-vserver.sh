@@ -234,14 +234,14 @@ function setup_vserver () {
     # + exec /usr/sbin/vspace --mount --fs --new -- /usr/sbin/vserver ----nonamespace debuild09 start
     # fakerunlevel: open("/var/run/utmp"): No such file or directory
     # so instead we bluntly create empty dirs and hope for the best
-    if [ "$pkg_method" = "debootstrap" ] ; then
+#    if [ "$pkg_method" = "debootstrap" ] ; then
 	[ -h /vservers/$vserver/var/run ] && [ ! -d /vservers/$vserver/var/run ] && \
 #	    { rm -f /vservers/$vserver/var/run ; ln -s ../run /vservers/$vserver/var/run ; }
 	    { rm -f /vservers/$vserver/var/run ; mkdir /vservers/$vserver/var/run ; }
 	[ -h /vservers/$vserver/var/lock ] && [ ! -d /vservers/$vserver/var/lock ] && \
 #	    { rm -f /vservers/$vserver/var/lock ; ln -s ../run/lock /vservers/$vserver/var/lock ; }
 	    { rm -f /vservers/$vserver/var/lock ; mkdir /vservers/$vserver/var/lock ; }
-    fi
+#    fi
 
     # start the vserver so we can do the following operations
     # redirect out/err to protect against the vserver's init sequence getting stalled 
