@@ -295,6 +295,7 @@ set -x
 	    break
 	else
 	    echo "Failed attempt $attempt"
+	fi
     done
     [ -n "$found" ] || { echo "Could not retrieve fedora-release rpm - exiting" ; exit 1; }
     
