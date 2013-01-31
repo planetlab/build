@@ -19,7 +19,7 @@ DEFAULT_IFNAME=eth0
 COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
 
-lxc_version="0.8.0"
+lxc_version="lxc-0.8.0"
 lxc_git_repo="git://lxc.git.sourceforge.net/gitroot/lxc/lxc"
 
 function bridge_init () {
