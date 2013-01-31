@@ -32,7 +32,7 @@ monitor-GITPATH			:= git://git.planet-lab.org/monitor@monitor-3.1-6
 PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopenssl-0.9-2
 ###
-pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-2
+pyaspects-GITPATH               := git://git.planet-lab.org/pyaspects.git@master
 omf-GITPATH                     := git://git.planet-lab.org/omf.git@omf-5.3-11
 ###
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-24
@@ -42,7 +42,7 @@ nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
 bootmanager-BRANCH		:= lxc_devel
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.1-3
 pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
-pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-16
+pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-2
