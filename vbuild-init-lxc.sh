@@ -151,7 +151,7 @@ function prepare_host() {
     #retrieve and install lxc from sources 
     raw_version=$(lxc-version ||: )
     lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
-    if [ "$lxc_installed_version" != "$lxc_version" ] ; then
+    if [ "$lxc_installed_version" != "$(echo $lxc_version | cut -d'-' -f2)" ] ; then
 	echo "Expecting version" '['$lxc_version']'
 	echo "Found version" '['$lxc_installed_version']'
         echo "Installing lxc ..."
@@ -208,10 +208,16 @@ MTU=1500
 EOF
 
 # set the hostname
+if [[ "$fcdistro" == "f18" ]] ; then
+    cat <<EOF > ${rootfs_path}/etc/hostname
+$HOSTNAME
+EOF
+else
     cat <<EOF > ${rootfs_path}/etc/sysconfig/network
 NETWORKING=yes
 HOSTNAME=$HOSTNAME
 EOF
+fi
 
     # set minimal hosts
 #    cat <<EOF > $rootfs_path/etc/hosts
@@ -587,8 +593,7 @@ function setup_lxc() {
     done
 
     [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
-     
-
+   
     # rpm --rebuilddb
     chroot $rootfs_path rpm --rebuilddb
     #ssh -o "StrictHostKeyChecking no" $IP "rpm --rebuilddb"
