@@ -151,7 +151,7 @@ function prepare_host() {
     #retrieve and install lxc from sources 
     raw_version=$(lxc-version ||: )
     lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
-    if [ "$lxc_installed_version" != "$lxc_version" ] ; then
+    if [ "$lxc_installed_version" != "$(echo $lxc_version | cut -d'-' -f2)" ] ; then
 	echo "Expecting version" '['$lxc_version']'
 	echo "Found version" '['$lxc_installed_version']'
         echo "Installing lxc ..."
@@ -208,7 +208,7 @@ MTU=1500
 EOF
 
 # set the hostname
-if [ "fcdistro" == "f18"]; then
+if [[ "$fcdistro" == "f18" ]] ; then
     cat <<EOF > ${rootfs_path}/etc/hostname
 $HOSTNAME
 EOF
@@ -257,8 +257,6 @@ function configure_fedora_init() {
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.d/rc.sysinit
     chroot ${rootfs_path} chkconfig udev-post off
     chroot ${rootfs_path} chkconfig network on
-    if [ "fcdistro" == "f18"]; then 
-       chroot ${rootfs_path} hostnamectl set-hostname $HOSTNAME
 }
 
 
@@ -271,9 +269,6 @@ function configure_fedora_systemd() {
     #dependency on a device unit fails it specially that we disabled udev
     sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
     chroot ${rootfs_path} chkconfig network on
-    if [ "fcdistro" == "f18"]; then
-       chroot ${rootfs_path} hostnamectl set-hostname $HOSTNAME
-    fi
 }
 
 function download_fedora() {
@@ -598,7 +593,12 @@ function setup_lxc() {
     done
 
     [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
-     
+   
+    # set hostname for fedora18
+    if [[ "$fcdistro" == "f18" ]] ; then 
+       echo $HOSTNAME
+       #ssh -o "StrictHostKeyChecking no" $IP "hostnamectl set-hostname '$HOSTNAME'" 
+    fi
 
     # rpm --rebuilddb
     chroot $rootfs_path rpm --rebuilddb
