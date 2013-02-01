@@ -594,12 +594,6 @@ function setup_lxc() {
 
     [ -z $ssh_up ] && echo "SSHD in container $lxc is not running"
    
-    # set hostname for fedora18
-    if [[ "$fcdistro" == "f18" ]] ; then 
-       echo $HOSTNAME
-       #ssh -o "StrictHostKeyChecking no" $IP "hostnamectl set-hostname '$HOSTNAME'" 
-    fi
-
     # rpm --rebuilddb
     chroot $rootfs_path rpm --rebuilddb
     #ssh -o "StrictHostKeyChecking no" $IP "rpm --rebuilddb"
