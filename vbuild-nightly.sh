@@ -128,7 +128,7 @@ function failure() {
     set -x
     # early stage ? - let's not create /build/@PLDISTRO@
     if test -z "$WEBLOG" ; then
-	WEBHOST=localhost
+	WEBHOST=$(hostname)
 	WEBPATH=/tmp
 	WEBBASE=/tmp/vbuild-early-$(date +%Y-%m-%d)
 	WEBLOG=/tmp/vbuild-early-$(date +%Y-%m-%d).log.txt
@@ -157,7 +157,7 @@ function success () {
     set -x
     # early stage ? - let's not create /build/@PLDISTRO@
     if test -z "$WEBLOG" ; then
-	WEBHOST=localhost
+	WEBHOST=$(hostname)
 	WEBPATH=/tmp
 	WEBLOG=/tmp/vbuild-early-$(date +%Y-%m-%d).log.txt
     fi
