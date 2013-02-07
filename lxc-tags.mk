@@ -8,7 +8,7 @@ ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-201206
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH            := git://git.planet-lab.org/plnode-utils.git@master
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.1-21
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@master
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
@@ -45,9 +45,9 @@ pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
-bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-2
+bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
 sliceimage-GITPATH	        := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-2.1-3
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-9
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@master

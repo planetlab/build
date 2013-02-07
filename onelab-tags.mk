@@ -33,9 +33,9 @@ vsys-GITPATH                    := git://git.onelab.eu/vsys.git@vsys-0.99-2
 vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scripts-0.95-45
 autoconf-GITPATH		:= git://git.onelab.eu/autoconf@autoconf-2.69-1
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.9.90-2
-plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.1-6
+plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
-plewww-GITPATH                  := git://git.onelab.eu/plewww.git@plewww-4.3-75
+plewww-GITPATH                  := git://git.onelab.eu/plewww.git@master
 www-register-wizard-SVNPATH     := http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
 pcucontrol-GITPATH              := git://git.onelab.eu/pcucontrol.git@pcucontrol-1.0-13
 monitor-GITPATH                 := git://git.onelab.eu/monitor.git@monitor-3.1-6
@@ -52,11 +52,11 @@ nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.0-24
 pypcilib-GITPATH		:= git://git.onelab.eu/pypcilib.git@pypcilib-0.2-10
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-16
-bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.1-2
+bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
 sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@sliceimage-5.1-3
 nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-2.1-3
-myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.1-6
+myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.1-9
+tests-GITPATH                   := git://git.onelab.eu/tests.git@master
