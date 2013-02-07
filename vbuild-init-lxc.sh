@@ -161,7 +161,7 @@ function prepare_host() {
 	git pull
 	git checkout $lxc_version
         ./autogen.sh
-        ./configure --prefix=/usr --exec-prefix=/usr
+        ./configure --prefix=/usr --exec-prefix=/usr --disable-apparmor
         make
         make install
         mkdir -p /usr/var/lib/
