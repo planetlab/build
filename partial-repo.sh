@@ -1,5 +1,4 @@
 #!/bin/sh
-# $URL$
 
 COMMAND=$(basename $0)
 
@@ -14,14 +13,10 @@ case "$1" in *-h*) usage ;; esac
 
 set -e 
 
-for repo in "$@" ; do
-    if [ ! -d $repo/RPMS ] ; then
-	echo could not find $repo/RPMS - ignored
-	continue
-    fi
-
+for rpms in $(find "$@" -name RPMS) ; do
     cd $repo
-    echo "==================== Dealing with repo $repo"
+    cd ..
+    echo "==================== Dealing with repo $(pwd)"
     mkdir -p PARTIAL-RPMS
     rsync --archive --verbose $(find RPMS -type f | egrep '/(bootcd|bootstrapfs|nodeimage|noderepo|slicerepo)-.*-.*-.*-.*rpm') PARTIAL-RPMS/
     echo "==================== building packages index in $repo .."

@@ -1,5 +1,4 @@
 #!/bin/sh
-# $URL$
 
 COMMAND=$(basename $0)
 
@@ -17,5 +16,5 @@ set -e
 for partial in $(find . -name 'PARTIAL*'); do
     ls $partial/nodeimage* >& /dev/null \
  || ls $partial/bootstrapfs* >& /dev/null \
- || echo WARNING with $partial
+ || echo WARNING with $partial - no nodeimage/bootstrapfs
 done
