@@ -14,7 +14,7 @@ case "$1" in *-h*) usage ;; esac
 set -e 
 
 for rpms_dir in $(find "$@" -name RPMS) ; do
-    cd $rpms_dir
+    pushd $rpms_dir >& /dev/null
     cd ..
     echo "==================== Dealing with repo $(pwd)"
     mkdir -p PARTIAL-RPMS
@@ -22,5 +22,5 @@ for rpms_dir in $(find "$@" -name RPMS) ; do
     echo "==================== building packages index in $(pwd) .."
     createrepo PARTIAL-RPMS
     echo '==================== DONE'
-    cd - >& /dev/null
+    popd >& /dev/null
 done
