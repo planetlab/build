@@ -161,7 +161,7 @@ function prepare_host() {
 	git pull
 	git checkout $lxc_version
         ./autogen.sh
-        ./configure --prefix=/usr --exec-prefix=/usr
+        ./configure --prefix=/usr --exec-prefix=/usr --disable-apparmor
         make
         make install
         mkdir -p /usr/var/lib/
@@ -886,7 +886,8 @@ function main () {
     else
         [[ -z "$REPO_URL" ]] && usage
         [[ -z "$IP" ]] && usage
-        NETMASK=$(ifconfig br0 | grep 'inet addr' | awk '{print $4}' | sed -e 's/.*://')
+       
+        NETMASK=$(ifconfig br0 | grep 'inet ' | awk '{print $4}' | sed -e 's/.*://')
         GATEWAY=$(route -n | grep 'UG' | awk '{print $2}')
         [[ -z "$HOSTNAME" ]] && usage
         lxc_network_type=veth
