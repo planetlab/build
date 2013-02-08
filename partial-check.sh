@@ -9,7 +9,8 @@ function usage () {
     exit 1
 }
 
-[[ -n "$@" ]] || usage
+[[ -z "$@" ]] || usage
+case "$1" in *-h*) usage ;; esac
 
 set -e 
 
