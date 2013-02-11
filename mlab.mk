@@ -85,10 +85,10 @@ IN_NODEIMAGE += iptables
 iproute-MODULES := iproute2
 iproute-SPEC := iproute.spec
 iproute-BUILD-FROM-SRPM := yes	
-ALL += iproute
-IN_NODEIMAGE += iproute
-IN_SLICEIMAGE += iproute
-IN_BOOTCD += iproute
+#ALL += iproute
+#IN_NODEIMAGE += iproute
+#IN_SLICEIMAGE += iproute
+#IN_BOOTCD += iproute
 
 #
 # util-vserver
@@ -156,6 +156,14 @@ nodemanager-MODULES := nodemanager
 nodemanager-SPEC := NodeManager.spec
 ALL += nodemanager
 IN_NODEIMAGE += nodemanager
+
+#
+# plnode-utils
+# 
+plnode-utils-MODULES := plnode-utils
+plnode-utils-SPEC := plnode-utils-vs.spec
+ALL += plnode-utils
+IN_NODEIMAGE += plnode-utils
 
 #
 # pl_sshd
