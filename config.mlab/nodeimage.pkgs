@@ -11,7 +11,7 @@ package: kernel
 package: udev
 package: basesystem
 package: filesystem
-package>=f14: lvm2
+package>=f14 package>=centos6: lvm2
 package: bash
 package: coreutils
 package: python
@@ -34,7 +34,7 @@ package: setserial
 package: setup
 package: vim-enhanced
 package: shadow-utils
-package>=centos5: anacron
+package=centos5: anacron
 package<=f10: anacron
 package>=f12: cronie-anacron
 package: at
@@ -72,9 +72,9 @@ package: yum
 package: curl
 package: gzip
 package: iptables
-package>=centos5: mkinitrd
+package=centos5: mkinitrd
 package<=f12: mkinitrd
-package>=f14: dracut
+package>=f14 package>=centos6: dracut
 package: ntp
 package: perl
 package: python
@@ -88,13 +88,14 @@ package: PyXML
 #
 # platform-dependent
 #
-package>=f8: rsyslog
+package>=f8 package>=centos6: rsyslog
 package=centos5: sysklogd
 
-package>=f8: util-linux-ng
+package>=f8 package>=centos6: util-linux-ng
 package=centos5: util-linux
 
 package<=f8 package=centos5: termcap libtermcap vixie-cron
+package>=centos6: compat-libtermcap 
 package>=f10: cronie
 
 #
