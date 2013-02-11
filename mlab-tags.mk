@@ -1,7 +1,7 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
 mkinitrd-GITPATH		:= git://git.planet-lab.org/mkinitrd.git@mkinitrd-5.1.19.6-2
-linux-2.6-BRANCH		:= 32 # This line is defunct
+linux-2.6-BRANCH		:= 32 # This line is not so defunct
 linux-2.6-GITPATH		:= git://git.planet-lab.org/linux-2.6.git@rhel6-mlab
 # help out spec2make on f8 and centos5, due to a bug in rpm
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 centos5)"
@@ -9,14 +9,18 @@ kernel-WHITELIST-RPMS	:= kernel-devel,kernel-headers
 endif
 kernel-DEVEL-RPMS		+= elfutils-libelf-devel
 madwifi-GITPATH                 := git://git.planet-lab.org/madwifi.git@madwifi-4132-6
-iptables-GITPATH                := git://git.planet-lab.org/iptables.git@iptables-1.4.10-5
+# iptables 1.4.7 creates libxtables.so.4 while later versions libxtables.so.5
+# this breaks dependencies for other centos6 packages.
+iptables-GITPATH                := git://git.planet-lab.org/iptables.git@iptables-1.4.7-5
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
 # note that this should be consistently reflected in yumexclude
 ALL := $(filter-out iproute,$(ALL))
 util-vserver-GITPATH		:= git://git.planet-lab.org/util-vserver.git@util-vserver-0.30.216-19
 libnl-GITPATH			:= git://git.planet-lab.org/libnl.git@libnl-1.1-2
-util-vserver-pl-GITPATH		:= git://git.planet-lab.org/util-vserver-pl.git@util-vserver-pl-0.4-26
+util-vserver-pl-GITPATH		:= git://git.planet-lab.org/util-vserver-pl.git@util-vserver-pl-0.4-28
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
+#plnode-utils-GITPATH        	:= file:////build_k32/local-plnode-utils@master
+plnode-utils-GITPATH        	:= git://git.planet-lab.org/plnode-utils.git@master
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 nodemanager-BRANCH		:= 2.0
 nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.0-37
