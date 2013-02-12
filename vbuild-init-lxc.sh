@@ -272,7 +272,7 @@ function configure_fedora_systemd() {
 # so, turning getty off for now instead
 #   #dependency on a device unit fails it specially that we disabled udev
 #    sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
-    ln -s /dev/null ${rootfs_path}/etc/systemd/system/"getty\@.service"
+    ln -s /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
     chroot ${rootfs_path} chkconfig network on
 }
 
