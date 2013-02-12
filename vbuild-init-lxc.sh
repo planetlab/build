@@ -261,13 +261,18 @@ function configure_fedora_init() {
 
 
 function configure_fedora_systemd() {
-
     unlink ${rootfs_path}/etc/systemd/system/default.target
-    touch ${rootfs_path}/etc/fstab
-    chroot ${rootfs_path} ln -s /dev/null //etc/systemd/system/udev.service
     chroot ${rootfs_path} ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
-    #dependency on a device unit fails it specially that we disabled udev
-    sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
+    touch ${rootfs_path}/etc/fstab
+    chroot ${rootfs_path} systemctl mask udev.service
+# Thierry - Feb 2013
+# this was intended for f16 initially, in order to enable getty that otherwise would not start
+# having a getty running is helpful only if ssh won't start though, and we see a correlation between
+# VM's that refuse to lxc-stop and VM's that run crazy getty's
+# so, turning getty off for now instead
+#   #dependency on a device unit fails it specially that we disabled udev
+#    sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
+    chroot ${rootfs_path} systemctl mask getty\@.service
     chroot ${rootfs_path} chkconfig network on
 }
 
