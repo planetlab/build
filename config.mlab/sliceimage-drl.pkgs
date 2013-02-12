@@ -1,4 +1,5 @@
 #
 groupname: drl
 groupdesc: Distributed Rate Limiting
-package: ulogd
+# no known alternate for centos6
+package>=f8: ulogd
