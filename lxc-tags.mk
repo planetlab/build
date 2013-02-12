@@ -41,13 +41,13 @@ nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
 # this module still has changes that won't run on the mainstream distrib
 bootmanager-BRANCH		:= lxc_devel
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.1-3
-pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-10
+pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@master
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
 sliceimage-GITPATH	        := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
-nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-2.1-3
+nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@master
