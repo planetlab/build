@@ -273,7 +273,8 @@ function configure_fedora_systemd() {
 #   #dependency on a device unit fails it specially that we disabled udev
 #    sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
     ln -s /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
-    ln -s /dev/null ${rootfs_path}/usr/lib/systemd/system/"getty@.service"
+    rm /etc/systemd/system/getty.target.wants/*service
+# can't seem to handle this one with systemctl
     chroot ${rootfs_path} chkconfig network on
 }
 
