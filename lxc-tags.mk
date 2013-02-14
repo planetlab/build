@@ -40,7 +40,7 @@ sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
 # this module still has changes that won't run on the mainstream distrib
 bootmanager-BRANCH		:= lxc_devel
-bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.1-3
+bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxc_devel
 pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@master
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
