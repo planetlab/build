@@ -334,7 +334,7 @@ ALL += sliver-openvswitch
 # plcapi
 #
 plcapi-MODULES := plcapi
-plcapi-SPEC := PLCAPI.spec
+plcapi-SPEC := plcapi.spec
 ALL += plcapi
 IN_MYPLC += plcapi
 
