@@ -116,11 +116,11 @@ fprobe-ulog-SPEC := fprobe-ulog.spec
 ALL += fprobe-ulog
 IN_NODEIMAGE += fprobe-ulog
 
-#################### libvirt on f16 is too old, sounds like f17 has something fine
-local_libvirt=false
-ifeq "$(DISTRONAME)" "f16"
+#################### using our own libvirt on all distros for now
+#local_libvirt=false
+#ifeq "$(DISTRONAME)" "f16"
 local_libvirt=true
-endif
+#endif
 
 ifeq "$(local_libvirt)" "true"
 #
