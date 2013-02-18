@@ -19,7 +19,7 @@ package: emacs-nox
 # undetermined 
 package: expect 
 package: gd 
-package: httpd mod_python mod_ssl 
+package: httpd mod_ssl 
 package: openssl 
 package: openssl-devel
 package: zlib
