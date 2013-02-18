@@ -130,26 +130,17 @@ libvirt-MODULES := libvirt
 libvirt-SPEC    := libvirt.spec
 libvirt-BUILD-FROM-SRPM := yes
 # The --without options are breaking spec2make : hard-wired in the specfile instead
-#libvirt-RPMFLAGS := --without storage-disk --without storage-iscsi --without storage-scsi \
-#	                --without storage-fs --without storage-lvm \
-#	                --without polkit --without sasl --without audit --with capng --with udev \
-#	                --without netcf --without avahi --without sanlock \
-#	                --without xen --without qemu --without hyperv --without phyp --without esx \
-#	                --without libxl \
-#libvirt-DEVEL-RPMS += libxml2-devel gnutls-devel device-mapper-devel yajl-devel gettext 
-#libvirt-DEVEL-RPMS += python-devel libcap-ng-devel libpciaccess-devel radvd numactl-devel 
-#libvirt-DEVEL-RPMS += xhtml1-dtds libxslt libtasn1-devel systemtap-sdt-devel iptables-ipv6 augeas 
-#libvirt-DEVEL-RPMS += libudev-devel libpcap-devel libnl-devel ebtables scrub ceph-devel
-# added for 0.10.2 
-#libvirt-DEVEL-RPMS += xen-devel sanlock-devel avahi-devel cyrus-sasl-devel polkit qemu-img lvm2
-#libvirt-DEVEL-RPMS += iscsi-initiator-utils parted-devel libssh2-devel netcf-devel libwsman-devel
-#libvirt-DEVEL-RPMS += audit-libs-devel nfs-utils libblkid-devel
-# added for 1.0.2 on f16+f18
-#libvirt-DEVEL-RPMS += libattr-devel libssh2-devel
-# added for 1.0.2 on f18
-#ifneq "$(DISTRONAME)" "f16"
-#libvirt-devel-RPMS" += libnl3-devel fuse-devel dbus-devel numad
-#endif
+libvirt-DEVEL-RPMS += xhtml1-dtds gettext libtasn1-devel gnutls-devel 
+libvirt-DEVEL-RPMS += libattr-devel augeas libpciaccess-devel yajl-devel 
+libvirt-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel 
+libvirt-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
+ifeq "$(DISTRONAME)" "f16"
+libvirt-DEVEL-RPMS += libnl-devel libudev-devel
+endif
+ifeq "$(DISTRONAME)" "f18"
+libvirt-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
+libvirt-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 
+endif
 libvirt-RPMFLAGS :=	--define 'packager PlanetLab'
 ALL += libvirt
 IN_NODEREPO += libvirt
