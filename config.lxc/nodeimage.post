@@ -16,7 +16,9 @@ chroot ${vdir} systemctl enable openvswitch.service || :
 # enabling network as it ends up turned off on systems that come with NetworkManager, starting with fedora9
 chroot ${vdir} systemctl enable network.service || :
 # and turn off NetworkManager if present, as it quite obviously messes with network
-chroot ${vdir} systemctl disable NetworkManager || :
+chroot ${vdir} systemctl disable NetworkManager.service || :
+# tentatively turn on getty on tty1
+chroot ${vdir} systemctl enable getty@tty1.service || :
 
 # Disable splaying of cron.
 echo > ${vdir}/etc/sysconfig/crontab
@@ -40,6 +42,6 @@ EOF
 #################### historical notes - see config.planetlab/nodeimage.post
 # xxx turning OFF selinux
 # there used to be some code for that in the historical/vserver version
-# none of that code seems applicable in f16 anylonger
-
+# none of that code seems applicable in f16 any longer
+#
 # also a horrible hack to the network initscripts has been removed
