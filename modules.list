@@ -10,7 +10,6 @@ fprobe-ulog
 ipfw
 iptables
 libvirt
-libvirt:1.0
 linux-2.6:32
 lxcsu
 lxctools
