@@ -130,7 +130,7 @@ libvirt-MODULES := libvirt
 libvirt-SPEC    := libvirt.spec
 libvirt-BUILD-FROM-SRPM := yes
 # The --without options are breaking spec2make : hard-wired in the specfile instead
-libvirt-DEVEL-RPMS += xhtml1-dtds gettext libtasn1-devel gnutls-devel 
+libvirt-DEVEL-RPMS += xhtml1-dtds gettext gettext-devel libtasn1-devel gnutls-devel 
 libvirt-DEVEL-RPMS += libattr-devel augeas libpciaccess-devel yajl-devel 
 libvirt-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel 
 libvirt-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
