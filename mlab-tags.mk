@@ -15,7 +15,7 @@ iptables-GITPATH                := git://git.planet-lab.org/iptables.git@iptable
 # we use the stock iproute2 with 2.6.32, since our gre patch is not needed anymore with that kernel
 # note that this should be consistently reflected in yumexclude
 ALL := $(filter-out iproute,$(ALL))
-util-vserver-GITPATH		:= git://git.planet-lab.org/util-vserver.git@util-vserver-0.30.216-19
+util-vserver-GITPATH            := git://git.planet-lab.org/util-vserver.git@util-vserver-0.30.216-21
 libnl-GITPATH			:= git://git.planet-lab.org/libnl.git@libnl-1.1-2
 util-vserver-pl-GITPATH		:= git://git.planet-lab.org/util-vserver-pl.git@util-vserver-pl-0.4-28
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
@@ -44,7 +44,7 @@ monitor-GITPATH			:= git://git.planet-lab.org/monitor@monitor-3.1-6
 PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopenssl-0.9-2
 ###
-pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-2
+pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-3
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-24
@@ -55,9 +55,9 @@ pypcilib-GITPATH		:= git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-16
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
-bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-2
+bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-3
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-2.1-4
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.1-6
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-9
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-10
