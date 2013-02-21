@@ -3,12 +3,12 @@
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
 lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@master
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
-procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master
+procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.3-1
 ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
-plnode-utils-GITPATH            := git://git.planet-lab.org/plnode-utils.git@master
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@master
+plnode-utils-GITPATH            := git://git.planet-lab.org/plnode-utils.git@plnode-utils-0.2-2
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.1-22
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
@@ -32,7 +32,7 @@ monitor-GITPATH			:= git://git.planet-lab.org/monitor@monitor-3.1-6
 PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopenssl-0.9-2
 ###
-pyaspects-GITPATH               := git://git.planet-lab.org/pyaspects.git@master
+pyaspects-GITPATH               := git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-3
 omf-GITPATH                     := git://git.planet-lab.org/omf.git@omf-5.3-11
 ###
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-24
@@ -40,14 +40,14 @@ sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-
 nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
 # this module still has changes that won't run on the mainstream distrib
 bootmanager-BRANCH		:= lxc_devel
-bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxc_devel
-pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@master
-pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@master
+bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.1-4
+pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-11
+pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-16
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
-bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
+bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.1-3
 sliceimage-GITPATH	        := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
-nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
+nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-2.1-4
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@master
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-10
