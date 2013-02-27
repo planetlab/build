@@ -110,7 +110,7 @@
 ####################
 
 # exported to spec files as plrelease
-PLANETLAB_RELEASE = 5.1
+PLANETLAB_RELEASE = 5.2
 
 #
 # Default values
