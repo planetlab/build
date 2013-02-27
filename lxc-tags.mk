@@ -34,7 +34,7 @@ omf-GITPATH                     := git://git.planet-lab.org/omf.git@omf-5.3-11
 ###
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-25
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
-nodeconfig-GITPATH		:= git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.0-7
+nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@master
 # this module still has changes that won't run on the mainstream distrib
 bootmanager-BRANCH		:= lxc_devel
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@lxc_devel
