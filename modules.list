@@ -1,7 +1,6 @@
 bind_public
 bootcd
 bootmanager
-bootmanager:lxc_devel
 codemux
 comgt
 DistributedRateLimiting
@@ -20,7 +19,6 @@ myplc
 nodeconfig
 nodeimage
 nodemanager
-nodemanager:2.0
 nodeupdate
 omf
 oml
