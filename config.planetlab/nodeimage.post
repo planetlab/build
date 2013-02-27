@@ -20,6 +20,8 @@ chroot ${vdir} /sbin/chkconfig util-vserver on || :
 chroot ${vdir} /sbin/chkconfig network on || :
 # and turn off NetworkManager if present, as it quite obviously messes with network
 chroot ${vdir} /sbin/chkconfig NetworkManager off || :
+# turn on ntpd
+chroot ${vdir} /sbin/chkconfig ntpd on || :
 
 # turn OFF vservers-default ; this is to automatically restart vservers, let nm do that
 chroot ${vdir} /sbin/chkconfig vservers-default off || :

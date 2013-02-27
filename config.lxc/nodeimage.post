@@ -17,6 +17,8 @@ chroot ${vdir} systemctl enable openvswitch.service || :
 chroot ${vdir} systemctl enable network.service || :
 # and turn off NetworkManager if present, as it quite obviously messes with network
 chroot ${vdir} systemctl disable NetworkManager.service || :
+# turn on ntpd
+chroot ${vdir} systemctl enable ntpd.service || :
 # tentatively turn on getty on tty1
 chroot ${vdir} systemctl enable getty@tty1.service || :
 
