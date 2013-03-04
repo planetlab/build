@@ -3,7 +3,7 @@
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
 lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@lxctools-0.9-2
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
-procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.3-1
+procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master
 ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
