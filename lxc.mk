@@ -47,7 +47,7 @@ IN_NODEIMAGE += procprotect
 # ipfw: root context module, and slice companion
 #
 # starting on 2013-03-05 when f18 has moved to kernel 3.8 this module won't build anymore
-#ifeq "$(DISTRONAME)" "f16"
+ifeq "$(DISTRONAME)" "f16"
 ipfwroot-MODULES := ipfw
 ipfwroot-SPEC := planetlab/ipfwroot.spec
 ALL += ipfwroot
