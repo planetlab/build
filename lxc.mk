@@ -46,6 +46,8 @@ IN_NODEIMAGE += procprotect
 #
 # ipfw: root context module, and slice companion
 #
+# starting on 2013-03-05 when f18 has moved to kernel 3.8 this module won't build anymore
+#ifeq "$(DISTRONAME)" "f16"
 ipfwroot-MODULES := ipfw
 ipfwroot-SPEC := planetlab/ipfwroot.spec
 ALL += ipfwroot
@@ -54,6 +56,7 @@ IN_NODEIMAGE += ipfwroot
 ipfwslice-MODULES := ipfw
 ipfwslice-SPEC := planetlab/ipfwslice.spec
 ALL += ipfwslice
+endif
 
 #
 # NodeUpdate
@@ -137,6 +140,7 @@ libvirt-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub
 ifeq "$(DISTRONAME)" "f16"
 libvirt-DEVEL-RPMS += libnl-devel libudev-devel
 endif
+# strictly speaking fuse-devel is not required anymore but we might wish to turn fuse back on again in the future
 ifeq "$(DISTRONAME)" "f18"
 libvirt-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
 libvirt-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 
