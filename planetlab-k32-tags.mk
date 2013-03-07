@@ -54,7 +54,7 @@ DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRate
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-1
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@master
-nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
+nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-1
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.2-1
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.1-10
