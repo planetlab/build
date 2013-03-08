@@ -30,10 +30,6 @@ pl_fedora_url=$eu_fedora_url
 pl_centos_url=rsync://ftp.tpnet.pl/centos
 pl_epel_url=rsync://ftp.icm.edu.pl/pub/Linux/fedora/linux/epel
 
-jp_fedora_url="jp_fedora_url-needs-to-be-defined"
-jp_centos_url="jp_centos_url-needs-to-be-defined"
-jp_epel_url="jp_epel_url-needs-to-be-defined"
-
 default_distroname="f16"
 all_distronames="f16 f18"
 default_arch="i386"
@@ -187,7 +183,6 @@ function usage () {
     echo " -E rsyncurl for epel (default is $epel_url)"
     echo " -s : uses standard (US) mirrors $us_fedora_url $us_centos_url $us_epel_url"
     echo " -e : uses European mirrors $eu_fedora_url $eu_centos_url $eu_epel_url"
-    echo " -j : uses Japanese mirrors $jp_fedora_url $jp_centos_url $jp_epel_url"
     echo " -f distroname - use vserver convention, e.g. f8 or centos5"
     echo " -F : for distroname in $all_distronames"
     echo " -a arch - use yum convention"
@@ -208,7 +203,7 @@ function run () {
 function main () {
     distronames=""
     archs=""
-    while getopts "nvlcCr:u:U:E:sejf:Fa:Ah" opt ; do
+    while getopts "nvlcCr:u:U:E:sef:Fa:Ah" opt ; do
 	case $opt in
 	    n) dry_run=--dry-run ;;
 	    v) verbose=--verbose ;;
@@ -221,7 +216,6 @@ function main () {
 	    E) epel_url=$OPTARG ;;
 	    s) fedora_url=$us_fedora_url ; centos_url=$us_centos_url ; epel_url=$us_epel_url;;
 	    e) fedora_url=$eu_fedora_url ; centos_url=$eu_centos_url ; epel_url=$eu_epel_url ;;
-	    j) fedora_url=$jp_fedora_url ; centos_url=$jp_centos_url ; epel_url=$jp_epel_url ;;
 	    f) distronames="$distronames $OPTARG" ;;
 	    F) distronames="$distronames $all_distronames" ;;
 	    a) archs="$archs $OPTARG" ;;
