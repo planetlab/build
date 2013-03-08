@@ -1,14 +1,14 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
-lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@lxctools-0.9-3
+lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@lxctools-0.9-4
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master
 ipfw-GITPATH                    := git://git.planet-lab.org/ipfw.git@ipfw-20120610-2
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH            := git://git.planet-lab.org/plnode-utils.git@plnode-utils-0.2-2
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-2.1-22
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-5.2-1
 #
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.planet-lab.org/codemux.git@codemux-0.1-15
