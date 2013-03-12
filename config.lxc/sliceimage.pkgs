@@ -35,6 +35,6 @@ package: vsyssh
 package: bind_public
 # libvirt lxc containers need this so they can start up their network
 package: openssh-server dhclient
-
-package<=f8 package=centos5: vixie-cron
-package>=f10: cronie
+package: cronie
+# preinstall this 
+package: sliver-openvswitch

@@ -244,6 +244,11 @@ bind_public-SPEC := bind_public.spec
 IN_SLICEIMAGE += bind_public
 ALL += bind_public
 
+sliver-openvswitch-MODULES := sliver-openvswitch
+sliver-openvswitch-SPEC := sliver-openvswitch.spec
+IN_SLICEIMAGE += sliver-openvswitch
+ALL += sliver-openvswitch
+
 #
 # plcapi
 #

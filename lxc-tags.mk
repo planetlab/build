@@ -21,6 +21,7 @@ openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@openvswitch-1.2
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-45
 bind_public-GITPATH             := git://git.planet-lab.org/bind_public.git@bind_public-0.1-2
+sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.9.90-3
 plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.2-1
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.planet-lab.org/plewww.git@plewww-5.2-1
