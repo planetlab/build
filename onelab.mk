@@ -586,4 +586,4 @@ ALL += release
 
 myslice-MODULES := myslice
 myslice-SPEC := myslice.spec
-#ALL += myslice
+ALL += myslice
