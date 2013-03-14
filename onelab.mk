@@ -583,3 +583,7 @@ release-MODULES := myplc
 release-SPEC := myplc-release.spec
 release-RPMDATE := yes
 ALL += release
+
+myslice-MODULES := myslice
+myslice-SPEC := myslice.spec
+#ALL += myslice
