@@ -570,7 +570,6 @@ function setup_lxc() {
     mkdir $rootfs_path/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
-<<<<<<< HEAD
     # copy libvirt xml template
     veth_pair="i$(echo $HOSTNAME | cut -d. -f1)" 
     tmpl_name="$lxc.xml"
@@ -609,28 +608,6 @@ function setup_lxc() {
   </network>
 </domain>
 EOF
-=======
-    # start container
-    lxc-start -d -n $lxc
-
-    echo $IP is up, waiting for ssh...
-
-    # wait max 5 min for sshd to start 
-    ssh_up=""
-    stop_time=$(($(date +%s) + 300))
-    current_time=$(date +%s)
-    counter=1
-    while [ "$current_time" -lt "$stop_time" ] ; do
-         echo "$counter-th attempt to reach sshd in container $lxc ..."
-         ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
-         sleep 10
-         current_time=$(($current_time + 10))
-	 counter=$(($counter+1))
-    done
-
-    # Thierry: this is fatal, let's just exit with a failure here
-    [ -z $ssh_up ] && { echo "SSHD in container $lxc is not running" ; exit 1 ; }
->>>>>>> afa8207b5ee1a3aa29026bbe427be9b4516436fb
    
     # define lxc container for libvirt
     virsh -c lxc:// define $config_path/$tmpl_name
