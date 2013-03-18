@@ -19,9 +19,7 @@ DEFAULT_IFNAME=eth0
 COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
 
-lxc_version="lxc-0.8.0"
-lxc_git_repo="git://lxc.git.sourceforge.net/gitroot/lxc/lxc"
-
+libvirt_version="1.0.2"
 function bridge_init () {
 
     # turn on verbosity
@@ -140,37 +138,28 @@ function check_yumgroup_installed () {
 }
 
 function prepare_host() {
-        
-    #################### lxc-tools : rebuild as current fedora release has flaws
-    #install development tools
-    check_yumgroup_installed "Development Tools"
-    #install libcap-devel, libvirt
-    check_yum_installed libcap-devel
-    check_yum_installed libvirt
+   
+    host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"    
+    ## check if libvirt 1.0.2-1 is installed
+    rpm -qa | grep -e "libvirt*.*1.0.2-1" || { echo "Libvirt 1.0.2-1 needs to be installed!!!" ; exit 1 ; }
 
-    #retrieve and install lxc from sources 
-    raw_version=$(lxc-version ||: )
-    lxc_installed_version=$(echo $raw_version | sed -e 's,.*: ,,')
-    if [ "$lxc_installed_version" != "$(echo $lxc_version | cut -d'-' -f2)" ] ; then
-	echo "Expecting version" '['$lxc_version']'
-	echo "Found version" '['$lxc_installed_version']'
-        echo "Installing lxc ..."
-        cd /root
-	[ -d lxc ] || git clone "$lxc_git_repo"
-        cd lxc
-	git pull
-	git checkout $lxc_version
-        ./autogen.sh
-        ./configure --prefix=/usr --exec-prefix=/usr --disable-apparmor
-        make
-        make install
-        mkdir -p /usr/var/lib/
-        [ -d /usr/var/lib/lxc ] || ln -s /var/lib/lxc /usr/var/lib/lxc
-	cd $BUILD_DIR
-    fi
- 
-#    #create a placeholder (just a hack to make lxc works)
-#    [ -d "/usr/local/var/lib" ] || mkdir -p /usr/local/var/lib
+#    host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"
+#    if [ ! -f /etc/yum.repos.d/libvirt.repo ] ; then
+#       touch /etc/yum.repos.d/libvirt.repo
+#       cat <<EOF > /etc/yum.repos.d/libvirt.repo
+#[libvirt]
+#name=libvirt-1.0.2-1
+#baseurl=http://build.onelab.eu/lxc/2013.02.25--lxc$host_fcdistro/RPMS/
+#enabled=1
+#gpgcheck=0
+#EOF
+#
+#       yum --assumeno update
+#       check_yumgroup_installed "Development Tools"
+#       check_yum_installed libcap-devel
+#       check_yum_installed libvirt
+#       systemctl start libvirtd
+#    fi
 
     #################### bride initialization
     check_yum_installed bridge-utils
@@ -217,12 +206,11 @@ else
 NETWORKING=yes
 HOSTNAME=$HOSTNAME
 EOF
-fi
-
     # set minimal hosts
-#    cat <<EOF > $rootfs_path/etc/hosts
-#127.0.0.1 localhost $HOSTNAME
-#EOF
+    cat <<EOF > $rootfs_path/etc/hosts
+127.0.0.1 localhost $HOSTNAME
+EOF
+fi
 
     dev_path="${rootfs_path}/dev"
     rm -rf $dev_path
@@ -255,8 +243,8 @@ function configure_fedora_init() {
 
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.sysinit
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.d/rc.sysinit
-    chroot ${rootfs_path} chkconfig udev-post off
-    chroot ${rootfs_path} chkconfig network on
+    chroot ${rootfs_path} /sbin/chkconfig udev-post off
+    chroot ${rootfs_path} /sbin/chkconfig network on
 }
 
 
@@ -275,7 +263,7 @@ function configure_fedora_systemd() {
     ln -s /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
     rm -f ${rootfs_path}/etc/systemd/system/getty.target.wants/*service || :
 # can't seem to handle this one with systemctl
-    chroot ${rootfs_path} chkconfig network on
+    chroot ${rootfs_path} /sbin/chkconfig network on
 }
 
 function download_fedora() {
@@ -582,6 +570,46 @@ function setup_lxc() {
     mkdir $rootfs_path/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
+<<<<<<< HEAD
+    # copy libvirt xml template
+    veth_pair="i$(echo $HOSTNAME | cut -d. -f1)" 
+    tmpl_name="$lxc.xml"
+    cat > $config_path/$tmpl_name<<EOF
+<domain type='lxc'>
+  <name>$lxc</name>
+  <memory>524288</memory>
+  <os>
+    <type>exe</type>
+    <init>/sbin/init</init>
+  </os>
+  <features>
+    <acpi/>
+  </features>
+  <vcpu>1</vcpu>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <emulator>/usr/libexec/libvirt_lxc</emulator>
+    <filesystem type='mount'>
+      <source dir='$rootfs_path'/>
+      <target dir='/'/>
+    </filesystem>
+    <interface type="bridge">
+      <source bridge="br0"/>
+      <target dev='$veth_pair'/>
+    </interface>
+    <console type='pty' />
+  </devices>
+  <network>
+    <name>host-bridge</name>
+    <forward mode="bridge"/>
+    <bridge name="br0"/>
+  </network>
+</domain>
+EOF
+=======
     # start container
     lxc-start -d -n $lxc
 
@@ -602,10 +630,13 @@ function setup_lxc() {
 
     # Thierry: this is fatal, let's just exit with a failure here
     [ -z $ssh_up ] && { echo "SSHD in container $lxc is not running" ; exit 1 ; }
+>>>>>>> afa8207b5ee1a3aa29026bbe427be9b4516436fb
    
+    # define lxc container for libvirt
+    virsh -c lxc:// define $config_path/$tmpl_name
+
     # rpm --rebuilddb
-    chroot $rootfs_path rpm --rebuilddb
-    #ssh -o "StrictHostKeyChecking no" $IP "rpm --rebuilddb"
+    chroot $rootfs_path /bin/rpm --rebuilddb
 
     configure_yum_in_lxc $lxc $fcdistro $pldistro
 
@@ -636,27 +667,27 @@ function devel_or_vtest_tools () {
     ### install individual packages, then groups
     # get target arch - use uname -i here (we want either x86_64 or i386)
    
-    lxc_arch=$(chroot $rootfs_path uname -i)
+    lxc_arch=$(chroot $rootfs_path /bin/uname -i)
     # on debian systems we get arch through the 'arch' command
-    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $rootfs_path arch)
+    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $rootfs_path /bin/arch)
 
     packages=$(pl_getPackages -a $lxc_arch $fcdistro $pldistro $pkgsfile)
     groups=$(pl_getGroups -a $lxc_arch $fcdistro $pldistro $pkgsfile)
 
     case "$pkg_method" in
 	yum)
-	    [ -n "$packages" ] && chroot $rootfs_path yum -y install $packages
+	    [ -n "$packages" ] && chroot $rootfs_path /usr/bin/yum -y install $packages
 	    for group_plus in $groups; do
 		group=$(echo $group_plus | sed -e "s,+++, ,g")
-		chroot $rootfs_path yum -y groupinstall "$group"
+		chroot $rootfs_path /usr/bin/yum -y groupinstall "$group"
 	    done
 	    # store current rpm list in /init-lxc.rpms in case we need to check the contents
-	    chroot $rootfs_path rpm -aq > $rootfs_path/init-lxc.rpms
+	    chroot $rootfs_path /bin/rpm -aq > $rootfs_path/init-lxc.rpms
 	    ;;
 	debootstrap)
-	    chroot $rootfs_path apt-get update
+	    chroot $rootfs_path /usr/bin/apt-get update
 	    for package in $packages ; do 
-	        chroot $rootfs_path  apt-get install -y $package 
+	        chroot $rootfs_path  /usr/bin/apt-get install -y $package 
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
@@ -690,29 +721,29 @@ function post_install_vbuild () {
 
 ### From myplc-devel-native.spec
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $rootfs_path bash -x
+    cat << EOF | chroot $rootfs_path /bin/bash -x
     # set up /dev/loop* in lxc
     for i in \$(seq 0 255) ; do
-	mknod -m 640 /dev/loop\$i b 7 \$i
+	/bin/mknod -m 640 /dev/loop\$i b 7 \$i
     done
     
     # create symlink for /dev/fd
-    [ ! -e "/dev/fd" ] && ln -s /proc/self/fd /dev/fd
+    [ ! -e "/dev/fd" ] && /bin/ln -s /proc/self/fd /dev/fd
 
     # modify /etc/rpm/macros to not use /sbin/new-kernel-pkg
-    sed -i 's,/sbin/new-kernel-pkg:,,' /etc/rpm/macros
+    /bin/sed -i 's,/sbin/new-kernel-pkg:,,' /etc/rpm/macros
     if [ -h "/sbin/new-kernel-pkg" ] ; then
-	filename=\$(readlink -f /sbin/new-kernel-pkg)
+	filename=\$(/bin/readlink -f /sbin/new-kernel-pkg)
 	if [ "\$filename" == "/sbin/true" ] ; then
-		echo "WARNING: /sbin/new-kernel-pkg symlinked to /sbin/true"
-		echo "\tmost likely /etc/rpm/macros has /sbin/new-kernel-pkg declared in _netsharedpath."
-		echo "\tPlease remove /sbin/new-kernel-pkg from _netsharedpath and reintall mkinitrd."
+		/bin/echo "WARNING: /sbin/new-kernel-pkg symlinked to /sbin/true"
+		/bin/echo "\tmost likely /etc/rpm/macros has /sbin/new-kernel-pkg declared in _netsharedpath."
+		/bin/echo "\tPlease remove /sbin/new-kernel-pkg from _netsharedpath and reintall mkinitrd."
 		exit 1
 	fi
     fi
     
     # customize root's prompt
-    cat << PROFILE > /root/.profile
+    /bin/cat << PROFILE > /root/.profile
 export PS1="[$lxc] \\w # "
 PROFILE
 
@@ -748,26 +779,58 @@ function post_install_myplc  () {
     personality=$1; shift
 
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $rootfs_path bash -x
+    cat << EOF | chroot $rootfs_path /bin/bash -x
 
     # create /etc/sysconfig/network if missing
-    [ -f /etc/sysconfig/network ] || echo NETWORKING=yes > /etc/sysconfig/network
+    [ -f /etc/sysconfig/network ] || /bin/echo NETWORKING=yes > /etc/sysconfig/network
 
     # create symlink for /dev/fd
-    [ ! -e "/dev/fd" ] && ln -s /proc/self/fd /dev/fd
+    [ ! -e "/dev/fd" ] && /bin/ln -s /proc/self/fd /dev/fd
 
     # turn off regular crond, as plc invokes plc_crond
-    chkconfig crond off
+    /sbin/chkconfig crond off
 
     # take care of loginuid in /etc/pam.d 
-    sed -i "s,#*\(.*loginuid.*\),#\1," /etc/pam.d/*
+    /bin/sed -i "s,#*\(.*loginuid.*\),#\1," /etc/pam.d/*
 
     # customize root's prompt
-    cat << PROFILE > /root/.profile
+    /bin/cat << PROFILE > /root/.profile
 export PS1="[$lxc] \\w # "
 PROFILE
 
 EOF
+}
+
+function start_lxc() {
+
+    set -x
+    set -e
+    #trap failure ERR INT
+
+    lxc=$1; shift
+  
+    virsh -c lxc:// start $lxc
+  
+    echo $IP is up, waiting for ssh...
+
+    #wait max 5 min for sshd to start 
+    ssh_up=""
+    stop_time=$(($(date +%s) + 300))
+    current_time=$(date +%s)
+    
+    counter=1
+    while [ "$current_time" -lt "$stop_time" ] ; do
+         echo "$counter-th attempt to reach sshd in container $lxc ..."
+         ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
+         sleep 10
+         current_time=$(($current_time + 10))
+         counter=$(($counter+1))
+    done
+
+    # Thierry: this is fatal, let's just exit with a failure here
+    [ -z $ssh_up ] && { echo "SSHD in container $lxc is not running" ; exit 1 ; } 
+
+    return 0
 }
 
 function usage () {
@@ -929,6 +992,7 @@ function main () {
 
     post_install $lxc $personality
     
+    start_lxc $lxc
 
     echo $COMMAND Done
 }
