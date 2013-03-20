@@ -36,3 +36,4 @@ package: vim-enhanced
 
 package<=f8 package=centos5: vixie-cron
 package>=f10: cronie
+package=centos6: epel-release
