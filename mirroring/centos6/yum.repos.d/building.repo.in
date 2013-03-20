@@ -2,18 +2,18 @@
 name=CentOS-$releasever - Base
 baseurl=@MIRRORURL@/centos/6.3/os/$basearch/
 gpgcheck=1
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+gpgkey=http://@MIRRORURL@/centos/RPM-GPG-KEY-CentOS-6
 
 [updates]
 name=CentOS-$releasever - Updates
 baseurl=@MIRRORURL@/centos/6.3/updates/$basearch/
 gpgcheck=1
-gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6
+gpgkey=http://@MIRRORURL@/centos/RPM-GPG-KEY-CentOS-6
 
 [epel]
 name=Extra Packages for Enterprise Linux 6 - $basearch
-baseurl=http://mirror.itc.virginia.edu/fedora-epel/6/i386/
+baseurl=http://@MIRRORURL@/fedora-epel/6/i386/
 failovermethod=priority
 enabled=1
 gpgcheck=1
-gpgkey=http://mirror.itc.virginia.edu/fedora-epel/RPM-GPG-KEY-EPEL-6
+gpgkey=http://@MIRRORURL@/fedora-epel/RPM-GPG-KEY-EPEL-6
