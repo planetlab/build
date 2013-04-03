@@ -98,6 +98,8 @@ package<=f8 package=centos5: termcap libtermcap vixie-cron
 package>=centos6: compat-libtermcap 
 package>=f10: cronie
 
+package=centos6: epel-release
+
 #
 # planetlab
 #

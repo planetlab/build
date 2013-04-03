@@ -19,7 +19,7 @@ DEFAULT_IFNAME=eth0
 COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
 
-libvirt_version="1.0.2"
+libvirt_version="1.0.3"
 function bridge_init () {
 
     # turn on verbosity
@@ -141,7 +141,7 @@ function prepare_host() {
    
     host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"    
     ## check if libvirt 1.0.2-1 is installed
-    rpm -qa | grep -e "libvirt*.*1.0.2-1" || { echo "Libvirt 1.0.2-1 needs to be installed!!!" ; exit 1 ; }
+    virsh -v | grep -e "1.0.3" || { echo "Libvirt 1.0.3 needs to be installed!!!" ; exit 1 ; }
 
 #    host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"
 #    if [ ! -f /etc/yum.repos.d/libvirt.repo ] ; then
