@@ -800,7 +800,7 @@ that for other purposes than tagging""" % options.workdir
            f.write(line)
        f.close()
 
-    def insert_changelog (self, logfile, oldtag, newtag):
+    def insert_changelog (self, logfile, newtag):
         for specfile in self.all_specnames():
             newspecfile=specfile+".new"
             if self.options.verbose:
@@ -930,9 +930,11 @@ that for other purposes than tagging""" % options.workdir
         spec_dict = self.spec_dict()
         self.show_dict(spec_dict)
         
-        # side effects
-        old_tag_name = self.tag_name(spec_dict)
-        old_svn_tag_name = self.tag_name(spec_dict, old_svn_name=True)
+        # compute previous tag - if not bypassed
+        if not self.options.bypass:
+            old_tag_name = self.tag_name(spec_dict)
+            # sanity check
+            old_tag_name = self.check_tag(old_tag_name, need_it=True)
 
         if (self.options.new_version):
             # new version set on command line
@@ -944,16 +946,15 @@ that for other purposes than tagging""" % options.workdir
             spec_dict[self.module_taglevel_varname] = new_taglevel
 
         new_tag_name = self.tag_name(spec_dict)
-
         # sanity check
-        old_tag_name = self.check_tag(old_tag_name, need_it=True, old_svn_tag_name=old_svn_tag_name)
         new_tag_name = self.check_tag(new_tag_name, need_it=False)
 
         # checking for diffs
-        diff_output = self.repository.diff_with_tag(old_tag_name)
-        if len(diff_output) == 0:
-            if not prompt ("No pending difference in module %s, want to tag anyway"%self.pathname,False):
-                return
+        if not self.options.bypass:
+            diff_output = self.repository.diff_with_tag(old_tag_name)
+            if len(diff_output) == 0:
+                if not prompt ("No pending difference in module %s, want to tag anyway"%self.pathname,False):
+                    return
 
         # side effect in head's specfile
         self.patch_spec_var(spec_dict)
@@ -971,7 +972,9 @@ that for other purposes than tagging""" % options.workdir
 Please write a changelog for this new tag in the section below
 """%(Module.edit_magic_line,setting_tag_line))
 
-        if not self.options.verbose or prompt('Want to see diffs while writing changelog',True):
+        if self.options.bypass: 
+            pass
+        elif prompt('Want to see diffs while writing changelog',True):
             file(changelog_plain,"a").write('DIFF=========\n' + diff_output)
         
         if self.options.debug:
@@ -984,7 +987,7 @@ Please write a changelog for this new tag in the section below
         self.strip_magic_line_filename(changelog_plain,changelog_strip,new_tag_name)
         # insert changelog in spec
         if self.options.changelog:
-            self.insert_changelog (changelog_plain,old_tag_name,new_tag_name)
+            self.insert_changelog (changelog_plain,new_tag_name)
 
         ## update build
         build_path = os.path.join(self.options.workdir,
@@ -1000,6 +1003,8 @@ Please write a changelog for this new tag in the section below
         default_answer = 'y'
         tagsfiles.sort()
         while True:
+            # do not bother if in bypass mode
+            if self.options.bypass: break
             for tagsfile in tagsfiles:
                 status=tagsdict[tagsfile]
                 basename=os.path.basename(tagsfile)
@@ -1453,7 +1458,7 @@ Branches:
         parser=OptionParser(usage=usage)
         
         # the 'adopt' mode is really special and doesn't share any option
-        if mode=='adopt':
+        if mode == 'adopt':
             parser.add_option("-m","--module",action="append",dest="modules",default=[],
                               help="modules, can be used several times or with quotes")
             parser.add_option("-t","--tag",action="store", dest="tag", default='master',
@@ -1471,23 +1476,25 @@ Branches:
             return 
 
         # the other commands (module-* and release-changelog) share the same skeleton
-        if mode == "tag" or mode == 'branch':
+        if mode in [ 'tag', 'branch'] :
             parser.add_option("-s","--set-version",action="store",dest="new_version",default=None,
                               help="set new version and reset taglevel to 0")
-        if mode == "tag" :
+            parser.add_option("-0","--bypass",action="store_true",dest="bypass",default=False,
+                              help="skip checks on existence of the previous tag")
+        if mode == 'tag' :
             parser.add_option("-c","--no-changelog", action="store_false", dest="changelog", default=True,
                               help="do not update changelog section in specfile when tagging")
             parser.add_option("-b","--build-branch", action="store", dest="build_branch", default=None,
                               help="specify a build branch; used for locating the *tags.mk files where adoption is to take place")
-        if mode == "tag" or mode == "sync" :
+        if mode in [ 'tag', 'sync' ] :
             parser.add_option("-e","--editor", action="store", dest="editor", default=default_editor(),
                               help="specify editor")
 
-        if mode in ["diff","version"] :
+        if mode in ['diff','version'] :
             parser.add_option("-W","--www", action="store", dest="www", default=False,
                               help="export diff in html format, e.g. -W trunk")
 
-        if mode == "diff" :
+        if mode == 'diff' :
             parser.add_option("-l","--list", action="store_true", dest="list", default=False,
                               help="just list modules that exhibit differences")
             
