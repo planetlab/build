@@ -50,8 +50,8 @@ IN_NODEIMAGE += procprotect
 #ifeq "$(DISTRONAME)" "f16"
 ipfwroot-MODULES := ipfw
 ipfwroot-SPEC := planetlab/ipfwroot.spec
-ALL += ipfwroot
-IN_NODEIMAGE += ipfwroot
+#ALL += ipfwroot
+#IN_NODEIMAGE += ipfwroot
 
 ipfwslice-MODULES := ipfw
 ipfwslice-SPEC := planetlab/ipfwslice.spec
