@@ -61,4 +61,4 @@ DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRate
 
 myslice-GITPATH			:= git://git.onelab.eu/myslice-django.git@master
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.2-1
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@master
