@@ -47,8 +47,6 @@ pyaspects-GITPATH               := git://git.onelab.eu/pyaspects.git@pyaspects-0
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.1-25
-sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@master
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.2-1
 pypcilib-GITPATH                := git://git.onelab.eu/pypcilib.git@pypcilib-0.2-11
@@ -59,6 +57,11 @@ nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-5
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
+#
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-2.1-25
+sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
+#
 myslice-GITPATH			:= git://git.onelab.eu/myslice-django.git@master
+manifold-GITPATH		:= git://git.top-hat.info/tophat/repositories/tophat.git@packaging
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@master
