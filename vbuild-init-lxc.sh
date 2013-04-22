@@ -19,7 +19,7 @@ DEFAULT_IFNAME=eth0
 COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
 
-libvirt_version="1.0.3"
+libvirt_version="1.0.4"
 function bridge_init () {
 
     # turn on verbosity
