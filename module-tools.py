@@ -842,6 +842,17 @@ that for other purposes than tagging""" % options.workdir
         return "%s-%s" % (base_tag_name, self.last_tag(spec_dict))
     
 
+    pattern_format="\A\s*%(module)s-(SVNPATH|GITPATH)\s*(=|:=)\s*(?P<url_main>[^\s]+)/%(module)s[^\s]+"
+
+    def is_mentioned_in_tagsfile (self, tagsfile):
+        # so that %(module)s gets replaced from format
+        module=self.name
+        module_matcher = re.compile(Module.pattern_format % locals())
+        with open(tagsfile) as f:
+            for line in f.readlines():
+                if module_matcher.match(line): return True
+        return False
+
 ##############################
     # using fine_grain means replacing only those instances that currently refer to this tag
     # otherwise, <module>-{SVNPATH,GITPATH} is replaced unconditionnally
@@ -867,11 +878,11 @@ that for other purposes than tagging""" % options.workdir
         else:
             if self.options.verbose:
                 print 'Searching for -SVNPATH or -GITPATH lines referring to /%s/\n\tin %s .. '%(self.pathname,tagsfile),
-            pattern="\A\s*%s-(SVNPATH|GITPATH)\s*(=|:=)\s*(?P<url_main>[^\s]+)/%s[^\s]+"\
-                                          %(self.name,self.name)
-            matcher_module=re.compile(pattern)
+            # so that %(module)s gets replaced from format
+            module=self.name
+            module_matcher=re.compile(Module.pattern_format % locals())
             for line in tags.readlines():
-                attempt=matcher_module.match(line)
+                attempt=module_matcher.match(line)
                 if attempt:
                     if line.find("-GITPATH") >= 0:
                         modulepath = "%s-GITPATH"%self.name
@@ -1006,6 +1017,9 @@ Please write a changelog for this new tag in the section below
             # do not bother if in bypass mode
             if self.options.bypass: break
             for tagsfile in tagsfiles:
+                if not self.is_mentioned_in_tagsfile (tagsfile):
+                    if self.options.verbose: print "tagsfile %s does not mention %s - skipped"%(tagsfile,self.name)
+                    continue
                 status=tagsdict[tagsfile]
                 basename=os.path.basename(tagsfile)
                 print ".................... Dealing with %s"%basename
