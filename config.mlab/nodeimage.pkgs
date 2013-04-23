@@ -114,6 +114,7 @@ package: util-vserver-legacy
 package: util-vserver-pl
 #package: util-python
 package: NodeManager
+package: nodemanager-vs
 package: NodeUpdate
 package: codemux
 package: pl_sshd
