@@ -17,8 +17,23 @@ echo "in slice image: removing requiretty from /etc/sudoers"
 sed -i -e 's,^\(Defaults.*requiretty\),#\1,' ${vdir}/etc/sudoers
 
 # Fix up /etc/init.d/halt 
+# xxx this would be wrong in f>=16 because there's no /sbin anymore
+# but I suspect this is for vserver only..
 echo "in slice image: fixing /etc/init.d/halt"
 cat > ${vdir}/etc/init.d/halt <<EOF
 #!/bin/bash
 exec /sbin/killall5 -15
 EOF
+
+# make sure we do not end up with an empty /selinux 
+# libvirt gets all confused when that happens
+cd ${vdir}
+if [ -d selinux ] ; then
+    if [ "$(ls -A selinux)" ] ; then
+	echo "sliceimage.post: WARNING: ${vdir}/selinux is not empty - preserving"
+    else
+	echo "sliceimage.post: REMOVING empty ${vdir}/selinux"
+	rmdir selinux
+    fi
+fi
+cd -
