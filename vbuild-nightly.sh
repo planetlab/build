@@ -422,6 +422,7 @@ function usage () {
     echo " -y {pl,pg} - passed to run_log"
     echo " -e step - passed to run_log"
     echo " -X : passes --lxc to run_log"
+    echo " -S : passes --vs to run_log"
     echo " -x <run_log_args> - a hook to pass other arguments to run_log"
     echo " -w webpath - defaults to $DEFAULT_WEBPATH"
     echo " -W testbuildurl - defaults to $DEFAULT_TESTBUILDURL; this is also used to get the hostname where to publish builds"
@@ -457,7 +458,7 @@ function main () {
     SIGNYUMREPO=""
 
     OPTS_ORIG=$@
-    OPTS=$(getopt -o "f:d:p:m:s:t:b:o:c:y:e:Xx:w:W:r:M:Yg:u:K:SBTnv7i:P:h" -l "build-branch:" -- $@)
+    OPTS=$(getopt -o "f:d:p:m:s:t:b:o:c:y:e:XSx:w:W:r:M:Yg:u:K:SBTnv7i:P:h" -l "build-branch:" -- $@)
     if [ $? != 0 ]
     then
         usage
@@ -479,8 +480,10 @@ function main () {
 	    -y) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --rspec-style $2"; shift 2 ;;
 	    # -e foo -> run_log -e foo
 	    -e) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --exclude $2"; shift 2 ;;
-	    # -X -> run_log -X
+	    # -X -> run_log --lxc
 	    -X) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --lxc"; shift;;
+	    # -S -> run_log --vs
+	    -S) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS --vs"; shift;;
 	    # more general form to pass args to run_log
 	    # -x foo -> run_log foo
 	    -x) RUN_LOG_EXTRAS="$RUN_LOG_EXTRAS $2"; shift 2;;
