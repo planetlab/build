@@ -47,7 +47,7 @@ omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.2-2
-bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.2-1
+bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@master
 pypcilib-GITPATH                := git://git.onelab.eu/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-16
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
