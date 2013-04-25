@@ -301,7 +301,17 @@ set -x
     
     mkdir -p $INSTALL_ROOT/var/lib/rpm
     rpm --root $INSTALL_ROOT  --initdb
-    rpm --root $INSTALL_ROOT -ivh $INSTALL_ROOT/fedora-release-$release.noarch.rpm
+    # when installing f12 this apparently is already present, so ignore result
+    rpm --root $INSTALL_ROOT -ivh $INSTALL_ROOT/fedora-release-$release.noarch.rpm || :
+    # however f12 root images won't get created on a f18 host
+    # (the issue here is the same as the one we ran into when dealing with a vs-box)
+    # in a nutshell, in f12 the glibc-common and filesystem rpms have an apparent conflict
+    # >>> file /usr/lib/locale from install of glibc-common-2.11.2-3.x86_64 conflicts 
+    #          with file from package filesystem-2.4.30-2.fc12.x86_64
+    # in fact this was - of course - allowed by f12's rpm but later on a fix was made 
+    #   http://rpm.org/gitweb?p=rpm.git;a=commitdiff;h=cf1095648194104a81a58abead05974a5bfa3b9a
+    # So ideally if we want to be able to build f12 images from f18 we need an rpm that has
+    # this patch undone, like we have in place on our f14 boxes (our f14 boxes need a f18-like rpm)
     echo "$YUM install $PKG_LIST"
     $YUM install $PKG_LIST
 
