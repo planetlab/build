@@ -65,7 +65,7 @@ function bridge_init () {
     address=$(/sbin/ip addr show $INTERFACE_LAN | grep -v inet6 | grep inet | head --lines=1 | awk '{print $2;}')
     [ -z "$address" ] && { echo "ERROR: Could not determine IP address for $INTERFACE_LAN" ; exit 1 ; }
 
-broadcast=$(/sbin/ip addr show $INTERFACE_LAN | grep -v inet6 | grep inet | head --lines=1 | awk '{print $4;}')
+    broadcast=$(/sbin/ip addr show $INTERFACE_LAN | grep -v inet6 | grep inet | head --lines=1 | awk '{print $4;}')
     [ -z "$broadcast" ] && echo "WARNING: Could not determine broadcast address for $INTERFACE_LAN"
 
     gateway=$(netstat -rn | grep '^0.0.0.0' | awk '{print $2;}')
@@ -246,8 +246,11 @@ function configure_fedora_init() {
     chroot ${rootfs_path} /sbin/chkconfig network on
 }
 
-
+# this code of course is for guests that do run on systemd
 function configure_fedora_systemd() {
+    # so ignore if we can't find /etc/systemd at all 
+    [ -d ${rootfs_path}/etc/systemd ] || return 0
+    # otherwise let's proceed
     unlink ${rootfs_path}/etc/systemd/system/default.target
     ln -s /lib/systemd/system/multi-user.target ${rootfs_path}/etc/systemd/system/default.target
     touch ${rootfs_path}/etc/fstab
