@@ -563,8 +563,7 @@ function setup_lxc() {
         exit 1
     fi
 
-    type /bin/systemd >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
+    if [ ! -d ${rootfs_path}/etc/systemd ]; then
         configure_fedora_init
     else
         configure_fedora_systemd
@@ -590,7 +589,7 @@ function setup_lxc() {
   <name>$lxc</name>
   <memory>524288</memory>
   <os>
-    <type>exe</type>
+    <type arch='$arch2'>exe</type>
     <init>/sbin/init</init>
   </os>
   <features>
@@ -917,7 +916,7 @@ function main () {
 
     if [ "$personality" == "linux32" ]; then
         arch=i386
-        arch2=x86
+        arch2=i686
     elif [ "$personality" == "linux64" ]; then
         arch=x86_64
         arch2=x86_64
