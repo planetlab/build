@@ -660,11 +660,13 @@ $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 
 ####################
 # very rough for now (one module per package), targets only sfa for now
+# the general idea here is, changing the specfile (for version number and all) is enough, and this
+# gets passed to "make debian" in the module
 define target_debian
 $(1)-debian: $(1)-tarball
 	mkdir -p DEBIAN/$(1)
 	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
-	make -C DEBIAN/$(1) "TARBALL=$(HOME)/$($(1).tarballs)" debian
+	make -C DEBIAN/$(1) debian "TARBALL=$(HOME)/$($(1).tarballs)" "VERSION=$($(1).rpm-release)" "RELEASE=$($(1).rpm-release)" "NAME=$($(1).rpm-name)"
 endef
 
 $(foreach package,$(ALL),$(eval $(call target_debian,$(package))))
