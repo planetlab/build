@@ -276,6 +276,10 @@ set -x
     # check the mini fedora was not already downloaded
     INSTALL_ROOT=$cache/partial
     echo $INSTALL_ROOT
+
+    # download a mini fedora into a cache
+    echo "Downloading fedora minimal ..."
+
     mkdir -p $INSTALL_ROOT
     if [ $? -ne 0 ]; then
         echo "Failed to create '$INSTALL_ROOT' directory"
@@ -297,13 +301,6 @@ set -x
       sed -i "s/\$basearch/$arch/g; s/\$releasever/$release/g;" $f
     done 
 
- #   install fedora
- #   PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
- #   yum --installroot=$INSTALL_ROOT --nogpgcheck install fedora-release
- #   yum --installroot=$INSTALL_ROOT --nogpgcheck install $PKG_LIST
-
-  
-    
     MIRROR_URL=http://mirror.onelab.eu/fedora/releases/$release/Everything/$arch/os
     RELEASE_URL1="$MIRROR_URL/Packages/fedora-release-$release-1.noarch.rpm"
     # with fedora18 the rpms are scattered by first name
