@@ -242,6 +242,9 @@ function configure_fedora_init() {
 
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.sysinit
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.d/rc.sysinit
+    # don't mount devpts, for pete's sake
+    sed -i 's/^.*dev.pts.*$/#\0/' ${rootfs_path}/etc/rc.sysinit
+    sed -i 's/^.*dev.pts.*$/#\0/' ${rootfs_path}/etc/rc.d/rc.sysinit
     chroot ${rootfs_path} /sbin/chkconfig udev-post off
     chroot ${rootfs_path} /sbin/chkconfig network on
 }
@@ -279,10 +282,26 @@ set -x
         return 1
     fi
 
-    # download a mini fedora into a cache
-    echo "Downloading fedora minimal ..."
-    YUM="yum --installroot $INSTALL_ROOT -y --nogpgcheck --releasever=$release"
-    PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
+    mkdir -p $INSTALL_ROOT/etc/yum.repos.d   
+    mkdir -p $INSTALL_ROOT/dev
+    mknod -m 0444 $INSTALL_ROOT/dev/random c 1 8
+    mknod -m 0444 $INSTALL_ROOT/dev/urandom c 1 9
+
+    # copy yum config and repo files
+    cp /etc/yum.conf $INSTALL_ROOT/etc/
+    cp /etc/yum.repos.d/fedora* $INSTALL_ROOT/etc/yum.repos.d/
+
+    # append fedora repo files with desired $release and $basearch
+    for f in $INSTALL_ROOT/etc/yum.repos.d/*
+    do
+      sed -i "s/\$basearch/$arch/g; s/\$releasever/$release/g;" $f
+    done 
+
+ #   install fedora
+ #   PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
+ #   yum --installroot=$INSTALL_ROOT --nogpgcheck install fedora-release
+ #   yum --installroot=$INSTALL_ROOT --nogpgcheck install $PKG_LIST
+
   
     
     MIRROR_URL=http://mirror.onelab.eu/fedora/releases/$release/Everything/$arch/os
@@ -315,6 +334,9 @@ set -x
     #   http://rpm.org/gitweb?p=rpm.git;a=commitdiff;h=cf1095648194104a81a58abead05974a5bfa3b9a
     # So ideally if we want to be able to build f12 images from f18 we need an rpm that has
     # this patch undone, like we have in place on our f14 boxes (our f14 boxes need a f18-like rpm)
+
+    YUM="yum --installroot=$INSTALL_ROOT --nogpgcheck -y"
+    PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
     echo "$YUM install $PKG_LIST"
     $YUM install $PKG_LIST
 
@@ -461,16 +483,16 @@ function configure_yum_in_lxc () {
 
     cat > $rootfs_path/etc/yum.repos.d/building.repo <<EOF
 [fedora]
-name=Fedora $release - \$basearch
-baseurl=http://mirror.onelab.eu/fedora/releases/$release/Everything/\$basearch/os/
+name=Fedora $release - $arch
+baseurl=http://mirror.onelab.eu/fedora/releases/$release/Everything/$arch/os/
 enabled=1
 metadata_expire=7d
 gpgcheck=1
 gpgkey=http://mirror.onelab.eu/keys/RPM-GPG-KEY-fedora-$release-primary
 
 [updates]
-name=Fedora $release - \$basearch - Updates
-baseurl=http://mirror.onelab.eu/fedora/updates/$release/\$basearch/
+name=Fedora $release - $arch - Updates
+baseurl=http://mirror.onelab.eu/fedora/updates/$release/$arch/
 enabled=1
 metadata_expire=7d
 gpgcheck=1
@@ -563,7 +585,7 @@ function setup_lxc() {
         exit 1
     fi
 
-    if [ ! -d ${rootfs_path}/etc/systemd ]; then
+    if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
         configure_fedora_init
     else
         configure_fedora_systemd
