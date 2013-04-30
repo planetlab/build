@@ -152,10 +152,21 @@ IN_NODEIMAGE += ipod
 #
 # NodeManager
 #
-nodemanager-MODULES := nodemanager
-nodemanager-SPEC := NodeManager.spec
-ALL += nodemanager
-IN_NODEIMAGE += nodemanager
+#nodemanager-MODULES := nodemanager
+#nodemanager-SPEC := NodeManager.spec
+#ALL += nodemanager
+#IN_NODEIMAGE += nodemanager
+
+# nodemanager
+nodemanager-lib-MODULES := nodemanager
+nodemanager-lib-SPEC := nodemanager-lib.spec
+ALL += nodemanager-lib
+IN_NODEIMAGE += nodemanager-lib
+nodemanager-vs-MODULES := nodemanager
+nodemanager-vs-SPEC := nodemanager-vs.spec
+ALL += nodemanager-vs
+IN_NODEIMAGE += nodemanager-vs
+
 
 #
 # plnode-utils
@@ -278,7 +289,7 @@ ALL += vsys-scripts
 # plcapi
 #
 plcapi-MODULES := plcapi
-plcapi-SPEC := PLCAPI.spec
+plcapi-SPEC := plcapi.spec
 ALL += plcapi
 IN_MYPLC += plcapi
 
