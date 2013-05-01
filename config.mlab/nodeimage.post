@@ -67,3 +67,21 @@ EOF
 
 # NOTE: Force package into crucial-rpm-list for NodeUpdate
 echo "nodebase" > ${vdir}/etc/planetlab/crucial-rpm-list
+cat <<EOF > /tmp/nodebase.spec
+Summary: Dummy Package for initial nodebase
+Name: nodebase
+Version: 0.1
+Release: 0
+Group: System Environment/Base
+License: Apache 2.0
+BuildArch: noarch
+
+%description
+This meta-package with no content allows 'yum update' to work on the m-lab
+nodebase. 
+
+%files
+EOF
+rpmbuild -bb /tmp/nodebase.spec
+cp /root/rpmbuild/RPMS/noarch/mlab-nodebase-0.1-0.noarch.rpm ${vdir}/root/
+chroot ${vdir} rpm -ihv /root/mlab-nodebase-0.1-0.noarch.rpm 
