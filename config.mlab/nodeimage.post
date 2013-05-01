@@ -83,5 +83,5 @@ nodebase.
 %files
 EOF
 rpmbuild -bb /tmp/nodebase.spec
-cp /root/rpmbuild/RPMS/noarch/mlab-nodebase-0.1-0.noarch.rpm ${vdir}/root/
-chroot ${vdir} rpm -ihv /root/mlab-nodebase-0.1-0.noarch.rpm 
+cp /root/rpmbuild/RPMS/noarch/nodebase-0.1-0.noarch.rpm ${vdir}/root/
+chroot ${vdir} rpm -ihv /root/nodebase-0.1-0.noarch.rpm 
