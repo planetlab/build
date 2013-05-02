@@ -63,4 +63,4 @@ sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
 myslice-GITPATH			:= git://git.onelab.eu/myslice-django.git@master
 manifold-GITPATH		:= git://git.onelab.eu/manifold.git@packaging
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@master
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.2-3
