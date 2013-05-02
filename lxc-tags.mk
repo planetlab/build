@@ -2,7 +2,7 @@
 
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
 lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@lxctools-0.9-5
-transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-2
+transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-3
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.3-3
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-9
