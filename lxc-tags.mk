@@ -21,7 +21,7 @@ openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@openvswitch-1.2
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH            := git://git.planet-lab.org/vsys-scripts.git@vsys-scripts-0.95-46
 bind_public-GITPATH             := git://git.planet-lab.org/bind_public.git@bind_public-0.1-2
-sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@master
+sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.10.90-2
 plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.2-2
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.planet-lab.org/plewww.git@plewww-5.2-2
@@ -42,7 +42,7 @@ pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-2
-sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@master
+sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-1
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.2-3
 # locating the right test directory - see make tests_gitpath
