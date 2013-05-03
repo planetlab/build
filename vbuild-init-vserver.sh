@@ -344,6 +344,7 @@ function devel_or_vtest_tools () {
 sc	    $personality vserver $vserver exec apt-get -y upgrade ||:
 	    # handle this one firt off to be sure; mostly cosmetic but avoid a huge amount of warnings
 	    $personality vserver $vserver exec apt-get install -y locales
+	    $personality vserver $vserver exec locale-gen en_US.UTF-8
 	    # install required packages
 	    # all in a single batch 
 	    [ -n "$packages" ] && $personality vserver $vserver exec apt-get install -y --ignore-missing $packages || :
