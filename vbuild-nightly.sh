@@ -143,9 +143,9 @@ function failure() {
 	( \
 	    echo "Subject: KO ${BASE} ${MAIL_SUBJECT}" ; \
 	    echo "To: $MAILTO" ; \
-	    echo "See full build log at $WEBBASE_URL/log.txt" ; \
-	    echo "and tail version at $WEBBASE_URL.ko" ; \
-	    echo "See complete set of testlogs at $WEBBASE_URL/testlogs" ; \
+	    echo "see build results at        $WEBBASE_URL" ; \
+	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
+	    echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
 	    echo "........................................" ; \
 	    webpublish tail --lines=1000 $WEBLOG ) | \
 	    sendmail $MAILTO
@@ -167,14 +167,16 @@ function success () {
     if [ -n "$DO_TEST" ] ; then
 	( \
 	    echo "Successfully built and tested" ; \
-	    echo "See full build log at $WEBBASE_URL/log.txt" ; \
-	    echo "See complete set of testlogs at $WEBBASE_URL/testlogs" ; \
+	    echo "see build results at        $WEBBASE_URL" ; \
+	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
+	    echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
 	    ) | webpublish_cp_stdin_to_file $WEBBASE.pass
 	webpublish rm -f $WEBBASE.pkg-ok $WEBBASE.ko
     else
 	( \
 	    echo "Successful package-only build, no test requested" ; \
-	    echo "See full build log at $WEBBASE_URL/log.txt" ; \
+	    echo "see build results at        $WEBBASE_URL" ; \
+	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
 	    ) | webpublish_cp_stdin_to_file $WEBBASE.pkg-ok
 	webpublish rm -f $WEBBASE.ko
     fi
@@ -183,8 +185,9 @@ function success () {
 	    echo "Subject: PASS ${BASE} ${MAIL_SUBJECT}" ; \
 	    echo "To: $MAILTO" ; \
 	    echo "$PLDISTRO ($BASE) build for $FCDISTRO completed on $(date)" ; \
-	    echo "See full build log at $WEBBASE_URL/log.txt" ; \
-            [ -n "$DO_TEST" ] && echo "See complete set of testlogs at $WEBBASE_URL/testlogs" ) \
+	    echo "see build results at        $WEBBASE_URL" ; \
+	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
+            [ -n "$DO_TEST" ] && echo "and complete test logs at   $WEBBASE_URL/testlogs" ) \
 	    | sendmail $MAILTO
     fi
     # XXX For some reason, we haven't been getting this email for successful builds. If this sleep
