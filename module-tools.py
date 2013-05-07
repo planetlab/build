@@ -1344,7 +1344,14 @@ def release_changelog(options, buildtag_old, buildtag_new):
         os.system("cp -f /%s %s" % (specfile, tmpfile))
         
         m = get_module(module, second)
-        m.init_module_dir()
+        # patch for ipfw that, being managed in a separate repo, won't work for now
+        try:
+            m.init_module_dir()
+        except Exception,e:
+            print """Could not retrieve module %s - skipped
+{{{ %s }}}
+""" %( m.friendly_name(), e)
+            continue
         specfile = m.main_specname()
 
         if m.repository.type == "svn":
