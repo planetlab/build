@@ -22,7 +22,7 @@ package: kernel-firmware
 package: udev
 package: basesystem
 package: filesystem
-package>=f14: lvm2
+package: lvm2
 package: bash
 package: coreutils
 package: python
@@ -45,9 +45,7 @@ package: setserial
 package: setup
 package: vim-enhanced
 package: shadow-utils
-package>=centos5: anacron
-package<=f10: anacron
-package>=f12: cronie-anacron
+package: cronie-anacron
 package: at
 package: authconfig
 package: bc
@@ -83,9 +81,7 @@ package: yum
 package: curl
 package: gzip
 package: iptables
-package>=centos5: mkinitrd
-package<=f12: mkinitrd
-package>=f14: dracut
+package: dracut
 package: ntp
 package: perl
 package: python
@@ -99,16 +95,9 @@ package: PyXML
 #
 # platform-dependent
 #
-package>=f8: rsyslog
-package=centos5: sysklogd
-
-# starting with fedora16 this is called simply util-linux again
-# however this gets pulled somehow so no worries
-package>=f8: util-linux-ng
-package=centos5: util-linux
-
-package<=f8 package=centos5: termcap libtermcap vixie-cron
-package>=f10: cronie
+package: rsyslog
+package: util-linux-ng
+package: cronie
 
 #
 # planetlab
@@ -128,6 +117,8 @@ package: vsys
 package: vsys-scripts
 package: monitor-client
 package: monitor-runlevelagent
+package: net-tools
+
 ### convenience
 package: less
 package: emacs-nox
