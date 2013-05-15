@@ -3,38 +3,37 @@ groupname: PlanetLabSlice
 groupdesc: PlanetLab Slice Reference Image
 # packages to exclude from stock repositories
 yumexclude: @NODEYUMEXCLUDE@
-# define packages
-package: bash
-package: coreutils
-package: iputils
-package: bzip2
-package: crontabs
-package: diffutils
-package: logrotate
-package: openssh-clients
-package: passwd
-package: rsh
-package: rsync
-package: sudo
-package: tcpdump
-package: telnet
-package: traceroute
-package: time
-package: wget
-package: which
-package: yum
-package: curl
-package: gzip
+
+package: filesystem bash coreutils
+package: findutils diffutils
+package: crontabs logrotate passwd sudo
+package: gzip bzip2 tar rsync
+package: wget curl
 package: perl
-package: python
-package: python-devel
-package: tar
-package: findutils
-package: filesystem
-package: vsyssh
-package: bind_public
-# libvirt lxc containers need this so they can start up their network
-package: openssh-server dhclient
+package: python python-devel
+package: yum
+package: iputils
+package: tcpdump traceroute 
+package: telnet nc
+package: openssh-clients
+package: time
+# this is really old school but well..
+package: rsh which
+
 package: cronie
-# preinstall this 
+
+# xxx not entirely sure this is required any more
+package: openssh-server
+
+# required for lxc-based nodes
+package: dhclient
+# a PL-specific, also required on lxc-based nodes
+package: bind_public
+
+package: vsyssh
+package: vsys-wrapper
+
+# onelab additions
 package: sliver-openvswitch
+package: ipfwslice
+

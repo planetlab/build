@@ -3,37 +3,31 @@ groupname: PlanetLabSlice
 groupdesc: PlanetLab Slice Reference Image
 # packages to exclude from stock repositories
 yumexclude: @NODEYUMEXCLUDE@
-# define packages
-package: bash
-package: coreutils
-package: iputils
+
+# kind-of a hack for for vs-based stuff
 package: kernel-vserver
-package: bzip2
-package: crontabs
-package: diffutils
-package: logrotate
-package: openssh-clients
-package: passwd
-package: rsh
-package: rsync
-package: sudo
-package: tcpdump
-package: telnet
-package: traceroute
-package: time
-package: wget
-package: which
-package: yum
-package: curl
-package: gzip
+
+package: filesystem bash coreutils
+package: findutils diffutils
+package: crontabs logrotate passwd sudo
+package: gzip bzip2 tar rsync
+package: wget curl
 package: perl
-package: python
-package: python-devel
-package: tar
-package: findutils
-package: filesystem
-package: vim-enhanced
+package: python python-devel
+package: yum
+package: iputils
+package: tcpdump traceroute 
+package: telnet nc
+package: openssh-clients
+package: time
+# this is really old school but well..
+package: rsh which
 
 package<=f8 package=centos5: vixie-cron
 package>=f10: cronie
+
+package: vim-enhanced
 package=centos6: epel-release
+
+# xxx might need to add bind_public and dhclient
+# for running in an lxc node
