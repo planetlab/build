@@ -565,8 +565,7 @@ release-RPMDATE := yes
 ALL += release
 
 ##############################
-# sfa now uses the with statement that's not supported on python-2.4 - not even through __future__
-# In addition we now use sqlalchemy and 0.5 as per f12 is not compatible with our model
+# sfa requires python-2.7
 build_sfa=true
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
 build_sfa=false

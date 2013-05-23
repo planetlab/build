@@ -32,9 +32,6 @@ pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopen
 ###
 pyaspects-GITPATH               := git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-3
 omf-GITPATH                     := git://git.planet-lab.org/omf.git@omf-5.3-11
-###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-25
-sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.2-2
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.2-1
 pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-11
@@ -45,5 +42,12 @@ bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-3
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-1
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.2-3
+
+#
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-25
+sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
+#
+myslice-GITPATH			:= git://git.onelab.eu/myslice.git@master
+manifold-GITPATH		:= git://git.onelab.eu/manifold.git@devel
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.2-3

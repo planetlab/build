@@ -324,26 +324,6 @@ pyaspects-SPEC := pyaspects.spec
 pyaspects-BUILD-FROM-SRPM := yes
 ALL += pyaspects
 
-# sfa now uses the with statement that's not supported on python-2.4 - not even through __future__
-# In addition we now use sqlalchemy and 0.5 as per f12 is not compatible with our model
-build_sfa=true
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
-build_sfa=false
-endif
-
-ifeq "$(build_sfa)" "true"
-#
-# sfa - Slice Facility Architecture
-#
-sfa-MODULES := sfa
-sfa-SPEC := sfa.spec
-ALL += sfa
-
-sface-MODULES := sface
-sface-SPEC := sface.spec
-ALL += sface
-endif
-
 #
 # nodeconfig
 #
@@ -494,3 +474,33 @@ release-MODULES := myplc
 release-SPEC := myplc-release.spec
 release-RPMDATE := yes
 ALL += release
+
+##############################
+# sfa requires python-2.7
+build_sfa=true
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
+build_sfa=false
+endif
+
+ifeq "$(build_sfa)" "true"
+#
+# sfa - Slice Facility Architecture
+#
+sfa-MODULES := sfa
+sfa-SPEC := sfa.spec
+ALL += sfa
+
+sface-MODULES := sface
+sface-SPEC := sface.spec
+ALL += sface
+endif
+
+##############################
+# don't build these by default, we have separate builds for that
+myslice-MODULES := myslice
+myslice-SPEC := myslice.spec
+#ALL += myslice
+
+manifold-MODULES := manifold
+manifold-SPEC := manifold.spec
+#ALL += manifold
