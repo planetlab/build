@@ -244,11 +244,11 @@ function setup_vserver () {
 #    fi
 
     # start the vserver so we can do the following operations
-    # with ubuntu/raring, somehow the vserver is already running at this point
-    $personality vserver $vserver status >& /dev/null || \
-      # redirect out/err to protect against the vserver's init sequence getting stalled 
-      # mostly used for f10 vservers created remotely through ssh
-      $personality vserver $VERBOSE $vserver start >& /dev/null
+    # redirect out/err to protect against the vserver's init sequence getting stalled 
+    # mostly used for f10 vservers created remotely through ssh
+    # with ubuntu/raring, somehow this fails, so ignore retcod, 
+    # as subsequent vserver exec will fail anyway
+    $personality vserver $VERBOSE $vserver start >& /dev/null || :
 
     if [ "$pkg_method" == "yum" ] ; then
 	$personality vserver $VERBOSE $vserver exec sh -c "rm -f /var/lib/rpm/__db*"
@@ -276,6 +276,10 @@ function setup_vserver () {
 
 	# try the simple way, if that fails try to cross fix the rpm hashes
 	$personality vserver $VERBOSE $vserver exec rpm --rebuilddb || translate_rpm_hashes $personality $vserver
+      
+    elif [ "$pkg_method" == "yum" ] ; then
+	# just check the vm is running
+	$personality vserver $VERBOSE $vserver exec arch 
     fi
 
     # check if the vserver kernel is using VSERVER_DEVICE (vdevmap) support
