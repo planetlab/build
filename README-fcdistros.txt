@@ -12,7 +12,7 @@
 # #################### debians and ubuntus
 #
 # the build utilities can now produce a build VM for the most recent
-# debians (squeeze, wheezy) and ubuntus ( oreinic, precise, quantal )
+# debians (squeeze, wheezy) and ubuntus ( oreinic, precise, quantal, raring )
 # 
 # of course we're nowhere close to supporting the whole PLC on these
 # systems, as packaging for debian requires manual tweaks in every

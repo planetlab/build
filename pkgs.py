@@ -40,7 +40,7 @@ known_fcdistros = [ 'centos5','centos6',
                     # debians
                     'squeeze','wheezy',
                     # ubuntus
-                    'oneiric', 'precise', 'quantal' ]
+                    'oneiric', 'precise', 'quantal', 'raring' ]
 default_pldistro='onelab'
 
 known_keywords=['groupname', 'groupdesc', 
