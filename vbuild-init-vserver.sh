@@ -277,7 +277,7 @@ function setup_vserver () {
 	# try the simple way, if that fails try to cross fix the rpm hashes
 	$personality vserver $VERBOSE $vserver exec rpm --rebuilddb || translate_rpm_hashes $personality $vserver
       
-    elif [ "$pkg_method" == "yum" ] ; then
+    elif [ "$pkg_method" == "debootstrap" ] ; then
 	# just check the vm is running
 	$personality vserver $VERBOSE $vserver exec arch 
     fi
