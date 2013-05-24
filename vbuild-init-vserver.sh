@@ -244,9 +244,11 @@ function setup_vserver () {
 #    fi
 
     # start the vserver so we can do the following operations
-    # redirect out/err to protect against the vserver's init sequence getting stalled 
-    # mostly used for f10 vservers created remotely through ssh
-    $personality vserver $VERBOSE $vserver start >& /dev/null
+    # with ubuntu/raring, somehow the vserver is already running at this point
+    $personality vserver $vserver status >& /dev/null || \
+      # redirect out/err to protect against the vserver's init sequence getting stalled 
+      # mostly used for f10 vservers created remotely through ssh
+      $personality vserver $VERBOSE $vserver start >& /dev/null
 
     if [ "$pkg_method" == "yum" ] ; then
 	$personality vserver $VERBOSE $vserver exec sh -c "rm -f /var/lib/rpm/__db*"
