@@ -666,7 +666,7 @@ define target_debian
 $(1)-debian: $(1)-tarball
 	mkdir -p DEBIAN/$(1)
 	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
-	make -C DEBIAN/$(1) debian "RPMTARBALL=$(HOME)/$($(1).tarballs)" "RPMVERSION=$($(1).rpm-version)" "RPMRELEASE=$($(1).rpm-release)" "RPMNAME=$($(1).rpm-name)"
+	make -C DEBIAN/$(1) debian "RPMTARBALL=$(HOME)/$($(1).tarballs)" "RPMVERSION=$($(1).rpm-version)" "RPMRELEASE=$($(1).rpm-release)" "RPMNAME=$($(1).rpm-name)" PREFIX=/usr
 endef
 
 $(foreach package,$(ALL),$(eval $(call target_debian,$(package))))
