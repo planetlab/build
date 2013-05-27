@@ -322,6 +322,9 @@ autoconf-BUILD-FROM-SRPM := yes
 ALL += autoconf
 endif
 
+#
+# sliver-openvswitch
+#
 sliver-openvswitch-MODULES := sliver-openvswitch
 sliver-openvswitch-SPEC := sliver-openvswitch.spec
 ifeq "$(DISTRONAME)" "f12"
