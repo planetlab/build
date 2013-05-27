@@ -244,6 +244,9 @@ bind_public-SPEC := bind_public.spec
 IN_SLICEIMAGE += bind_public
 ALL += bind_public
 
+#
+# sliver-openvswitch
+#
 sliver-openvswitch-MODULES := sliver-openvswitch
 sliver-openvswitch-SPEC := sliver-openvswitch.spec
 IN_SLICEIMAGE += sliver-openvswitch
@@ -256,6 +259,8 @@ plcapi-MODULES := plcapi
 plcapi-SPEC := plcapi.spec
 ALL += plcapi
 IN_MYPLC += plcapi
+
+
 
 #
 # drupal
