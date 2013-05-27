@@ -271,6 +271,7 @@ ifeq "$(DISTRO)" "Fedora"
 ifneq "$(DISTRONAME)" "f16"
 mod_python-MODULES := mod_python
 mod_python-SPEC	:= mod_python.spec
+mod_python-DEVEL-RPMS := httpd-devel
 mod_python-BUILD-FROM-SRPM := yes
 ALL += mod_python
 endif
