@@ -267,7 +267,7 @@ IN_MYPLC += plcapi
 # move to wsgi instead; however our using wsgi currently looks unstable
 # so you have the option to install this manually, in which case myplc will 
 # swap to using mod_python - see plc.d/httpd
-ifeq "$DISTRO" "Fedora"
+ifeq "$(DISTRO)" "Fedora"
 ifneq "$(DISTRONAME)" "f16"
 mod_python-MODULES := mod_python
 mod_python-SPEC	:= mod_python.spec
