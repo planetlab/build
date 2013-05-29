@@ -35,7 +35,8 @@ procprotect
 pyaspects
 pypcilib
 pyplnet
-sfa
+sfa:geni-v2
+sfa:geni-v3
 sface
 sliceimage
 sliver-openvswitch
