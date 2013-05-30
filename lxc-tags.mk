@@ -1,7 +1,7 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
 lxcsu-GITPATH			:= git://git.planet-lab.org/lxcsu.git@lxcsu-0.2-1
-lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@lxctools-0.9-7
+lxctools-GITPATH                := git://git.planet-lab.org/lxctools.git@master
 transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-3
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.3-4
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
