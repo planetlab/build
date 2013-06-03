@@ -458,6 +458,14 @@ omf-expctl-SPEC := omf-expctl.spec
 ALL += omf-expctl
 
 #
+# rvm-ruby : new install. angle for OMF stuff
+#
+rvm-ruby-MODULES := rvm-ruby
+rvm-ruby-MODULES := rpm/rvm-ruby.spec
+#not yet
+#ALL += rvm-ruby
+
+#
 # OML measurement library
 #
 oml-MODULES := oml

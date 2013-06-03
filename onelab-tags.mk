@@ -45,6 +45,7 @@ pyopenssl-GITPATH               := git://git.onelab.eu/pyopenssl.git@pyopenssl-0
 pyaspects-GITPATH               := git://git.onelab.eu/pyaspects.git@pyaspects-0.4.1-3
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
+rvm-ruby-GITPATH		:= git://git.onelab.eu/rvm-rpm.git@planetlab
 ###
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.2-2
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.2-1
