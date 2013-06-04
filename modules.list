@@ -21,6 +21,7 @@ nodeimage
 nodemanager
 nodeupdate
 omf
+rvm-ruby
 oml
 pcucontrol
 pf2slice
