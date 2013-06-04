@@ -8,7 +8,7 @@
 # see doc in Makefile  
 #
 
-### the madwifi drivers ahip with fedora16's kernel rpm
+### the madwifi drivers ship with fedora16's kernel rpm
 
 #
 # lxctools: scripts for entering containers
