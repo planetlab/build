@@ -462,6 +462,7 @@ ALL += omf-expctl
 #
 rvm-ruby-MODULES := rvm-ruby
 rvm-ruby-SPEC := rpm/rvm-ruby.spec
+rvm-ruby-DEVEL-RPMS := chrpath libyaml-devel libffi-devel
 #not yet
 #ALL += rvm-ruby
 
