@@ -41,16 +41,15 @@ pcucontrol-GITPATH              := git://git.onelab.eu/pcucontrol.git@pcucontrol
 monitor-GITPATH                 := git://git.onelab.eu/monitor.git@monitor-3.1-6
 PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.onelab.eu/pyopenssl.git@pyopenssl-0.9-2
-###
 pyaspects-GITPATH               := git://git.onelab.eu/pyaspects.git@pyaspects-0.4.1-3
-###
-rvm-ruby-GITPATH		:= git://git.onelab.eu/rvm-rpm.git@planetlab
-oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
-###
 nodeconfig-GITPATH              := git://git.onelab.eu/nodeconfig.git@nodeconfig-5.2-2
 bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanager-5.2-1
 pypcilib-GITPATH                := git://git.onelab.eu/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-16
+###
+rvm-ruby-GITPATH		:= git://git.onelab.eu/rvm-rpm.git@planetlab
+oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
+###
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.2-2
 sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@sliceimage-5.1-4
 nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-5.2-1

@@ -379,19 +379,20 @@ IN_MYPLC += pyplnet
 IN_BOOTCD += pyplnet
 
 #
-# OMF resource controller
+# for OMF resource controller as  a gem : rvm-ruby has right version of ruby and related gem stuff
 #
-omf-resctl-MODULES := omf
-omf-resctl-SPEC := omf-resctl.spec
-ALL += omf-resctl
-IN_SLICEIMAGE += omf-resctl
+rvm-ruby-MODULES := rvm-ruby
+rvm-ruby-SPEC := rpm/rvm-ruby.spec
+rvm-ruby-DEVEL-RPMS := chrpath libyaml-devel libffi-devel
+ALL += rvm-ruby
 
 #
-# OMF exp controller
+# OML measurement library
 #
-omf-expctl-MODULES := omf
-omf-expctl-SPEC := omf-expctl.spec
-ALL += omf-expctl
+oml-MODULES := oml
+oml-DEVEL-RPMS += sqlite-devel 
+oml-SPEC := liboml.spec
+ALL += oml
 
 #
 # bootcd

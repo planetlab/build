@@ -1,0 +1,4 @@
+#
+groupname: rvm-ruby
+groupdesc: rvm and pre-installed ruby for easily deploying omf-rc as a gem
+package: rvm-ruby
