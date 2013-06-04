@@ -111,6 +111,7 @@ class Command:
             print 'dry_run',self.command
             return 0
         if self.options.verbose:
+            print '>',os.getcwd()
             print '+',self.command,' .. ',
             sys.stdout.flush()
         retcod=os.system(self.command + " &> " + self.tmp)
@@ -179,7 +180,7 @@ class SvnRepository:
                 return "%s/%s" % (root, self.pathname())
 
     @classmethod
-    def checkout(cls, remote, local, options, recursive=False):
+    def clone(cls, remote, local, options, recursive=False):
         if recursive:
             svncommand = "svn co %s %s" % (remote, local)
         else:
@@ -190,12 +191,12 @@ class SvnRepository:
         return SvnRepository(local, options)
 
     @classmethod
-    def remote_exists(cls, remote):
-        return os.system("svn list %s &> /dev/null" % remote) == 0
+    def remote_exists(cls, remote, options):
+        return Command ("svn list %s &> /dev/null" % remote , options).run()==0
 
     def tag_exists(self, tagname):
         url = "%s/tags/%s" % (self.repo_root(), tagname)
-        return SvnRepository.remote_exists(url)
+        return SvnRepository.remote_exists(url, self.options)
 
     def update(self, subdir="", recursive=True, branch=None):
         path = os.path.join(self.path, subdir)
@@ -213,11 +214,11 @@ class SvnRepository:
 
     def to_branch(self, branch):
         remote = "%s/branches/%s" % (self.repo_root(), branch)
-        SvnRepository.checkout(remote, self.path, self.options, recursive=True)
+        SvnRepository.clone(remote, self.path, self.options, recursive=True)
 
     def to_tag(self, tag):
         remote = "%s/tags/%s" % (self.repo_root(), branch)
-        SvnRepository.checkout(remote, self.path, self.options, recursive=True)
+        SvnRepository.clone(remote, self.path, self.options, recursive=True)
 
     def tag(self, tagname, logfile):
         tag_url = "%s/tags/%s" % (self.repo_root(), tagname)
@@ -279,14 +280,14 @@ class GitRepository:
                 return line.split()[2]
 
     @classmethod
-    def checkout(cls, remote, local, options, depth=0):
+    def clone(cls, remote, local, options, depth=0):
         Command("rm -rf %s" % local, options).run_silent()
         Command("git clone --depth %d %s %s" % (depth, remote, local), options).run_fatal()
         return GitRepository(local, options)
 
     @classmethod
-    def remote_exists(cls, remote):
-        return os.system("git --no-pager ls-remote %s &> /dev/null" % remote) == 0
+    def remote_exists(cls, remote, options):
+        return Command ("git --no-pager ls-remote %s &> /dev/null" % remote, options).run()==0
 
     def tag_exists(self, tagname):
         command = 'git tag -l | grep "^%s$"' % tagname
@@ -392,17 +393,16 @@ class Repository:
                 break
 
     @classmethod
-    def has_moved_to_git(cls, module, config):
+    def has_moved_to_git(cls, module, config,options):
         module = svn_to_git_name(module)
         # check if the module is already in Git
-#        return SvnRepository.remote_exists("%s/%s/aaaa-has-moved-to-git" % (config['svnpath'], module))
-        return GitRepository.remote_exists(Module.git_remote_dir(module))
+        return GitRepository.remote_exists(Module.git_remote_dir(module),options)
 
 
     @classmethod
-    def remote_exists(cls, remote):
+    def remote_exists(cls, remote, options):
         for repo in Repository.supported_repo_types:
-            if repo.remote_exists(remote):
+            if repo.remote_exists(remote, options):
                 return True
         return False
 
@@ -558,11 +558,11 @@ module-* commands need a fresh working dir. Make sure that you do not use
 that for other purposes than tagging""" % options.workdir
             sys.exit(1)
 
-        def checkout_build():
+        def clone_build():
             print "Checking out build module..."
             remote = cls.git_remote_dir(cls.config['build'])
             local = os.path.join(options.workdir, cls.config['build'])
-            GitRepository.checkout(remote, local, options, depth=1)
+            GitRepository.clone(remote, local, options, depth=1)
             print "OK"
 
         def store_config():
@@ -590,7 +590,7 @@ that for other purposes than tagging""" % options.workdir
             print "Cannot find",options.workdir,"let's create it"
             Command("mkdir -p %s" % options.workdir, options).run_silent()
             cls.prompt_config()
-            checkout_build()
+            clone_build()
             store_config()
         else:
             read_config()
@@ -605,12 +605,12 @@ that for other purposes than tagging""" % options.workdir
             if old_layout:
                 Command("rm -rf %s" % options.workdir, options).run_silent()
                 Command("mkdir -p %s" % options.workdir, options).run_silent()
-                checkout_build()
+                clone_build()
                 store_config()
 
             build_dir = os.path.join(options.workdir, cls.config['build'])
             if not os.path.isdir(build_dir):
-                checkout_build()
+                clone_build()
             else:
                 build = Repository(build_dir, options)
                 if not build.is_clean():
@@ -629,20 +629,20 @@ that for other purposes than tagging""" % options.workdir
             print 'Checking for',self.module_dir
 
         if not os.path.isdir (self.module_dir):
-            if Repository.has_moved_to_git(self.pathname, Module.config):
-                self.repository = GitRepository.checkout(self.git_remote_dir(self.pathname),
-                                                         self.module_dir,
-                                                         self.options)
+            if Repository.has_moved_to_git(self.pathname, Module.config, self.options):
+                self.repository = GitRepository.clone(self.git_remote_dir(self.pathname),
+                                                      self.module_dir,
+                                                      self.options)
             else:
                 remote = self.svn_selected_remote()
-                self.repository = SvnRepository.checkout(remote,
-                                                         self.module_dir,
-                                                         self.options, recursive=False)
+                self.repository = SvnRepository.clone(remote,
+                                                      self.module_dir,
+                                                      self.options, recursive=False)
 
         self.repository = Repository(self.module_dir, self.options)
         if self.repository.type == "svn":
             # check if module has moved to git    
-            if Repository.has_moved_to_git(self.pathname, Module.config):
+            if Repository.has_moved_to_git(self.pathname, Module.config, self.options):
                 Command("rm -rf %s" % self.module_dir, self.options).run_silent()
                 self.init_module_dir()
             # check if we have the required branch/tag

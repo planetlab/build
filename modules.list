@@ -20,7 +20,7 @@ nodeconfig
 nodeimage
 nodemanager
 nodeupdate
-rvm-ruby
+rvm-ruby:planetlab
 oml
 pcucontrol
 pf2slice
