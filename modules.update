@@ -12,7 +12,6 @@ fcdistros="f14 f16"
     make stage1=true PLDISTRO=onelab PLDISTROTAGS=onelab-tags.mk DISTRONAME=${fcdistro} module-tools ;
     make stage1=true PLDISTRO=mlab PLDISTROTAGS=mlab-tags.mk DISTRONAME=${fcdistro} module-tools ;
     make stage1=true PLDISTRO=lxc PLDISTROTAGS=lxc-tags.mk DISTRONAME=${fcdistro} module-tools ;
-    make stage1=true PLDISTRO=lxc PLDISTROTAGS=lxc-openvswitch-tags.mk DISTRONAME=${fcdistro} module-tools ;
   done 2>/dev/null ;
   echo tests
 ) | sort -uf | grep -v '^build$' 
