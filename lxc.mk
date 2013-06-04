@@ -19,14 +19,6 @@ ALL += lxctools
 IN_NODEIMAGE += lxctools
 
 #
-# lxcsu: root context module for entering namespaces
-#
-lxcsu-MODULES := lxcsu
-lxcsu-SPEC := lxcsu.spec
-ALL += lxcsu
-IN_NODEIMAGE += lxcsu
-
-#
 #
 # transforward: root context module for transparent port forwarding
 #

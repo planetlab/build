@@ -10,7 +10,6 @@ ipfw
 iptables
 libvirt
 linux-2.6:32
-lxcsu
 lxctools
 madwifi
 mom
