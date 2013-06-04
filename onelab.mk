@@ -461,7 +461,7 @@ ALL += omf-expctl
 # rvm-ruby : new install. angle for OMF stuff
 #
 rvm-ruby-MODULES := rvm-ruby
-rvm-ruby-MODULES := rpm/rvm-ruby.spec
+rvm-ruby-SPEC := rpm/rvm-ruby.spec
 #not yet
 #ALL += rvm-ruby
 
