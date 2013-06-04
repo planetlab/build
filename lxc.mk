@@ -11,12 +11,12 @@
 ### the madwifi drivers ship with fedora16's kernel rpm
 
 #
-# lxctools: scripts for entering containers
+# lxc-userspace: scripts for entering containers
 #
-lxctools-MODULES := lxctools
-lxctools-SPEC := lxctools.spec
-ALL += lxctools
-IN_NODEIMAGE += lxctools
+lxc-userspace-MODULES := lxc-userspace
+lxc-userspace-SPEC := lxc-userspace.spec
+ALL += lxc-userspace
+IN_NODEIMAGE += lxc-userspace
 
 #
 #

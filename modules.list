@@ -10,7 +10,7 @@ ipfw
 iptables
 libvirt
 linux-2.6:32
-lxctools
+lxc-userspace
 madwifi
 mom
 monitor
