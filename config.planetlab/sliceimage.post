@@ -36,4 +36,8 @@ if [ -d selinux ] ; then
 	rmdir selinux
     fi
 fi
+
+# for when runing under lxc, make sure we don't try to fsck from a slice
+touch ${vdir}/fastboot
+
 cd -
