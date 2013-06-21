@@ -38,6 +38,6 @@ if [ -d selinux ] ; then
 fi
 
 # for when runing under lxc, make sure we don't try to fsck from a slice
-touch ${vdir}/fastboot
+sed -i -e 's,1 1,0 0,' ${vdir}/etc/fstab
 
 cd -
