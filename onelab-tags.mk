@@ -32,6 +32,7 @@ inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inoti
 vsys-GITPATH                    := git://git.onelab.eu/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scripts-0.95-47
 autoconf-GITPATH		:= git://git.onelab.eu/autoconf@autoconf-2.69-1
+bind_public-GITPATH             := git://git.onelab.eu/bind_public.git@bind_public-0.1-2
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.10.90-2
 plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.2-3
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
