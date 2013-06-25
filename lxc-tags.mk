@@ -40,7 +40,7 @@ pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcuco
 rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.20.10-6
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-2
+bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@master
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@master
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-1
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.2-3
