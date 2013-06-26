@@ -51,7 +51,7 @@ pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-1
 rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.20.10-6
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
+bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.2-3
 sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@master
 nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-5.2-1
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.2-3
