@@ -22,8 +22,8 @@ function pl_getDistro() {
 	echo $DISTRIB_CODENAME 
     elif [ -f /etc/debian_version ] ; then
 	case $(cat /etc/debian_version) in
-	    6.0.6) distro=squeeze ;;
-	    7.0)   distro=wheezy  ;;
+	    6.*) distro=squeeze ;;
+	    7.*)   distro=wheezy  ;;
 	    *)	   distro=unknown.debian.in.build.common ;;
 	esac
     fi
