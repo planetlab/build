@@ -37,7 +37,7 @@ pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 ###
-rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.20.10-6
+rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@planetlab
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-3
