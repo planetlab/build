@@ -48,7 +48,7 @@ bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanag
 pypcilib-GITPATH                := git://git.onelab.eu/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-16
 ###
-rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@planetlab
+rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.20.10-7
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.2-3
