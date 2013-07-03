@@ -25,6 +25,9 @@ package: cronie
 # xxx not entirely sure this is required any more
 package: openssh-server
 
+# for ifconfig
+package: net-tools
+
 # required for lxc-based nodes
 package: dhclient
 # a PL-specific, also required on lxc-based nodes
