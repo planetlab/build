@@ -375,7 +375,7 @@ IN_BOOTCD += pyplnet
 #
 rvm-ruby-MODULES := rvm-ruby
 rvm-ruby-SPEC := rpm/rvm-ruby.spec
-rvm-ruby-DEVEL-RPMS := chrpath libyaml-devel libffi-devel
+rvm-ruby-DEVEL-RPMS := chrpath libyaml-devel libffi-devel libxslt-devel
 ALL += rvm-ruby
 
 #
