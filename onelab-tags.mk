@@ -64,4 +64,4 @@ sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
 myslice-GITPATH			:= git://git.onelab.eu/myslice.git@master
 manifold-GITPATH		:= git://git.onelab.eu/manifold.git@devel
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.2-6
+tests-GITPATH                   := git://git.onelab.eu/tests.git@master
