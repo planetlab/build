@@ -51,6 +51,30 @@ ALL += ipfwslice
 #endif
 
 #
+# comgt - a companion to umts tools
+# 
+comgt-MODULES := comgt
+comgt-SPEC := comgt.spec
+IN_NODEIMAGE += comgt
+ALL += comgt
+
+#
+# umts: root context stuff
+#
+umts-backend-MODULES := planetlab-umts-tools
+umts-backend-SPEC := backend.spec
+IN_NODEIMAGE += umts-backend
+ALL += umts-backend
+
+#
+# umts: slice tools
+#
+umts-frontend-MODULES := planetlab-umts-tools
+umts-frontend-SPEC := frontend.spec
+IN_SLICEIMAGE += umts-frontend
+ALL += umts-frontend
+
+#
 # NodeUpdate
 #
 nodeupdate-MODULES := nodeupdate

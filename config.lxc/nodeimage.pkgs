@@ -118,6 +118,9 @@ package: monitor-client
 package: monitor-runlevelagent
 package: net-tools
 
+### used to be in the onelab umts extension, but doesn't hurt anyone
+package: planetlab-umts-tools-backend ppp comgt
+
 ### convenience
 package: less
 package: emacs-nox
