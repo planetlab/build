@@ -165,6 +165,7 @@ function success () {
     webpublish_cp_local_to_remote $LOG $WEBLOG
     summary $LOG | webpublish_append_stdin_to_file $WEBLOG
     if [ -n "$DO_TEST" ] ; then
+	short_message="PASS"
 	( \
 	    echo "Successfully built and tested" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
@@ -173,6 +174,7 @@ function success () {
 	    ) | webpublish_cp_stdin_to_file $WEBBASE.pass
 	webpublish rm -f $WEBBASE.pkg-ok $WEBBASE.ko
     else
+	short_message="PKGOK"
 	( \
 	    echo "Successful package-only build, no test requested" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
@@ -182,7 +184,7 @@ function success () {
     fi
     if [ -n "$MAILTO" ] ; then
 	( \
-	    echo "Subject: PASS ${BASE} ${MAIL_SUBJECT}" ; \
+	    echo "Subject: $short_message ${BASE} ${MAIL_SUBJECT}" ; \
 	    echo "To: $MAILTO" ; \
 	    echo "$PLDISTRO ($BASE) build for $FCDISTRO completed on $(date)" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
