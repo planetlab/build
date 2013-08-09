@@ -35,7 +35,7 @@ pyaspects-GITPATH               := git://git.planet-lab.org/pyaspects.git@pyaspe
 nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.2-2
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.2-1
 pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-11
-pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-17
+pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-18
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 ###
