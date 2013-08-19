@@ -40,4 +40,9 @@ fi
 # for when runing under lxc, make sure we don't try to fsck from a slice
 sed -i -e 's,1 1,0 0,' ${vdir}/etc/fstab
 
+# a workaround for running f12 slices under f18; as per Andy findings, we
+# remove /etc/event.d/tty[23456] inside the slice image
+# this is not required in f>=16 since these files are upstart-specific anyway
+rm -f ${vdir}/etc/event.d/tty[23456]
+
 cd -
