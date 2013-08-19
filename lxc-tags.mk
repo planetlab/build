@@ -1,7 +1,7 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
-lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-6
-transforward-GITPATH		:= git://git.planet-lab.org/transforward.git@transforward-0.1-3
+lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@master
+transforward-GITPATH            := git://git.planet-lab.org/transforward.git@master
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
@@ -22,7 +22,7 @@ openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@openvswitch-1.2
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH            := git://git.planet-lab.org/vsys-scripts.git@vsys-scripts-0.95-48
 bind_public-GITPATH             := git://git.planet-lab.org/bind_public.git@bind_public-0.1-2
-sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.11.90-1
+sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@master
 plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@master
 mod_python-GITPATH              := git://git.onelab.eu/mod_python.git@mod_python-3.3.1-1
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
