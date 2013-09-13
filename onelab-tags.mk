@@ -34,7 +34,7 @@ vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scr
 autoconf-GITPATH		:= git://git.onelab.eu/autoconf@autoconf-2.69-1
 bind_public-GITPATH             := git://git.onelab.eu/bind_public.git@bind_public-0.1-2
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.11.90-1
-plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.2-8
+plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@master
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.onelab.eu/plewww.git@plewww-5.2-3
 www-register-wizard-SVNPATH     := http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
@@ -48,7 +48,7 @@ bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@bootmanag
 pypcilib-GITPATH                := git://git.onelab.eu/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-18
 ###
-rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.20.10-8
+rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@planetlab
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.2-3

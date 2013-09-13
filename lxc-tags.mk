@@ -1,6 +1,6 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
-lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-7
+lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@master
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-4
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-2
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
@@ -23,7 +23,7 @@ vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH            := git://git.planet-lab.org/vsys-scripts.git@vsys-scripts-0.95-48
 bind_public-GITPATH             := git://git.planet-lab.org/bind_public.git@bind_public-0.1-2
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.11.90-1
-plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.2-8
+plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@master
 mod_python-GITPATH              := git://git.onelab.eu/mod_python.git@mod_python-3.3.1-1
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.planet-lab.org/plewww.git@plewww-5.2-3
@@ -39,7 +39,7 @@ pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 ###
-rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.20.10-8
+rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@planetlab
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-3
