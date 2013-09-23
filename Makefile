@@ -56,7 +56,7 @@
 #     a set of stock rpms that this package needs at build-time
 #     this can also be set in config.<distro>/devel.pkgs or config.planetlab/devel.pkgs as appropriate
 # (*) package-DEPEND-DEVEL-RPMS
-#     a set of local *rpms* that the build will rpm-install before building <package>
+#     a set of *local* rpms that the build will rpm-install before building <package>
 #     the build will attempt to uninstall those once the package is built, this is not fatal though
 #     this is intended to denote local rpms, i.e. ones that are results of our own build
 #     stock rpms should be mentioned in DEVEL-RPMS or in devel.pkgs as described above
