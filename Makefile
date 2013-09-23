@@ -528,10 +528,10 @@ srpms: $(ALLSRPMS)
 #################### manage build requirements
 # default values
 RPMYUM-INSTALL-LOCAL := rpm --force -Uvh
+RPMYUM-INSTALL-STOCK := yum -y install
 # uninstall -- cannot force rpm -e
 # need to ignore result, kernel-headers cannot be uninstalled as glibc depends on it
 RPMYUM-UNINSTALL-STOCK := rpm -e
-RPMYUM-INSTALL-STOCK := yum -y install
 
 ### these macro handles the LOCAL-DEVEL-RPMS and LOCAL-DEVEL-RPMS-CRUCIAL tags for a given package
 # before building : rpm-install LOCAL-DEVEL-RPMS 
