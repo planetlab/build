@@ -7,7 +7,7 @@ linux-2.6-GITPATH		:= git://git.planet-lab.org/linux-2.6.git@rhel6-mlab
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 centos5)"
 kernel-WHITELIST-RPMS	:= kernel-devel,kernel-headers
 endif
-kernel-DEVEL-RPMS		+= elfutils-libelf-devel
+kernel-STOCK-DEVEL-RPMS		+= elfutils-libelf-devel
 madwifi-GITPATH                 := git://git.planet-lab.org/madwifi.git@madwifi-4132-6
 # iptables 1.4.7 creates libxtables.so.4 while later versions libxtables.so.5
 # this breaks dependencies for other centos6 packages.

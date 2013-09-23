@@ -31,7 +31,7 @@
 # (*) modules are named after the subversion or git tree; we would wish to keep
 #     these names lowercase as far as possible
 # (*) rpms are named in the spec files. A package typically defines several rpms;
-#     rpms are used for defining DEPEND-DEVEL-RPMS. See also package.rpmnames
+#     rpms are used for defining LOCAL-DEVEL-RPMS. See also package.rpmnames
 # 
 # in simple cases, one package uses one module (in which case using the same name sounds right)
 # but others might need several modules (e.g. image-creation packages like bootstrapfs need 
@@ -52,16 +52,16 @@
 #     a set of (obviously local) *packages* that this package depends on, e.g.
 #     bootstrapfs-DEPEND-PACKAGES += kernel
 #     this impacts the order of the build
-# (*) package-DEVEL-RPMS
+# (*) package-STOCK-DEVEL-RPMS
 #     a set of stock rpms that this package needs at build-time
 #     this can also be set in config.<distro>/devel.pkgs or config.planetlab/devel.pkgs as appropriate
-# (*) package-DEPEND-DEVEL-RPMS
+# (*) package-LOCAL-DEVEL-RPMS
 #     a set of *local* rpms that the build will rpm-install before building <package>
 #     the build will attempt to uninstall those once the package is built, this is not fatal though
 #     this is intended to denote local rpms, i.e. ones that are results of our own build
-#     stock rpms should be mentioned in DEVEL-RPMS or in devel.pkgs as described above
-# (*) package-DEPEND-DEVEL-RPMS-UPDATES
-#     like package-DEPEND-DEVEL-RPMS but for crucial packages (like autoconf) that only need an update from our build
+#     stock rpms should be mentioned in STOCK-DEVEL-RPMS or in devel.pkgs as described above
+# (*) package-LOCAL-DEVEL-RPMS-CRUCIAL
+#     like package-LOCAL-DEVEL-RPMS but for crucial packages (like autoconf) that only need an update from our build
 #     rpms in this area will *not* be uninstalled after the target is made, because that would ruin the build vm for good
 # (*) package-DEPEND-FILES
 #     a set of files that the package depends on - and that make needs to know about
@@ -120,11 +120,6 @@ HOSTARCH := $(shell uname -i 2> /dev/null || uname -m 2> /dev/null)
 DISTRO := $(shell ./getdistro.sh)
 RELEASE := $(shell ./getrelease.sh)
 DISTRONAME := $(shell ./getdistroname.sh)
-RPM-INSTALL-DEVEL := rpm --force -Uvh
-# uninstall -- cannot force rpm -e
-# need to ignore result, kernel-headers cannot be uninstalled as glibc depends on it
-RPM-UNINSTALL-DEVEL := rpm -e
-YUM-INSTALL-DEVEL := yum -y install
 
 #################### Makefile
 # Default target
@@ -464,13 +459,13 @@ all: envfrompreviousrun
 define stage2_variables
 ### devel dependencies
 $(1).rpmbuild = $(RPMBUILD) $($(1)-RPMFLAGS)
-$(1).all-devel-rpm-paths := $(foreach rpm,$($(1)-DEPEND-DEVEL-RPMS) $($(1)-DEPEND-DEVEL-RPMS-UPDATES),$($(rpm).rpm-path))
-$(1).depend-devel-packages := $(sort $(foreach rpm,$($(1)-DEPEND-DEVEL-RPMS),$($(rpm).package)))
-ALL-DEVEL-RPMS += $($(1)-DEPEND-DEVEL-RPMS)
+$(1).all-devel-rpm-paths := $(foreach rpm,$($(1)-LOCAL-DEVEL-RPMS) $($(1)-LOCAL-DEVEL-RPMS-CRUCIAL),$($(rpm).rpm-path))
+$(1).depend-devel-packages := $(sort $(foreach rpm,$($(1)-LOCAL-DEVEL-RPMS),$($(rpm).package)))
+ALL-STOCK-DEVEL-RPMS += $($(1)-LOCAL-DEVEL-RPMS)
 endef
 
 $(foreach package,$(ALL),$(eval $(call stage2_variables,$(package))))
-ALL-DEVEL-RPMS := $(sort $(ALL-DEVEL-RPMS))
+ALL-STOCK-DEVEL-RPMS := $(sort $(ALL-STOCK-DEVEL-RPMS))
 
 
 ### pack sources into tarballs
@@ -530,43 +525,51 @@ srpms: $(ALLSRPMS)
 	@echo $(words $(ALLSRPMS)) source rpms OK
 .PHONY: srpms
 
+#################### manage build requirements
+# default values
+RPMYUM-INSTALL-LOCAL := rpm --force -Uvh
+# uninstall -- cannot force rpm -e
+# need to ignore result, kernel-headers cannot be uninstalled as glibc depends on it
+RPMYUM-UNINSTALL-STOCK := rpm -e
+RPMYUM-INSTALL-STOCK := yum -y install
 
-# install the DEVEL-RPMS rpms if defined
-define handle_stock_devel_rpms_pre 
-	$(if $($(1)-DEVEL-RPMS), echo "Installing for $(1)-DEVEL-RPMS" ; $(YUM-INSTALL-DEVEL) $($(1)-DEVEL-RPMS))
+### these macro handles the LOCAL-DEVEL-RPMS and LOCAL-DEVEL-RPMS-CRUCIAL tags for a given package
+# before building : rpm-install LOCAL-DEVEL-RPMS 
+define rpmyum_install_local_rpms 
+	$(if $($(1).all-devel-rpm-paths), echo "Installing for $(1)-LOCAL-DEVEL-RPMS" ; $(RPMYUM-INSTALL-LOCAL) $($(1).all-devel-rpm-paths)) 
 endef
 
-### these macro handles the DEPEND-DEVEL-RPMS and DEPEND-DEVEL-RPMS-UPDATES tags for a given package
-# before building : rpm-install DEPEND-DEVEL-RPMS 
-define handle_local_devel_rpms_pre 
-	$(if $($(1).all-devel-rpm-paths), echo "Installing for $(1)-DEPEND-DEVEL-RPMS" ; $(RPM-INSTALL-DEVEL) $($(1).all-devel-rpm-paths)) 
+# install stock rpms if defined
+define rpmyum_install_stock_rpms 
+	$(if $($(1)-STOCK-DEVEL-RPMS), echo "Installing for $(1)-STOCK-DEVEL-RPMS" ; $(RPMYUM-INSTALL-STOCK) $($(1)-STOCK-DEVEL-RPMS))
 endef
 
-define handle_local_devel_rpms_post
-	-$(if $($(1)-DEPEND-DEVEL-RPMS), echo "Unstalling for $(1)-DEPEND-DEVEL-RPMS" ; $(RPM-UNINSTALL-DEVEL) $($(1)-DEPEND-DEVEL-RPMS))
+define rpmyum_uninstall_stock_rpms
+	-$(if $($(1)-LOCAL-DEVEL-RPMS), echo "Unstalling for $(1)-LOCAL-DEVEL-RPMS" ; $(RPMYUM-UNINSTALL-STOCK) $($(1)-LOCAL-DEVEL-RPMS))
 endef
 
+####################
 # usage: target_source_rpm package
 define target_source_rpm 
 ifeq "$($(1)-BUILD-FROM-SRPM)" ""
 $($(1).srpm): $($(1).specpath) .rpmmacros $($(1).tarballs) 
 	mkdir -p BUILD SRPMS tmp
 	@(echo -n "XXXXXXXXXXXXXXX -- BEG SRPM $(1) (using SOURCES) " ; date)
-	$(call handle_stock_devel_rpms_pre,$(1))
-	$(call handle_local_devel_rpms_pre,$(1))
+	$(call rpmyum_install_stock_rpms,$(1))
+	$(call rpmyum_install_local_rpms,$(1))
 	$($(1).rpmbuild) -bs $($(1).specpath)
-	$(call handle_local_devel_rpms_post,$(1))
+	$(call rpmyum_uninstall_stock_rpms,$(1))
 	@(echo -n "XXXXXXXXXXXXXXX -- END SRPM $(1) " ; date)
 else
 $($(1).srpm): $($(1).specpath) .rpmmacros $($(1).source)
 	mkdir -p BUILD SRPMS tmp
 	@(echo -n "XXXXXXXXXXXXXXX -- BEG SRPM $(1) (using make srpm) " ; date)
-	$(call handle_stock_devel_rpms_pre,$(1))
-	$(call handle_local_devel_rpms_pre,$(1))
+	$(call rpmyum_install_stock_rpms,$(1))
+	$(call rpmyum_install_local_rpms,$(1))
 	make -C $($(1).source) srpm SPECFILE=$(HOME)/$($(1).specpath) EXPECTED_SRPM=$(notdir $($(1).srpm)) && \
            rm -f SRPMS/$(notdir $($(1).srpm)) && \
            ln $($(1).source)/$(notdir $($(1).srpm)) SRPMS/$(notdir $($(1).srpm)) 
-	$(call handle_local_devel_rpms_post,$(1))
+	$(call rpmyum_uninstall_stock_rpms,$(1))
 	@(echo -n "XXXXXXXXXXXXXXX -- END SRPM $(1) " ; date)
 endif
 endef
@@ -592,20 +595,20 @@ $($(1).rpms): $($(1).srpm)
 	mkdir -p RPMS tmp
 	@(echo -n "XXXXXXXXXXXXXXX -- BEG RPM $(1) " ; date)
 	$(if $(findstring RPMS/yumgroups.xml,$($(1)-DEPEND-FILES)), $(createrepo) , )
-	$(call handle_stock_devel_rpms_pre,$(1))
-	$(call handle_local_devel_rpms_pre,$(1))
+	$(call rpmyum_install_stock_rpms,$(1))
+	$(call rpmyum_install_local_rpms,$(1))
 	$($(1).rpmbuild) --rebuild $(RPM-USE-TMP-DIRS) $($(1).srpm)
-	$(call handle_local_devel_rpms_post,$(1))
+	$(call rpmyum_uninstall_stock_rpms,$(1))
 	@(echo -n "XXXXXXXXXXXXXXX -- END RPM $(1) " ; date)
 # for manual use only - in case we need to investigate the results of an rpmbuild
 $(1)-compile: $($(1).srpm)
 	mkdir -p COMPILE tmp
 	@(echo -n "XXXXXXXXXXXXXXX -- BEG compile $(1) " ; date)
 	$(if $(findstring RPMS/yumgroups.xml,$($(1)-DEPEND-FILES)), $(createrepo) , )
-	$(call handle_stock_devel_rpms_pre,$(1))
-	$(call handle_local_devel_rpms_pre,$(1))
+	$(call rpmyum_install_stock_rpms,$(1))
+	$(call rpmyum_install_local_rpms,$(1))
 	$($(1).rpmbuild) --recompile $(RPM-USE-TMP-DIRS) $($(1).srpm)
-	$(call handle_local_devel_rpms_post,$(1))
+	$(call rpmyum_uninstall_stock_rpms,$(1))
 	@(echo -n "XXXXXXXXXXXXXXX -- END compile $(1) " ; date)
 .PHONY: $(1)-compile
 endef
@@ -739,7 +742,7 @@ distclean: distclean1 distclean2
 .PHONY: distclean1 distclean2 distclean
 
 develclean:
-	-$(RPM-UNINSTALL-DEVEL) $(ALL-DEVEL-RPMS)
+	-$(RPMYUM-UNINSTALL-STOCK) $(ALL-STOCK-DEVEL-RPMS)
 
 ####################
 # gather build information for the 'About' page

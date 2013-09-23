@@ -8,7 +8,7 @@ linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@linux-2.6-3
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f16 centos5)"
 kernel-WHITELIST-RPMS	:= kernel-devel,kernel-headers
 endif
-kernel-DEVEL-RPMS		+= elfutils-libelf-devel
+kernel-STOCK-DEVEL-RPMS		+= elfutils-libelf-devel
 
 ipfw-GITPATH                    := git://git.onelab.eu/ipfw-sourceforge.git@ipfw-20130423-1
 madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-6

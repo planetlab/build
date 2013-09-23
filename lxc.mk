@@ -149,17 +149,17 @@ libvirt-MODULES := libvirt
 libvirt-SPEC    := libvirt.spec
 libvirt-BUILD-FROM-SRPM := yes
 # The --without options are breaking spec2make : hard-wired in the specfile instead
-libvirt-DEVEL-RPMS += xhtml1-dtds gettext gettext-devel libtasn1-devel gnutls-devel 
-libvirt-DEVEL-RPMS += libattr-devel augeas libpciaccess-devel yajl-devel 
-libvirt-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel 
-libvirt-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
+libvirt-STOCK-DEVEL-RPMS += xhtml1-dtds gettext gettext-devel libtasn1-devel gnutls-devel 
+libvirt-STOCK-DEVEL-RPMS += libattr-devel augeas libpciaccess-devel yajl-devel 
+libvirt-STOCK-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel 
+libvirt-STOCK-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
 ifeq "$(DISTRONAME)" "f16"
-libvirt-DEVEL-RPMS += libnl-devel libudev-devel
+libvirt-STOCK-DEVEL-RPMS += libnl-devel libudev-devel
 endif
 # strictly speaking fuse-devel is not required anymore but we might wish to turn fuse back on again in the future
 ifeq "$(DISTRONAME)" "f18"
-libvirt-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
-libvirt-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 
+libvirt-STOCK-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
+libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 
 endif
 libvirt-RPMFLAGS :=	--define 'packager PlanetLab'
 ALL += libvirt
@@ -216,7 +216,7 @@ endif
 #
 # openvswitch-MODULES := openvswitch
 # openvswitch-SPEC := openvswitch.spec
-# openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
+# openvswitch-LOCAL-STOCK-DEVEL-RPMS += kernel-devel
 # IN_NODEIMAGE += openvswitch
 # # build only on f14 as f16 has this natively
 # ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14)"
@@ -229,9 +229,9 @@ endif
 vsys-MODULES := vsys
 vsys-SPEC := vsys.spec
 # ocaml-docs is not needed anymore but keep it on a tmp basis as some tags may still have it
-vsys-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
+vsys-STOCK-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
 ifeq "$(local_inotify_tools)" "true"
-vsys-DEPEND-DEVEL-RPMS += inotify-tools inotify-tools-devel
+vsys-LOCAL-STOCK-DEVEL-RPMS += inotify-tools inotify-tools-devel
 endif
 IN_NODEIMAGE += vsys
 ALL += vsys
@@ -287,7 +287,7 @@ ifeq "$(DISTRO)" "Fedora"
 ifneq "$(DISTRONAME)" "f16"
 mod_python-MODULES := mod_python
 mod_python-SPEC	:= mod_python.spec
-mod_python-DEVEL-RPMS := httpd-devel
+mod_python-STOCK-DEVEL-RPMS := httpd-devel
 mod_python-BUILD-FROM-SRPM := yes
 ALL += mod_python
 endif
@@ -330,7 +330,7 @@ ALL += pcucontrol
 #
 #monitor-MODULES := monitor
 #monitor-SPEC := Monitor.spec
-#monitor-DEVEL-RPMS += net-snmp net-snmp-devel
+#monitor-STOCK-DEVEL-RPMS += net-snmp net-snmp-devel
 #ALL += monitor
 #IN_NODEIMAGE += monitor
 
@@ -399,14 +399,14 @@ IN_BOOTCD += pyplnet
 #
 rvm-ruby-MODULES := rvm-ruby
 rvm-ruby-SPEC := rpm/rvm-ruby.spec
-rvm-ruby-DEVEL-RPMS := chrpath libyaml-devel libffi-devel libxslt-devel
+rvm-ruby-STOCK-DEVEL-RPMS := chrpath libyaml-devel libffi-devel libxslt-devel
 ALL += rvm-ruby
 
 #
 # OML measurement library
 #
 oml-MODULES := oml
-oml-DEVEL-RPMS += sqlite-devel 
+oml-STOCK-DEVEL-RPMS += sqlite-devel 
 oml-SPEC := liboml.spec
 ALL += oml
 
@@ -536,7 +536,7 @@ endif
 # don't build these by default, we have separate builds for that
 myslice-MODULES := myslice
 myslice-SPEC := myslice.spec
-myslice-DEVEL-RPMS := python-django
+myslice-STOCK-DEVEL-RPMS := python-django
 #ALL += myslice
 
 manifold-MODULES := manifold

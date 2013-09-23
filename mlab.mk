@@ -15,8 +15,8 @@ ifeq "$(DISTRONAME)" "centos5"
 mkinitrd-MODULES := mkinitrd
 mkinitrd-SPEC := mkinitrd.spec
 mkinitrd-BUILD-FROM-SRPM := yes
-mkinitrd-DEVEL-RPMS += parted-devel glib2-devel libdhcp4client-devel libdhcp6client-devel libdhcp-devel 
-mkinitrd-DEVEL-RPMS += device-mapper libselinux-devel libsepol-devel libnl-devel
+mkinitrd-STOCK-DEVEL-RPMS += parted-devel glib2-devel libdhcp4client-devel libdhcp6client-devel libdhcp-devel 
+mkinitrd-STOCK-DEVEL-RPMS += device-mapper libselinux-devel libsepol-devel libnl-devel
 ALL += mkinitrd
 IN_BOOTCD += mkinitrd
 IN_SLICEIMAGE += mkinitrd 
@@ -60,7 +60,7 @@ ifneq "$(DISTRONAME)" "f8"
 madwifi-MODULES := madwifi
 madwifi-SPEC := madwifi.spec
 madwifi-BUILD-FROM-SRPM := yes
-madwifi-DEPEND-DEVEL-RPMS += kernel-devel
+madwifi-LOCAL-STOCK-DEVEL-RPMS += kernel-devel
 madwifi-SPECVARS = kernel_version=$(kernel.rpm-version) \
 	kernel_release=$(kernel.rpm-release) \
 	kernel_arch=$(kernel.rpm-arch)
@@ -75,7 +75,7 @@ endif
 iptables-MODULES := iptables
 iptables-SPEC := iptables.spec
 iptables-BUILD-FROM-SRPM := yes	
-iptables-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
+iptables-LOCAL-STOCK-DEVEL-RPMS += kernel-devel kernel-headers
 ALL += iptables
 IN_NODEIMAGE += iptables
 
@@ -116,7 +116,7 @@ libnl-MODULES := libnl
 libnl-SPEC := libnl.spec
 libnl-BUILD-FROM-SRPM := yes
 # this sounds like the thing to do, but in fact linux/if_vlan.h comes with kernel-headers
-libnl-DEPEND-DEVEL-RPMS += kernel-devel kernel-headers
+libnl-LOCAL-STOCK-DEVEL-RPMS += kernel-devel kernel-headers
 ALL += libnl
 IN_NODEIMAGE += libnl
 endif
@@ -126,9 +126,9 @@ endif
 #
 util-vserver-pl-MODULES := util-vserver-pl
 util-vserver-pl-SPEC := util-vserver-pl.spec
-util-vserver-pl-DEPEND-DEVEL-RPMS += util-vserver-lib util-vserver-devel util-vserver-core 
+util-vserver-pl-LOCAL-STOCK-DEVEL-RPMS += util-vserver-lib util-vserver-devel util-vserver-core 
 ifeq "$(local_libnl)" "true"
-util-vserver-pl-DEPEND-DEVEL-RPMS += libnl libnl-devel
+util-vserver-pl-LOCAL-STOCK-DEVEL-RPMS += libnl libnl-devel
 endif
 ALL += util-vserver-pl
 IN_NODEIMAGE += util-vserver-pl
@@ -249,7 +249,7 @@ endif
 #
 openvswitch-MODULES := openvswitch
 openvswitch-SPEC := openvswitch.spec
-openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
+openvswitch-LOCAL-STOCK-DEVEL-RPMS += kernel-devel
 
 #ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14 f15 f16)"
 #IN_NODEIMAGE += openvswitch
@@ -262,9 +262,9 @@ openvswitch-DEPEND-DEVEL-RPMS += kernel-devel
 vsys-MODULES := vsys
 vsys-SPEC := vsys.spec
 # ocaml-docs is not needed anymore but keep it on a tmp basis as some tags may still have it
-vsys-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
+vsys-STOCK-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
 ifeq "$(local_inotify_tools)" "true"
-vsys-DEPEND-DEVEL-RPMS += inotify-tools inotify-tools-devel
+vsys-LOCAL-STOCK-DEVEL-RPMS += inotify-tools inotify-tools-devel
 endif
 IN_NODEIMAGE += vsys
 ALL += vsys
@@ -330,7 +330,7 @@ ALL += pcucontrol
 #
 monitor-MODULES := monitor
 monitor-SPEC := Monitor.spec
-monitor-DEVEL-RPMS += net-snmp net-snmp-devel
+monitor-STOCK-DEVEL-RPMS += net-snmp net-snmp-devel
 ALL += monitor
 IN_NODEIMAGE += monitor
 
