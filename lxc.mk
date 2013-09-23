@@ -536,6 +536,7 @@ endif
 # don't build these by default, we have separate builds for that
 myslice-MODULES := myslice
 myslice-SPEC := myslice.spec
+myslice-DEVEL-RPMS := python-django
 #ALL += myslice
 
 manifold-MODULES := manifold
