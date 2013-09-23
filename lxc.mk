@@ -537,6 +537,7 @@ endif
 myslice-MODULES := myslice
 myslice-SPEC := myslice.spec
 myslice-STOCK-DEVEL-RPMS := python-django
+myslice-STOCK-DEVEL-DEBS := python-django
 #ALL += myslice
 
 manifold-MODULES := manifold

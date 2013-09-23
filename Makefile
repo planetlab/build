@@ -548,6 +548,19 @@ define rpmyum_uninstall_stock_rpms
 	-$(if $($(1)-LOCAL-DEVEL-RPMS), echo "Unstalling for $(1)-LOCAL-DEVEL-RPMS" ; $(RPMYUM-UNINSTALL-STOCK) $($(1)-LOCAL-DEVEL-RPMS))
 endef
 
+# similar for debian 
+DPKGAPT-INSTALL-STOCK := apt-get -y install
+DPKGAPT-UNINSTALL-STOCK := echo WARNING uninstalling stock debs not implemented
+
+define dpkgapt_install_stock_rpms 
+	$(if $($(1)-STOCK-DEVEL-DEBS), echo "Installing for $(1)-STOCK-DEVEL-DEBS" ; $(DPKGAPT-INSTALL-STOCK) $($(1)-STOCK-DEVEL-DEBS))
+endef
+
+define dpkgapt_uninstall_stock_rpms
+	-$(if $($(1)-LOCAL-DEVEL-DEBS), echo "Unstalling for $(1)-LOCAL-DEVEL-DEBS" ; $(DPKGAPT-UNINSTALL-STOCK) $($(1)-LOCAL-DEVEL-DEBS))
+endef
+
+
 ####################
 # usage: target_source_rpm package
 define target_source_rpm 
@@ -670,9 +683,11 @@ $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 # so I'm reverting to simplicity
 define target_debian
 $(1)-debian: $(1)-tarball
+	$(dpkgapt-install-stock $(1))
 	mkdir -p DEBIAN/$(1)
 	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
 	make -C DEBIAN/$(1) "RPMTARBALL=$(HOME)/$($(1).tarballs)" "RPMVERSION=$($(1).rpm-version)" "RPMRELEASE=$($(1).rpm-release)" "RPMNAME=$($(1).rpm-name)" debian
+	$(dpkgapt-uninstall-stock $(1))
 endef
 
 $(foreach package,$(ALL),$(eval $(call target_debian,$(package))))
