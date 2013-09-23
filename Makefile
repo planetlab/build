@@ -683,11 +683,11 @@ $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 # so I'm reverting to simplicity
 define target_debian
 $(1)-debian: $(1)-tarball
-	$(dpkgapt_install_stock_debs $(1))
+	$(call dpkgapt_install_stock_debs $(1))
 	mkdir -p DEBIAN/$(1)
 	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
 	make -C DEBIAN/$(1) "RPMTARBALL=$(HOME)/$($(1).tarballs)" "RPMVERSION=$($(1).rpm-version)" "RPMRELEASE=$($(1).rpm-release)" "RPMNAME=$($(1).rpm-name)" debian
-	$(dpkgapt_uninstall_stock_debs $(1))
+	$(call dpkgapt_uninstall_stock_debs $(1))
 endef
 
 $(foreach package,$(ALL),$(eval $(call target_debian,$(package))))
