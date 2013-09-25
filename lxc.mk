@@ -191,27 +191,6 @@ ALL += pf2slice
 #IN_NODEIMAGE += mom
 
 #
-# inotify-tools - local import
-# rebuild this on centos5 (not found) - see yumexclude
-#
-local_inotify_tools=false
-ifeq "$(DISTRONAME)" "centos5"
-local_inotify_tools=true
-endif
-
-ifeq "$(DISTRONAME)" "sl6"
-local_inotify_tools=true
-endif
-
-ifeq "$(local_inotify_tools)" "true"
-inotify-tools-MODULES := inotify-tools
-inotify-tools-SPEC := inotify-tools.spec
-inotify-tools-BUILD-FROM-SRPM := yes
-IN_NODEIMAGE += inotify-tools
-ALL += inotify-tools
-endif
-
-#
 # openvswitch
 #
 # openvswitch-MODULES := openvswitch
@@ -230,9 +209,6 @@ vsys-MODULES := vsys
 vsys-SPEC := vsys.spec
 # ocaml-docs is not needed anymore but keep it on a tmp basis as some tags may still have it
 vsys-STOCK-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
-ifeq "$(local_inotify_tools)" "true"
-vsys-LOCAL-DEVEL-RPMS += inotify-tools inotify-tools-devel
-endif
 IN_NODEIMAGE += vsys
 ALL += vsys
 
