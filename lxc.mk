@@ -216,7 +216,7 @@ endif
 #
 # openvswitch-MODULES := openvswitch
 # openvswitch-SPEC := openvswitch.spec
-# openvswitch-LOCAL-STOCK-DEVEL-RPMS += kernel-devel
+# openvswitch-STOCK-DEVEL-RPMS += kernel-devel
 # IN_NODEIMAGE += openvswitch
 # # build only on f14 as f16 has this natively
 # ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f14)"
@@ -231,7 +231,7 @@ vsys-SPEC := vsys.spec
 # ocaml-docs is not needed anymore but keep it on a tmp basis as some tags may still have it
 vsys-STOCK-DEVEL-RPMS += ocaml-ocamldoc ocaml-docs
 ifeq "$(local_inotify_tools)" "true"
-vsys-LOCAL-STOCK-DEVEL-RPMS += inotify-tools inotify-tools-devel
+vsys-LOCAL-DEVEL-RPMS += inotify-tools inotify-tools-devel
 endif
 IN_NODEIMAGE += vsys
 ALL += vsys
