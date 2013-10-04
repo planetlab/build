@@ -25,6 +25,13 @@ kernel-RPMFLAGS:= --target $(HOSTARCH)
 endif
 kernel-SPECVARS += kernelconfig=planetlab
 KERNELS += kernel
+#
+kernel-STOCK-DEVEL-RPMS	+= elfutils-libelf-devel
+# help out spec2make on f8 and centos5, due to a bug in rpm 
+# ditto on f16 for spec2make.py - tmp hopefully
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f16 centos5)"
+kernel-WHITELIST-RPMS := kernel-devel,kernel-headers
+endif
 
 kernels: $(KERNELS)
 kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
