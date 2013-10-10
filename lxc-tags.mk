@@ -48,7 +48,7 @@ nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeim
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 
 #
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-26
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-27
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 #
 myslice-GITPATH			:= git://git.onelab.eu/myslice.git@master
