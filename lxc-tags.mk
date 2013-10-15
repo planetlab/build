@@ -1,6 +1,6 @@
 # build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
 
-lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-8
+lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@master
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-4
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-2
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
@@ -32,7 +32,7 @@ monitor-GITPATH			:= git://git.planet-lab.org/monitor@monitor-3.1-6
 PLCRT-SVNPATH			:= http://svn.planet-lab.org/svn/PLCRT/tags/PLCRT-1.0-11
 pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopenssl-0.9-2
 pyaspects-GITPATH               := git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-3
-nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.2-2
+nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@master
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.2-1
 pypcilib-GITPATH                := git://git.planet-lab.org/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-4.3-18
