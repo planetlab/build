@@ -376,7 +376,9 @@ IN_BOOTCD += pyplnet
 rvm-ruby-MODULES := rvm-ruby
 rvm-ruby-SPEC := rpm/rvm-ruby.spec
 rvm-ruby-STOCK-DEVEL-RPMS := chrpath libyaml-devel libffi-devel libxslt-devel
-ALL += rvm-ruby
+# Since Oct 22. 2013, f18 has a new release of openssl that ruby is not too happy to build against
+# turning this off for now, Christoph Dwertmann to monitor the status of this bug/incompatibility upstream
+#ALL += rvm-ruby
 
 #
 # OML measurement library
