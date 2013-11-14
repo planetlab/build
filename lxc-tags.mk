@@ -23,7 +23,7 @@ vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH            := git://git.planet-lab.org/vsys-scripts.git@vsys-scripts-0.95-48
 bind_public-GITPATH             := git://git.planet-lab.org/bind_public.git@bind_public-0.1-2
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-1.11.90-1
-plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.2-10
+plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@master
 mod_python-GITPATH              := git://git.onelab.eu/mod_python.git@mod_python-3.3.1-1
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.planet-lab.org/plewww.git@plewww-5.2-3
@@ -45,7 +45,7 @@ oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-3
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-6
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-2
-myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.2-5
+myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@master
 
 #
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-27
