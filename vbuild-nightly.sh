@@ -725,10 +725,10 @@ function main () {
 	else
 	    # run scanpackages so we can use apt-get on this
 	    # (not needed on fedora b/c this is done by the regular build already)
-	    vserver $BASE exec bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > DEBIAN/Packages.gz)"
+	    vserver $BASE exec bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
 	    webpublish mkdir -p $WEBPATH/$BASE/DEBIAN
 	    webpublish_rsync_files $WEBPATH/$BASE/DEBIAN/ /vservers/$BASE/build/DEBIAN/*.deb 
-	    webpublish_rsync_files $WEBPATH/$BASE/ /vservers/$BASE/build/DEBIAN/*.gz
+	    webpublish_rsync_files $WEBPATH/$BASE/ /vservers/$BASE/build/Packages.gz
 	fi
 	# publish myplc-release if this exists
 	release=/vservers/$BASE/build/myplc-release
