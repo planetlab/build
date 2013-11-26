@@ -52,6 +52,6 @@ sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-2.1-27
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 #
 myslice-GITPATH			:= git://git.onelab.eu/myslice.git@master
-manifold-GITPATH		:= git://git.onelab.eu/manifold.git@packaging2
+manifold-GITPATH		:= git://git.onelab.eu/manifold.git@devel
 #
 tests-GITPATH                   := git://git.onelab.eu/tests.git@master
