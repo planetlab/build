@@ -19,7 +19,6 @@ nodeconfig
 nodeimage
 nodemanager
 nodeupdate
-rvm-ruby:planetlab
 oml
 pcucontrol
 pf2slice
@@ -34,8 +33,8 @@ procprotect
 pyaspects
 pypcilib
 pyplnet
-sfa:geni-v2
-sfa:geni-v3
+rvm-ruby:planetlab
+sfa
 sface
 sliceimage
 sliver-openvswitch
