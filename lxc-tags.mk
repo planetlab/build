@@ -2,14 +2,14 @@
 
 lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@master
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-4
-procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-2
+procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
 planetlab-umts-tools-GITPATH    := git://git.onelab.eu/planetlab-umts-tools.git@planetlab-umts-tools-0.7-1
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-10
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH            := git://git.planet-lab.org/plnode-utils.git@plnode-utils-0.2-2
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-5.2-8
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@master
 #
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.planet-lab.org/codemux.git@codemux-0.1-15
