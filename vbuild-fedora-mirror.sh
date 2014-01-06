@@ -103,7 +103,7 @@ function mirror_distro_arch () {
 		    paths="$paths core/updates/$distroindex/$arch/ extras/$distroindex/$arch/"
 		    RES=0
 		    ;;
-		7|8|9|1?)
+		7|8|9|1?|2?)
 		    [ -z "$skip_core" ] && paths="releases/$distroindex/Everything/$arch/os/"
 		    paths="$paths updates/$distroindex/$arch/"
 		    # f8 and f9 have the additional newkey repo
