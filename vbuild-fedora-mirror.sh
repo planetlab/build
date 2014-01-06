@@ -57,7 +57,7 @@ function mirror_distro_arch () {
 	    distro="Fedora Core"
 	    rsyncurl=$fedora_url
 	    ;;
-	f*[7-9]|f1?)
+	f*[7-9]|f[12]?)
 	    distroindex=$(echo $distroname | sed -e "s,f,,g")
 	    distro="Fedora"
 	    rsyncurl=$fedora_url

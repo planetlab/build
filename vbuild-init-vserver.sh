@@ -214,6 +214,7 @@ function setup_vserver () {
     # not working with f16 anyways, systemd requires 2.6.36 to work
     case $fcdistro in 
 	f1[5-9]) echo plain > /etc/vservers/$vserver/apps/init/style ;;
+	f2?)     echo plain > /etc/vservers/$vserver/apps/init/style ;;
     esac
 
     if [ "$pkg_method" = "yum" ] ; then
