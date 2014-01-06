@@ -195,21 +195,24 @@ TYPE=Ethernet
 MTU=1500
 EOF
 
-# set the hostname
-if [[ "$fcdistro" == "f18" ]] ; then
-    cat <<EOF > ${rootfs_path}/etc/hostname
+    # set the hostname
+    case "$fcdistro" in 
+	f18|f2?)
+	    cat <<EOF > ${rootfs_path}/etc/hostname
 $HOSTNAME
 EOF
-else
-    cat <<EOF > ${rootfs_path}/etc/sysconfig/network
+	    echo ;;
+	*)
+            cat <<EOF > ${rootfs_path}/etc/sysconfig/network
 NETWORKING=yes
 HOSTNAME=$HOSTNAME
 EOF
-    # set minimal hosts
-    cat <<EOF > $rootfs_path/etc/hosts
+            # set minimal hosts
+	    cat <<EOF > $rootfs_path/etc/hosts
 127.0.0.1 localhost $HOSTNAME
 EOF
-fi
+	    echo ;;
+    esac
 
     dev_path="${rootfs_path}/dev"
     rm -rf $dev_path
