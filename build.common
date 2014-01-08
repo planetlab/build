@@ -63,7 +63,7 @@ function pl_getReleaseName () {
 	[Ss]L*)
 	    releasename=sl$release
 	    ;;
-	squeeze|wheezy|oneiric|precise|quantal|raring)
+	squeeze|wheezy|oneiric|precise|quantal|raring|saucy)
 	    releasename=$distro
 	    ;;
 	*)
