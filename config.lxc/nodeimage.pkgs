@@ -124,3 +124,5 @@ package: planetlab-umts-tools-backend ppp comgt
 ### convenience
 package: less
 package: emacs-nox
+
+package>=f20: libvirt
