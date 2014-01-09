@@ -139,9 +139,10 @@ function check_yumgroup_installed () {
 
 function prepare_host() {
    
-    host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"    
-    ## check if libvirt_version is installed
-    virsh -v | grep -e $libvirt_version || { echo "$libvirt_version needs to be installed!!!" ; exit 1 ; }
+### Thierry - jan 14 - turning off this check as our boxes now meet this req.
+### and I'm trying out f20's stock libvirt instead    
+#    ## check if libvirt_version is installed
+#    virsh -v | grep -e $libvirt_version || { echo "$libvirt_version needs to be installed!!!" ; exit 1 ; }
 #    host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"
 #    if [ ! -f /etc/yum.repos.d/libvirt.repo ] ; then
 #       touch /etc/yum.repos.d/libvirt.repo
