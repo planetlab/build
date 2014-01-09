@@ -14,12 +14,37 @@ PATH=$(dirname $0):$PATH export PATH
 DEFAULT_FCDISTRO=f16
 DEFAULT_PLDISTRO=planetlab
 DEFAULT_PERSONALITY=linux64
-DEFAULT_IFNAME=eth0
 
 COMMAND_VBUILD="vbuild-init-lxc.sh"
 COMMAND_MYPLC="vtest-init-lxc.sh"
 
 libvirt_version="1.0.4"
+
+## stolen from tests/system/template-qemu/qemu-bridge-init
+#################### compute INTERFACE_LAN
+# use /proc/net/dev instead of a hard-wired list
+function gather_interfaces () {
+    python <<EOF
+for line in file("/proc/net/dev"):
+    if ':' not in line: continue
+    ifname=line.replace(" ","").split(":")[0]
+    if ifname.find("lo")==0: continue
+    if ifname.find("br")==0: continue
+    if ifname.find("virbr")==0: continue
+    if ifname.find("tap")==0: continue
+    print ifname
+EOF
+}
+    
+function discover_interface () {
+    for ifname in $(gather_interfaces); do
+	ip link show $ifname | grep -qi 'state UP' && { echo $ifname; return; }
+    done
+    # still not found ? that's bad
+    echo unknown
+}
+DEFAULT_IFNAME=$(discover_interface)
+
 function bridge_init () {
 
     # turn on verbosity
