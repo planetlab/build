@@ -257,10 +257,9 @@ function configure_fedora_systemd() {
     # so ignore if we can't find /etc/systemd at all 
     [ -d ${rootfs_path}/etc/systemd ] || return 0
     # otherwise let's proceed
-    unlink ${rootfs_path}/etc/systemd/system/default.target
-    ln -s /lib/systemd/system/multi-user.target ${rootfs_path}/etc/systemd/system/default.target
+    ln -sf /lib/systemd/system/multi-user.target ${rootfs_path}/etc/systemd/system/default.target
     touch ${rootfs_path}/etc/fstab
-    ln -s /dev/null ${rootfs_path}/etc/systemd/system/udev.service
+    ln -sf /dev/null ${rootfs_path}/etc/systemd/system/udev.service
 # Thierry - Feb 2013
 # this was intended for f16 initially, in order to enable getty that otherwise would not start
 # having a getty running is helpful only if ssh won't start though, and we see a correlation between
@@ -268,7 +267,7 @@ function configure_fedora_systemd() {
 # so, turning getty off for now instead
 #   #dependency on a device unit fails it specially that we disabled udev
 #    sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
-    ln -s /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
+    ln -sf /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
     rm -f ${rootfs_path}/etc/systemd/system/getty.target.wants/*service || :
 # can't seem to handle this one with systemctl
     chroot ${rootfs_path} /sbin/chkconfig network on
