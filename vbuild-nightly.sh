@@ -1,5 +1,4 @@
 #!/bin/bash
-REVISION=$(echo '$Revision: 18120 $' | sed -e 's,\$,,g' -e 's,^\w*:\s,,' )
 
 COMMANDPATH=$0
 COMMAND=$(basename $0)
@@ -410,7 +409,6 @@ function setupssh () {
 
 function usage () {
     echo "Usage: $COMMAND [option] [var=value...] make-targets"
-    echo "This is $REVISION"
     echo "Supported options"
     echo " -f fcdistro - defaults to $DEFAULT_FCDISTRO"
     echo " -d pldistro - defaults to $DEFAULT_PLDISTRO"
