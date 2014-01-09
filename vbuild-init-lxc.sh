@@ -143,23 +143,6 @@ function prepare_host() {
 ### and I'm trying out f20's stock libvirt instead    
 #    ## check if libvirt_version is installed
 #    virsh -v | grep -e $libvirt_version || { echo "$libvirt_version needs to be installed!!!" ; exit 1 ; }
-#    host_fcdistro="$(cat /etc/fedora-release | cut -d' ' -f3)"
-#    if [ ! -f /etc/yum.repos.d/libvirt.repo ] ; then
-#       touch /etc/yum.repos.d/libvirt.repo
-#       cat <<EOF > /etc/yum.repos.d/libvirt.repo
-#[libvirt]
-#name=libvirt-1.0.2-1
-#baseurl=http://build.onelab.eu/lxc/2013.02.25--lxc$host_fcdistro/RPMS/
-#enabled=1
-#gpgcheck=0
-#EOF
-#
-#       yum --assumeno update
-#       check_yumgroup_installed "Development Tools"
-#       check_yum_installed libcap-devel
-#       check_yum_installed libvirt
-#       systemctl start libvirtd
-#    fi
 
     #################### bride initialization
     check_yum_installed bridge-utils
