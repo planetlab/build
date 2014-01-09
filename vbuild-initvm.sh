@@ -15,8 +15,8 @@ DEFAULT_PLDISTRO=planetlab
 DEFAULT_PERSONALITY=linux64
 DEFAULT_IFNAME=eth0
 
-COMMAND_VBUILD="vbuild-init-vserver.sh"
-COMMAND_MYPLC="vtest-init-vserver.sh"
+COMMAND_VBUILD="vbuild-initvm.sh"
+COMMAND_MYPLC="vtest-initvm.sh"
 
 function failure () {
     echo "$COMMAND : Bailing out"

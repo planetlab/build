@@ -1,5 +1,3 @@
-# build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
-
 mkinitrd-GITPATH		:= git://git.planet-lab.org/mkinitrd.git@mkinitrd-5.1.19.6-2
 linux-2.6-BRANCH		:= 32 # This line is not so defunct
 linux-2.6-GITPATH		:= git://git.planet-lab.org/linux-2.6.git@rhel6-mlab

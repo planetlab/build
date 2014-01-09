@@ -1,1 +1,0 @@
-vbuild-init-lxc.sh

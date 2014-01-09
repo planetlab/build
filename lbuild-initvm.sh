@@ -15,8 +15,8 @@ DEFAULT_FCDISTRO=f16
 DEFAULT_PLDISTRO=planetlab
 DEFAULT_PERSONALITY=linux64
 
-COMMAND_VBUILD="vbuild-init-lxc.sh"
-COMMAND_MYPLC="vtest-init-lxc.sh"
+COMMAND_LBUILD="lbuild-initvm.sh"
+COMMAND_LTEST="ltest-initvm.sh"
 
 libvirt_version="1.0.4"
 
@@ -509,7 +509,7 @@ EOF
     
     # for using vtest-init-lxc.sh as a general-purpose lxc creation wrapper
     # just mention 'none' as the repo url
-    if [ -n "$MYPLC_MODE" -a "$REPO_URL" != "none" ] ; then
+    if [ -n "$TEST_MODE" -a "$REPO_URL" != "none" ] ; then
 	if [ ! -d $rootfs_path/etc/yum.repos.d ] ; then
 	    echo "WARNING : cannot create myplc repo"
 	else
@@ -675,7 +675,7 @@ function devel_or_vtest_tools () {
     pkg_method=$(package_method $fcdistro)
 
     # check for .pkgs file based on pldistro
-    if [ -n "$VBUILD_MODE" ] ; then
+    if [ -n "$BUILD_MODE" ] ; then
 	pkgsname=devel.pkgs
     else
 	pkgsname=vtest.pkgs
@@ -718,8 +718,8 @@ function devel_or_vtest_tools () {
 }
 
 function post_install () {
-    if [ -n "$VBUILD_MODE" ] ; then
-	post_install_vbuild "$@" 
+    if [ -n "$BUILD_MODE" ] ; then
+	post_install_build "$@" 
     else
 	post_install_myplc "$@"
     fi
@@ -728,7 +728,7 @@ function post_install () {
     cp /etc/localtime $rootfs_path/etc/localtime
 }
 
-function post_install_vbuild () {
+function post_install_build () {
 
     set -x 
     set -e 
@@ -853,8 +853,8 @@ function start_lxc() {
 
 function usage () {
     set +x 
-    echo "Usage: $COMMAND_VBUILD [options] lxc-name"
-    echo "Usage: $COMMAND_MYPLC [options] lxc-name repo-url [ -- lxc-options ]"
+    echo "Usage: $COMMAND_LBUILD [options] lxc-name"
+    echo "Usage: $COMMAND_LTEST [options] lxc-name repo-url [ -- lxc-options ]"
     echo "Description:"
     echo "   This command creates a fresh lxc instance, for building, or running, myplc"
     echo "Supported options"
@@ -866,7 +866,7 @@ function usage () {
     echo "  --netdev : interface to be defined inside lxc"
     echo "  --interface : IP to be defined for the lxc"
     echo "  --hostname : Hostname to be defined for the lxc"
-    echo "With $COMMAND_MYPLC you can give 'none' as the URL, in which case"
+    echo "With $COMMAND_LTEST you can give 'none' as the URL, in which case"
     echo "   myplc.repo does not get created"
     exit 1
 }
@@ -878,10 +878,10 @@ function main () {
     #trap failure ERR INT
 
     case "$COMMAND" in
-	$COMMAND_VBUILD)
-	    VBUILD_MODE=true ;;
-	$COMMAND_MYPLC)
-	    MYPLC_MODE=true;;
+	$COMMAND_LBUILD)
+	    BUILD_MODE=true ;;
+	$COMMAND_LTEST)
+	    TEST_MODE=true;;
 	*)
 	    usage ;;
     esac
@@ -905,7 +905,7 @@ function main () {
     # parse fixed arguments
     [[ -z "$@" ]] && usage
     lxc=$1 ; shift
-    if [ -n "$MYPLC_MODE" ] ; then
+    if [ -n "$TEST_MODE" ] ; then
 	[[ -z "$@" ]] && usage
 	REPO_URL=$1 ; shift
     fi
@@ -933,7 +933,7 @@ function main () {
       done
 
    
-    if [ -n "$VBUILD_MODE" ] ; then
+    if [ -n "$BUILD_MODE" ] ; then
 	[ -z "$IFNAME" ] && IFNAME=$DEFAULT_IFNAME
         [ -z "$HOSTNAME" ] && HOSTNAME=$lxc
     fi
@@ -958,7 +958,7 @@ function main () {
     # need bridge installed
     prepare_host    
 
-    if [ -n "$VBUILD_MODE" ] ; then
+    if [ -n "$BUILD_MODE" ] ; then
 
 	# Bridge IP affectation
 	x=$(echo $personality | cut -dx -f2)

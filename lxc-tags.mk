@@ -1,5 +1,3 @@
-# build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
-
 lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@master
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-4
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@master

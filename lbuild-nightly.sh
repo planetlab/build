@@ -147,8 +147,8 @@ function failure() {
     if test -z "$WEBLOG" ; then
 	WEBHOST=$(hostname)
 	WEBPATH=/tmp
-	WEBBASE=/tmp/vbuild-early-$(date +%Y-%m-%d)
-	WEBLOG=/tmp/vbuild-early-$(date +%Y-%m-%d).log.txt
+	WEBBASE=/tmp/lbuild-early-$(date +%Y-%m-%d)
+	WEBLOG=/tmp/lbuild-early-$(date +%Y-%m-%d).log.txt
     fi
     webpublish mkdir -p $WEBBASE ||:
     webpublish_cp_local_to_remote $LOG $WEBLOG ||:
@@ -176,7 +176,7 @@ function success () {
     if test -z "$WEBLOG" ; then
 	WEBHOST=$(hostname)
 	WEBPATH=/tmp
-	WEBLOG=/tmp/vbuild-early-$(date +%Y-%m-%d).log.txt
+	WEBLOG=/tmp/lbuild-early-$(date +%Y-%m-%d).log.txt
     fi
     webpublish mkdir -p $WEBBASE
     webpublish_cp_local_to_remote $LOG $WEBLOG
@@ -672,7 +672,7 @@ function main () {
 
             # Create lxc vm
 	    cd $tmpdir
-	    ./vbuild-init-lxc.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${PREINSTALLED} ${BASE} 
+	    ./lbuild-initvm.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${PREINSTALLED} ${BASE} 
 	    # cleanup
 	    cd -
 	    rm -rf $tmpdir

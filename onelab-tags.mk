@@ -1,5 +1,3 @@
-# build-GITPATH is now set by vbuild-nightly.sh to avoid duplication
-
 ###
 linux-2.6-BRANCH		:= 32
 linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@linux-2.6-32-36
