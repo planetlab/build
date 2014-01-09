@@ -53,7 +53,11 @@ DATE=$(date +'%Y.%m.%d')
 # but the PL code still uses this name for now, so let's keep it simple
 function rootdir () {
     slice=$1; shift
-    echo /vservers/$1/rootfs
+    echo /vservers/$slice/rootfs
+}
+function logfile () {
+    slice=$1; shift
+    echo /vservers/$slice.log.txt
 }
 
 # wrap a quick summary of suspicious stuff
@@ -609,7 +613,7 @@ function main () {
 		exit 1
 	    fi
 	    # manage LOG - beware it might be a symlink so nuke it first
-	    LOG=$(rootdir ${BASE}).log.txt
+	    LOG=$(logfile ${BASE})
 	    rm -f $LOG
 	    exec > $LOG 2>&1
 	    set -x
@@ -652,7 +656,7 @@ function main () {
 	    BASE=${BASE}${i}
 	    # need update
 	    # manage LOG - beware it might be a symlink so nuke it first
-	    LOG=$(rootdir ${BASE}).log.txt
+	    LOG=$(logfile ${BASE})
 	    rm -f $LOG
 	    exec > $LOG 2>&1 
 	    set -x
