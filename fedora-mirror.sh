@@ -2,7 +2,7 @@
 # this can help you create/update your fedora mirror
 
 COMMAND=$(basename $0)
-LOGDIR=/var/log/fedora-mirroring
+LOGDIR=/var/log/fedora-mirror
 DATE=$(date '+%Y-%m-%d-%H-%M')
 LOG=${LOGDIR}/${DATE}.log
 
