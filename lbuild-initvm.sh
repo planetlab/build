@@ -719,10 +719,11 @@ function devel_or_vtest_tools () {
 
 function post_install () {
     lxc=$1; shift 
+    personality=$1; shift
     if [ -n "$BUILD_MODE" ] ; then
-	post_install_build $lxc
+	post_install_build $lxc $personality
     else
-	post_install_myplc $lxc
+	post_install_myplc $lxc $personality
 	wait_for_ssh $lxc
     fi
     # setup localtime from the host
@@ -786,7 +787,7 @@ PROFILE
     fi
 #
 EOF
-
+	
 }
 
 function post_install_myplc  () {
