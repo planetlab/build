@@ -282,7 +282,7 @@ function run_log () {
     # toss the build in the bargain, so the tests don't need to mess with extracting it
     rsync --verbose --archive /vservers/$BASE/build/MODULES/build ${testmaster_ssh}:${BASE}/
 
-    # invoke test on testbox - pass url and build url - so the tests can use vtest-init-vserver.sh
+    # invoke test on testbox - pass url and build url - so the tests can use vtest-initvm.sh
     run_log_env="-p $PERSONALITY -d $PLDISTRO -f $FCDISTRO"
 
     # need to proceed despite of set -e
@@ -665,7 +665,7 @@ function main () {
 	    fi
             # Create vserver
 	    cd $tmpdir
-	    ./vbuild-init-vserver.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${PREINSTALLED} ${BASE} 
+	    ./vbuild-initvm.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${PREINSTALLED} ${BASE} 
 	    # cleanup
 	    cd -
 	    rm -rf $tmpdir
