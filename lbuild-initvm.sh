@@ -607,7 +607,7 @@ function setup_lxc() {
     # and /etc/hosts for at least localhost
     [ -f $rootfs_path/etc/hosts ] || echo "127.0.0.1 localhost localhost.localdomain" > $rootfs_path/etc/hosts
     
-    # ssh access to lxc
+    # grant ssh access from host to guest
     mkdir $rootfs_path/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
@@ -718,13 +718,14 @@ function devel_or_vtest_tools () {
 }
 
 function post_install () {
+    lxc=$1; shift 
     if [ -n "$BUILD_MODE" ] ; then
-	post_install_build "$@" 
+	post_install_build $lxc
     else
-	post_install_myplc "$@"
+	post_install_myplc $lxc
+	wait_for_ssh $lxc
     fi
     # setup localtime from the host
-    lxc=$1; shift 
     cp /etc/localtime $rootfs_path/etc/localtime
 }
 
@@ -829,6 +830,16 @@ function start_lxc() {
   
     virsh -c lxc:// start $lxc
   
+    return 0
+}
+
+function wait_for_ssh () {
+    set -x
+    set -e
+    #trap failure ERR INT
+
+    lxc=$1; shift
+  
     echo $IP is up, waiting for ssh...
 
     #wait max 5 min for sshd to start 
@@ -847,7 +858,6 @@ function start_lxc() {
 
     # Thierry: this is fatal, let's just exit with a failure here
     [ -z $ssh_up ] && { echo "SSHD in container $lxc is not running" ; exit 1 ; } 
-
     return 0
 }
 
