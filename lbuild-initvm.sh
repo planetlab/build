@@ -722,8 +722,10 @@ function post_install () {
     personality=$1; shift
     if [ -n "$BUILD_MODE" ] ; then
 	post_install_build $lxc $personality
+	start_lxc $lxc
     else
 	post_install_myplc $lxc $personality
+	start_lxc $lxc
 	wait_for_ssh $lxc
     fi
     # setup localtime from the host
@@ -1022,8 +1024,6 @@ function main () {
 
     post_install $lxc $personality
     
-    start_lxc $lxc
-
     echo $COMMAND Done
 }
 
