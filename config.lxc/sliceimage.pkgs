@@ -13,8 +13,9 @@ package: perl
 package: python python-devel
 package: yum
 package: iputils
-package: tcpdump traceroute 
-package: telnet nc
+package: tcpdump traceroute telnet
+package<=f18: nc
+package>=f20: nmap-ncat
 package: openssh-clients
 package: time
 # this is really old school but well..

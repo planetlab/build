@@ -30,7 +30,7 @@ package: metadata
 package: mysql mysql-devel mysql-server 
 package: python python-devel 
 package: doxygen  
-package: vixie-cron 
+package: cronie
 package: xmlsec1 xmlsec1-openssl 
 package: udev 
 package: expat-devel
@@ -82,7 +82,7 @@ package: postgresql postgresql-devel postgresql-python postgresql-server
 package: php php-devel.@arch@ php-gd php-pgsql 
 # now this seems to have been fixed in f12
 package>=f12: php-devel
-package: PyXML 
+package<=f18: PyXML 
 # used to reference SOAPpy as well
 # for pypcilib
 package: pciutils-devel

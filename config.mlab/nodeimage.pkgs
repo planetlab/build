@@ -83,7 +83,7 @@ package: expect
 package: nfs-utils
 package: openvpn
 package: vconfig
-package: PyXML
+package<=f18: PyXML
 
 #
 # platform-dependent
