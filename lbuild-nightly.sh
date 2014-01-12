@@ -678,7 +678,8 @@ function main () {
 	    rm -rf $tmpdir
 	    # Extract build again - in the vm
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    lxcsu -ro $BASE bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
+	    # xxx not working as of now - waiting for Sapan to look into this
+	    lxcsu -ro $BASE -- bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
 	fi
 	echo "XXXXXXXXXX $COMMAND: preparation of vm $BASE done" $(date)
 
