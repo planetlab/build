@@ -581,23 +581,26 @@ function setup_lxc() {
         exit 1
     fi
 
-    install_fedora
-    if [ $? -ne 0 ]; then
-        echo "failed to install fedora"
-        exit 1
-    fi
-
-    configure_fedora
-    if [ $? -ne 0 ]; then
-        echo "failed to configure fedora for a container"
-        exit 1
-    fi
-
-    if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
-        configure_fedora_init
-    else
-        configure_fedora_systemd
-    fi
+    pkg_method=$(package_method $fcdistro)
+    case $pkg_method in
+	yum)
+	    install_fedora || { echo "failed to install fedora"; exit 1 ; }
+	    configure_fedora || { echo "failed to configure fedora for a container"; exit 1 ; }
+	    if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
+		configure_fedora_init
+	    else
+		configure_fedora_systemd
+	    fi
+	    ;;
+	debootstrap)
+	    echo "$COMMAND: no support for debootstrap-based systems - yet"
+	    exit 1
+	    ;;
+	*)
+	    echo "$COMMAND:: unknown package_method - exiting"
+	    exit 1
+	    ;;
+    esac
 
     # Enable cgroup
     mkdir $rootfs_path/cgroup
