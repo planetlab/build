@@ -674,13 +674,7 @@ function devel_or_vtest_tools () {
 
     pkg_method=$(package_method $fcdistro)
 
-    # check for .pkgs file based on pldistro
-    if [ -n "$BUILD_MODE" ] ; then
-	pkgsname=devel.pkgs
-    else
-	pkgsname=vtest.pkgs
-    fi
-    pkgsfile=$(pl_locateDistroFile $DIRNAME $pldistro $pkgsname)
+    pkgsfile=$(pl_locateDistroFile $DIRNAME $pldistro $PREINSTALLED)
 
     ### install individual packages, then groups
     # get target arch - use uname -i here (we want either x86_64 or i386)
@@ -903,11 +897,19 @@ function main () {
     RESISTANT=""
     IFNAME=""
     LXC_OPTIONS=""
-    while getopts "f:d:p:i:" opt ; do
+
+    # the set of preinstalled packages - depends on vbuild or vtest
+    if [ -n "$VBUILD_MODE" ] ; then
+	PREINSTALLED=devel.pkgs
+    else
+	PREINSTALLED=vtest.pkgs
+    fi
+    while getopts "f:d:p:P:i:" opt ; do
 	case $opt in
 	    f) fcdistro=$OPTARG;;
 	    d) pldistro=$OPTARG;;
 	    p) personality=$OPTARG;;
+	    P) PREINSTALLED=$OPTARG;;
 	    i) IFNAME=$OPTARG;;
 	    *) usage ;;
 	esac
