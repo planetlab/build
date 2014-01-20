@@ -51,7 +51,7 @@ DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRate
 
 #
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-1
-sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
+#sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
 #
 myslice-GITPATH			:= git://git.onelab.eu/myslice.git@master
 manifold-GITPATH		:= git://git.onelab.eu/manifold.git@devel
