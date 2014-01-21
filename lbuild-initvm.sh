@@ -21,6 +21,7 @@ COMMAND_LTEST="ltest-initvm.sh"
 ##########
 # when creating build boxes we use private NAT'ed addresses for the VMs
 # as per virbr0 that is taken care of by libvirt at startup
+PRIVATE_BRIDGE="virbr0"
 PRIVATE_PREFIX="192.168.122."
 PRIVATE_GATEWAY="192.168.122.1"
 # beware that changing this would break the logic of random_private_byte...
@@ -30,7 +31,7 @@ PRIVATE_MASKLEN=24
 PRIVATE_ATTEMPTS=20
 
 # constant
-INTERFACE_BRIDGE=br0
+PUBLIC_BRIDGE=br0
 
 # the network interface name as seen from the container
 VIF_GUEST=eth0
@@ -110,7 +111,7 @@ function create_bridge_if_needed() {
     set -x
 
     # already created ? - we're done
-    ip addr show $INTERFACE_BRIDGE >& /dev/null && {
+    ip addr show $PUBLIC_BRIDGE >& /dev/null && {
 	echo "Bridge already set up - skipping create_bridge_if_needed"
 	return 0
     }
@@ -154,20 +155,20 @@ function create_bridge_if_needed() {
 
 
     # creating the bridge
-    echo "Creating bridge INTERFACE_BRIDGE=$INTERFACE_BRIDGE"
-    brctl addbr $INTERFACE_BRIDGE
-    brctl addif $INTERFACE_BRIDGE $if_lan
+    echo "Creating bridge PUBLIC_BRIDGE=$PUBLIC_BRIDGE"
+    brctl addbr $PUBLIC_BRIDGE
+    brctl addif $PUBLIC_BRIDGE $if_lan
     echo "Activating promiscuous mode if_lan=$if_lan"
     ip link set $if_lan up promisc on
     sleep 2
     # rely on dhcp to re assign IP.. 
-    echo "Starting dhclient on $INTERFACE_BRIDGE"
-    dhclient $INTERFACE_BRIDGE
+    echo "Starting dhclient on $PUBLIC_BRIDGE"
+    dhclient $PUBLIC_BRIDGE
     sleep 1
 
     #Reconfigure the routing table
     echo "Configuring gateway=$gateway"
-    ip route add default via $gateway dev $INTERFACE_BRIDGE
+    ip route add default via $gateway dev $PUBLIC_BRIDGE
     ip route del default via $gateway dev $if_lan
     # at this point we have an extra route like e.g.
     ## ip route show
@@ -175,7 +176,7 @@ function create_bridge_if_needed() {
     #138.96.112.0/21 dev em1  proto kernel  scope link  src 138.96.112.57
     #138.96.112.0/21 dev br0  proto kernel  scope link  src 138.96.112.57
     #192.168.122.0/24 dev virbr0  proto kernel  scope link  src 192.168.122.1
-    route_dest=$(ip route show | grep -v default | grep "dev $INTERFACE_BRIDGE" | awk '{print $1;}')
+    route_dest=$(ip route show | grep -v default | grep "dev $PUBLIC_BRIDGE" | awk '{print $1;}')
     ip route del $route_dest dev $if_lan
 
     echo "========== $COMMAND: exiting create_bridge - beg"
@@ -209,36 +210,21 @@ function configure_fedora() {
     mkdir -p $rootfs_path/selinux
     echo 0 > $rootfs_path/selinux/enforce
 
-   # configure the network 
-
-    cat <<EOF > ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
-DEVICE=$VIF_GUEST
-BOOTPROTO=static
-ONBOOT=yes
-HOSTNAME=$HOSTNAME
-IPADDR=$IP
-NETMASK=$NETMASK
-GATEWAY=$GATEWAY
-NM_CONTROLLED=no
-TYPE=Ethernet
-MTU=1500
-EOF
-
     # set the hostname
     case "$fcdistro" in 
 	f18|f2?)
 	    cat <<EOF > ${rootfs_path}/etc/hostname
-$HOSTNAME
+$GUEST_HOSTNAME
 EOF
 	    echo ;;
 	*)
             cat <<EOF > ${rootfs_path}/etc/sysconfig/network
 NETWORKING=yes
-HOSTNAME=$HOSTNAME
+HOSTNAME=$GUEST_HOSTNAME
 EOF
             # set minimal hosts
 	    cat <<EOF > $rootfs_path/etc/hosts
-127.0.0.1 localhost $HOSTNAME
+127.0.0.1 localhost $GUEST_HOSTNAME
 EOF
 	    echo ;;
     esac
@@ -560,6 +546,11 @@ function setup_lxc() {
 	    ;;
     esac
 
+    # rpm --rebuilddb
+    chroot $rootfs_path /bin/rpm --rebuilddb
+
+    configure_yum_in_lxc $lxc $fcdistro $pldistro
+
     # Enable cgroup -- xxx -- is this really useful ?
     mkdir $rootfs_path/cgroup
     
@@ -572,9 +563,25 @@ function setup_lxc() {
     mkdir $rootfs_path/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
-    # copy libvirt xml template
-    tmpl_name="$lxc.xml"
-    cat > $config_path/$tmpl_name<<EOF
+    config_xml=$config_path/"lxc.xml"
+    guest_ifcfg=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
+    if [ -n "$BUILD_MODE" ] ; then
+	write_lxc_xml_build $lxc > $config_xml
+	write_guest_ifcfg_build > $guest_ifcfg
+    else
+	write_lxc_xml_test $lxc > $config_xml
+	write_guest_ifcfg_test > $guest_ifcfg
+    fi
+    
+    # define lxc container for libvirt
+    virsh -c lxc:// define $config_xml
+
+    return 0
+}
+
+function write_lxc_xml_test () {
+    lxc=$1; shift
+    cat <<EOF
 <domain type='lxc'>
   <name>$lxc</name>
   <memory>524288</memory>
@@ -597,7 +604,7 @@ function setup_lxc() {
       <target dir='/'/>
     </filesystem>
     <interface type="bridge">
-      <source bridge="$INTERFACE_BRIDGE"/>
+      <source bridge="$BRIDGE_IF"/>
       <target dev='$VIF_HOST'/>
     </interface>
     <console type='pty' />
@@ -605,20 +612,71 @@ function setup_lxc() {
   <network>
     <name>host-bridge</name>
     <forward mode="bridge"/>
-    <bridge name="$INTERFACE_BRIDGE"/>
+    <bridge name="$BRIDGE_IF"/>
   </network>
 </domain>
 EOF
+}
 
-    # define lxc container for libvirt
-    virsh -c lxc:// define $config_path/$tmpl_name
+function write_lxc_xml_build () { 
+    lxc=$1; shift
+    cat <<EOF
+<domain type='lxc'>
+  <name>$lxc</name>
+  <memory>524288</memory>
+  <os>
+    <type arch='$arch2'>exe</type>
+    <init>/sbin/init</init>
+  </os>
+  <features>
+    <acpi/>
+  </features>
+  <vcpu>1</vcpu>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <emulator>/usr/libexec/libvirt_lxc</emulator>
+    <filesystem type='mount'>
+      <source dir='$rootfs_path'/>
+      <target dir='/'/>
+    </filesystem>
+    <interface type="network">
+      <source network="default"/>
+    </interface>
+    <console type='pty' />
+  </devices>
+</domain>
+EOF
+}
 
-    # rpm --rebuilddb
-    chroot $rootfs_path /bin/rpm --rebuilddb
+# this one is dhcp-based
+function write_guest_ifcfg_build () {
+    cat <<EOF
+DEVICE=$VIF_GUEST
+BOOTPROTO=dhcp
+ONBOOT=yes
+NM_CONTROLLED=no
+TYPE=Ethernet
+MTU=1500
+EOF
+}
 
-    configure_yum_in_lxc $lxc $fcdistro $pldistro
-
-    return 0
+# use fixed IP as specified by GUEST_HOSTNAME
+function write_guest_ifcfg_test () {
+    cat <<EOF
+DEVICE=$VIF_GUEST
+BOOTPROTO=static
+ONBOOT=yes
+HOSTNAME=$GUEST_HOSTNAME
+IPADDR=$IP
+NETMASK=$NETMASK
+GATEWAY=$GATEWAY
+NM_CONTROLLED=no
+TYPE=Ethernet
+MTU=1500
+EOF
 }
 
 function devel_or_vtest_tools () {
@@ -676,10 +734,12 @@ function post_install () {
     personality=$1; shift
     if [ -n "$BUILD_MODE" ] ; then
 	post_install_build $lxc $personality
-	start_lxc $lxc
+	lxc_start $lxc
+	# manually run dhclient in guest - somehow this network won't start on its own
+	virsh lxc-enter-namespace $lxc /usr/sbin/dhclient $VIF_GUEST
     else
 	post_install_myplc $lxc $personality
-	start_lxc $lxc
+	lxc_start $lxc
 	wait_for_ssh $lxc
     fi
     # setup localtime from the host
@@ -777,7 +837,7 @@ PROFILE
 EOF
 }
 
-function start_lxc() {
+function lxc_start() {
 
     set -x
     set -e
@@ -865,7 +925,7 @@ function main () {
     echo 'build mode=' $BUILD_MODE 'test mode=' $TEST_MODE
 
     # the set of preinstalled packages - depends on vbuild or vtest
-    if [ -n "$VBUILD_MODE" ] ; then
+    if [ -n "$BUILD_MODE" ] ; then
 	PREINSTALLED=devel.pkgs
     else
 	PREINSTALLED=vtest.pkgs
@@ -875,7 +935,7 @@ function main () {
 	    f) fcdistro=$OPTARG;;
 	    d) pldistro=$OPTARG;;
 	    p) personality=$OPTARG;;
-	    n) HOSTNAME=$OPTARG;;
+	    n) GUEST_HOSTNAME=$OPTARG;;
 	    r) REPO_URL=$OPTARG;;
 	    P) PREINSTALLED=$OPTARG;;
 	    v) VERBOSE=true; set -x;;
@@ -897,9 +957,9 @@ function main () {
     [ -z "$personality" ] && personality=$DEFAULT_PERSONALITY
     
     if [ -n "$BUILD_MODE" ] ; then
-        [ -z "$HOSTNAME" ] && HOSTNAME=$lxc
+        [ -z "$GUEST_HOSTNAME" ] && GUEST_HOSTNAME=$lxc
     else
-	[[ -z "$HOSTNAME" ]] && usage
+	[[ -z "$GUEST_HOSTNAME" ]] && usage
 	# use -r none to get rid of this warning
 	if [ "$REPO_URL" == "none" ] ; then
 	    REPO_URL=""
@@ -921,10 +981,6 @@ function main () {
         echo "Unknown personality: $personality"
     fi
 
-    # need lxc installed before we can run lxc-ls
-    # need bridge installed
-    create_bridge_if_needed
-
     if [ -n "$BUILD_MODE" ] ; then
 
 	# Bridge IP affectation
@@ -932,16 +988,22 @@ function main () {
 	IP=${PRIVATE_PREFIX}$byte
 	NETMASK=$(masklen_to_netmask $PRIVATE_MASKLEN)
 	GATEWAY=$PRIVATE_GATEWAY
-	VIF_HOST="veth$byte"
+	VIF_HOST="i$byte"
+	BRIDGE_MODE="nat"
+	BRIDGE_IF="$PRIVATE_BRIDGE"
     else
-        [[ -z "HOSTNAME" ]] && usage
+        [[ -z "GUEST_HOSTNAME" ]] && usage
        
-	IP=$(gethostbyname $HOSTNAME)
+	create_bridge_if_needed
+
+	IP=$(gethostbyname $GUEST_HOSTNAME)
 	# use same NETMASK as bridge interface br0
-	MASKLEN=$(ip addr show $INTERFACE_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
+	MASKLEN=$(ip addr show $PUBLIC_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
         NETMASK=$(masklen_to_netmask $MASKLEN)
         GATEWAY=$(ip route show | grep default | awk '{print $3}')
-        VIF_HOST="i$(echo $HOSTNAME | cut -d. -f1)"
+        VIF_HOST="i$(echo $GUEST_HOSTNAME | cut -d. -f1)"
+	BRIDGE_MODE="bridge"
+	BRIDGE_IF="PUBLIC_BRIDGE"
     fi
 
     echo "the IP address of container $lxc is $IP, host virtual interface is $VIF_HOST"
