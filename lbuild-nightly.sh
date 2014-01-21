@@ -623,16 +623,16 @@ function main () {
 	    virsh --connect lxc:/// start ${BASE} || :
 	    # retrieve environment from the previous run
 	    FCDISTRO=$($RUN_IN_DOMAIN ${BASE} /build/getdistroname.sh)
-	    BUILD_SCM_URL=$($RUN_IN_DOMAIN ${BASE} make --no-print-directory -C /build stage1=skip +build-GITPATH)
+	    BUILD_SCM_URL=$($RUN_IN_DOMAIN ${BASE} -- make --no-print-directory -C /build stage1=skip +build-GITPATH)
 	    # for efficiency, crop everything in one make run
 	    tmp=/tmp/${BASE}-env.sh
-	    $RUN_IN_DOMAIN ${BASE} make --no-print-directory -C /build stage1=skip \
+	    $RUN_IN_DOMAIN ${BASE} -- make --no-print-directory -C /build stage1=skip \
 		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILTO ++WEBPATH ++TESTBUILDURL ++WEBROOT > $tmp
 	    . $tmp
 	    rm -f $tmp
 	    # update build
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    $RUN_IN_DOMAIN $BASE bash -c "cd /build; git pull; make tests-clean"
+	    $RUN_IN_DOMAIN $BASE -- -c "cd /build; git pull; make tests-clean"
 	    # make sure we refresh the tests place in case it has changed
 	    rm -f /build/MODULES/tests
 	    options=(${options[@]} -d $PLDISTRO -t $PLDISTROTAGS -s $BUILD_SCM_URL)
@@ -680,7 +680,7 @@ function main () {
 	    # Extract build again - in the vm
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
 	    # xxx not working as of now - waiting for Sapan to look into this
-	    $RUN_IN_DOMAIN $BASE -- bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
+	    $RUN_IN_DOMAIN $BASE -- "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
 	fi
 	echo "XXXXXXXXXX $COMMAND: preparation of vm $BASE done" $(date)
 
@@ -713,7 +713,7 @@ function main () {
 
 	    # invoke this command in the vm for building (-T)
 	    $RUN_IN_DOMAIN ${BASE} chmod +x /build/$COMMAND
-	    $RUN_IN_DOMAIN ${BASE} /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
+	    $RUN_IN_DOMAIN ${BASE} -- /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
 	fi
 
 	# publish to the web so run_log can find them
@@ -727,7 +727,7 @@ function main () {
 	else
 	    # run scanpackages so we can use apt-get on this
 	    # (not needed on fedora b/c this is done by the regular build already)
-	    $RUN_IN_DOMAIN $BASE bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
+	    $RUN_IN_DOMAIN $BASE -- -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
 	    webpublish mkdir -p $WEBPATH/$BASE/DEBIAN
 	    webpublish_rsync_files $WEBPATH/$BASE/DEBIAN/ $(rootdir $BASE)/build/DEBIAN/*.deb 
 	    webpublish_rsync_files $WEBPATH/$BASE/ $(rootdir $BASE)/build/Packages.gz
