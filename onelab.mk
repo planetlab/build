@@ -593,7 +593,7 @@ ALL += sfa
 #sface-MODULES := sface
 #sface-SPEC := sface.spec
 #ALL += sface
-#endif
+endif
 
 ##############################
 # don't build these by default, we have separate builds for that
