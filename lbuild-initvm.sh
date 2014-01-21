@@ -604,7 +604,7 @@ function write_lxc_xml_test () {
       <target dir='/'/>
     </filesystem>
     <interface type="bridge">
-      <source bridge="$BRIDGE_IF"/>
+      <source bridge="$PUBLIC_BRIDGE"/>
       <target dev='$VIF_HOST'/>
     </interface>
     <console type='pty' />
@@ -612,7 +612,7 @@ function write_lxc_xml_test () {
   <network>
     <name>host-bridge</name>
     <forward mode="bridge"/>
-    <bridge name="$BRIDGE_IF"/>
+    <bridge name="$PUBLIC_BRIDGE"/>
   </network>
 </domain>
 EOF
@@ -989,8 +989,6 @@ function main () {
 	NETMASK=$(masklen_to_netmask $PRIVATE_MASKLEN)
 	GATEWAY=$PRIVATE_GATEWAY
 	VIF_HOST="i$byte"
-	BRIDGE_MODE="nat"
-	BRIDGE_IF="$PRIVATE_BRIDGE"
     else
         [[ -z "GUEST_HOSTNAME" ]] && usage
        
@@ -1002,8 +1000,6 @@ function main () {
         NETMASK=$(masklen_to_netmask $MASKLEN)
         GATEWAY=$(ip route show | grep default | awk '{print $3}')
         VIF_HOST="i$(echo $GUEST_HOSTNAME | cut -d. -f1)"
-	BRIDGE_MODE="bridge"
-	BRIDGE_IF="PUBLIC_BRIDGE"
     fi
 
     echo "the IP address of container $lxc is $IP, host virtual interface is $VIF_HOST"
