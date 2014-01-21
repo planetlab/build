@@ -11,17 +11,32 @@ BUILD_DIR=$(pwd)
 PATH=$(dirname $0):$PATH export PATH
 . build.common
 
-DEFAULT_FCDISTRO=f16
-DEFAULT_PLDISTRO=planetlab
+DEFAULT_FCDISTRO=f20
+DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
 
 COMMAND_LBUILD="lbuild-initvm.sh"
 COMMAND_LTEST="ltest-initvm.sh"
 
-libvirt_version="1.0.4"
+##########
+# when creating build boxes we use private NAT'ed addresses for the VMs
+# as per virbr0 that is taken care of by libvirt at startup
+PRIVATE_PREFIX="192.168.122."
+PRIVATE_GATEWAY="192.168.122.1"
+# beware that changing this would break the logic of random_private_byte...
+PRIVATE_MASKLEN=24
 
+# we just try randomly in that range until a free IP address shows up
+PRIVATE_ATTEMPTS=20
+
+# constant
+INTERFACE_BRIDGE=br0
+
+# the network interface name as seen from the container
+VIFNAME=eth0
+
+##############################
 ## stolen from tests/system/template-qemu/qemu-bridge-init
-#################### compute INTERFACE_LAN
 # use /proc/net/dev instead of a hard-wired list
 function gather_interfaces () {
     python <<EOF
@@ -35,7 +50,7 @@ for line in file("/proc/net/dev"):
     print ifname
 EOF
 }
-    
+
 function discover_interface () {
     for ifname in $(gather_interfaces); do
 	ip link show $ifname | grep -qi 'state UP' && { echo $ifname; return; }
@@ -43,26 +58,80 @@ function discover_interface () {
     # still not found ? that's bad
     echo unknown
 }
-DEFAULT_IFNAME=$(discover_interface)
+########## check for a free IP
+function ip_is_busy () {
+    target=$1; shift
+    ping -c 1 -W 1 $target >& /dev/null
+}
 
-function bridge_init () {
+function random_private_byte () {
+    for attempt in $(seq $PRIVATE_ATTEMPTS); do
+	byte=$(($RANDOM % 256))
+	if [ "$byte" == 0 -o "$byte" == 1 ] ; then continue; fi
+	ip=${PRIVATE_PREFIX}${byte}
+	ip_is_busy $ip || { echo $byte; return; }
+    done
+    echo "Cannot seem to find a free IP address in range ${PRIVATE_PREFIX}.xx/24 after $PRIVATE_ATTEMPTS attempts - exiting"
+    exit 1
+}
 
+########## networking -- ctd
+function gethostbyname () {
+    hostname=$1
+    python -c "import socket; print socket.gethostbyname('"$hostname"')" 2> /dev/null
+}
+
+# e.g. 21 -> 255.255.248.0
+function masklen_to_netmask () {
+    masklen=$1; shift
+    python <<EOF
+import sys
+masklen=$masklen
+if not (masklen>=1 and masklen<=32): 
+  print "Wrong masklen",masklen
+  exit(1)
+result=[]
+for i in range(4):
+    if masklen>=8:
+       result.append(8)
+       masklen-=8
+    else:
+       result.append(masklen)
+       masklen=0
+print ".".join([ str(256-2**(8-i)) for i in result ])
+  
+EOF
+}
+
+#################### bridge initialization
+function create_bridge_if_needed() {
+   
     # turn on verbosity
     set -x
 
-    # constant
-    INTERFACE_BRIDGE=br0
+    # already created ? - we're done
+    ip addr show $INTERFACE_BRIDGE >& /dev/null && {
+	echo "Bridge already set up - skipping create_bridge_if_needed"
+	return 0
+    }
 
-    # Default Value for INTERFACE_LAN
-    INTERFACE_LAN=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
+    # find out the physical interface to bridge onto
+    if_lan=$(discover_interface)
 
+    ip addr show $if_lan &>/dev/null || {
+        echo "Cannot use interface $if_lan - exiting"
+        exit 1
+    }
 
-    echo "========== $COMMAND: entering start - beg"
+    #################### bride initialization
+    check_yum_installed bridge-utils
+
+    echo "========== $COMMAND: entering create_bridge - beg"
     hostname
     uname -a
-    ifconfig
-    netstat -rn
-    echo "========== $COMMAND: entering start - end"
+    ip addr show
+    ip route
+    echo "========== $COMMAND: entering create_bridge - end"
 
     # disable netfilter calls for bridge interface (they cause panick on 2.6.35 anyway)
     #
@@ -72,86 +141,56 @@ function bridge_init () {
     sysctl net.bridge.bridge-nf-call-ip6tables=0
     sysctl net.bridge.bridge-nf-call-arptables=0
 
-    # take extra arg for ifname, if provided
-    [ -n "$1" ] && { INTERFACE_LAN=$1; shift ; }
-
-    #if we have already configured the same host_box no need to do it again
-    /sbin/ifconfig $INTERFACE_BRIDGE &> /dev/null && {
-        echo "Bridge interface $INTERFACE_BRIDGE already set up - $COMMAND start exiting"
-        return 0
-    }
-    /sbin/ifconfig $INTERFACE_LAN &>/dev/null || {
-        echo "Cannot use interface $INTERFACE_LAN - exiting"
-        exit 1
-    }
-
     
     #Getting host IP/masklen
-    address=$(/sbin/ip addr show $INTERFACE_LAN | grep -v inet6 | grep inet | head --lines=1 | awk '{print $2;}')
-    [ -z "$address" ] && { echo "ERROR: Could not determine IP address for $INTERFACE_LAN" ; exit 1 ; }
+    address=$(ip addr show $if_lan | grep -v inet6 | grep inet | head --lines=1 | awk '{print $2;}')
+    [ -z "$address" ] && { echo "ERROR: Could not determine IP address for $if_lan" ; exit 1 ; }
 
-    broadcast=$(/sbin/ip addr show $INTERFACE_LAN | grep -v inet6 | grep inet | head --lines=1 | awk '{print $4;}')
-    [ -z "$broadcast" ] && echo "WARNING: Could not determine broadcast address for $INTERFACE_LAN"
+    broadcast=$(ip addr show $if_lan | grep -v inet6 | grep inet | head --lines=1 | awk '{print $4;}')
+    [ -z "$broadcast" ] && echo "WARNING: Could not determine broadcast address for $if_lan"
 
-    gateway=$(netstat -rn | grep '^0.0.0.0' | awk '{print $2;}')
+    gateway=$(ip route show | grep default | awk '{print $3;}')
     [ -z "$gateway" ] && echo "WARNING: Could not determine gateway IP"
+
 
     # creating the bridge
     echo "Creating bridge INTERFACE_BRIDGE=$INTERFACE_BRIDGE"
     brctl addbr $INTERFACE_BRIDGE
-    #brctl stp $INTERFACE_BRIDGE yes
-    brctl addif $INTERFACE_BRIDGE $INTERFACE_LAN
-    echo "Activating promiscuous mode INTERFACE_LAN=$INTERFACE_LAN"
-    /sbin/ifconfig $INTERFACE_LAN 0.0.0.0 promisc up
+    brctl addif $INTERFACE_BRIDGE $if_lan
+    echo "Activating promiscuous mode if_lan=$if_lan"
+    ip link set $if_lan up promisc on
     sleep 2
-    echo "Setting bridge address=$address broadcast=$broadcast"
-    # static
-    #/sbin/ifconfig $INTERFACE_BRIDGE $address broadcast $broadcast up
+    # rely on dhcp to re assign IP.. 
+    echo "Starting dhclient on $INTERFACE_BRIDGE"
     dhclient $INTERFACE_BRIDGE
     sleep 1
 
     #Reconfigure the routing table
     echo "Configuring gateway=$gateway"
-    route add default gw $gateway
+    ip route add default via $gateway dev $INTERFACE_BRIDGE
+    ip route del default via $gateway dev $if_lan
+    # at this point we have an extra route like e.g.
+    ## ip route show
+    #default via 138.96.112.250 dev br0
+    #138.96.112.0/21 dev em1  proto kernel  scope link  src 138.96.112.57
+    #138.96.112.0/21 dev br0  proto kernel  scope link  src 138.96.112.57
+    #192.168.122.0/24 dev virbr0  proto kernel  scope link  src 192.168.122.1
+    route_dest=$(ip route show | grep -v default | grep "dev $INTERFACE_BRIDGE" | awk '{print $1;}')
+    ip route del $route_dest dev $if_lan
 
-    echo "========== $COMMAND: exiting start - beg"
-    ifconfig
-    netstat -rn
-    echo "========== $COMMAND: exiting start - end"
+    echo "========== $COMMAND: exiting create_bridge - beg"
+    ip addr show
+    ip route show
+    echo "========== $COMMAND: exiting create_bridge - end"
 
-
-return 0
-
-}
-
-
-function failure () {
-    echo "$COMMAND : Bailing out"
-    exit 1
-}
-
-function cidr_notation () {
-
-netmask=$1; shift
-cidr=0
-for i in $(seq 1 4) ; do
-    part=$(echo $netmask | cut -d. -f $i)
-    case $part in
-        "255") cidr=$((cidr + 8));;
-        "254") cidr=$((cidr + 7));;
-        "252") cidr=$((cidr + 6));;
-        "248") cidr=$((cidr + 5));;
-        "240") cidr=$((cidr + 4));;
-        "224") cidr=$((cidr + 3));;
-        "192") cidr=$((cidr + 2));;
-        "128") cidr=$((cidr + 1));;
-        "0") cidr=$((cidr + 0));;
-     esac
-done
-echo $cidr
+    # for safety
+    sleep 3
+    return 0
 
 }
 
+
+##############################
 function check_yum_installed () {
     package=$1; shift
     rpm -q $package >& /dev/null || yum -y install $package
@@ -162,26 +201,7 @@ function check_yumgroup_installed () {
     yum grouplist "$group" | grep -q Installed || { yum -y groupinstall "$group" ; }
 }
 
-function prepare_host() {
-   
-### Thierry - jan 14 - turning off this check as our boxes now meet this req.
-### and I'm trying out f20's stock libvirt instead    
-#    ## check if libvirt_version is installed
-#    virsh -v | grep -e $libvirt_version || { echo "$libvirt_version needs to be installed!!!" ; exit 1 ; }
-
-    #################### bride initialization
-    check_yum_installed bridge-utils
-    #Bridge init
-    isInstalled=$(netstat -rn | grep '^0.0.0.0' | awk '{print $8;}')
-    if [ "$isInstalled" != "br0" ] ; then
-	bridge_init
-        sleep 5
-    fi
-
-    return 0
-}
-
-
+##############################
 
 function configure_fedora() {
 
@@ -191,8 +211,8 @@ function configure_fedora() {
 
    # configure the network 
 
-    cat <<EOF > ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$IFNAME
-DEVICE=$IFNAME
+    cat <<EOF > ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIFNAME
+DEVICE=$VIFNAME
 BOOTPROTO=static
 ONBOOT=yes
 HOSTNAME=$HOSTNAME
@@ -248,7 +268,6 @@ EOF
 
     return 0
 }
-
 
 function configure_fedora_init() {
 
@@ -420,62 +439,6 @@ function install_fedora() {
 }
 
 
-function copy_configuration() {
-
-    mkdir -p $config_path
-    cat <<EOF >> $config_path/config
-lxc.utsname = $lxc
-lxc.arch = $arch2
-lxc.tty = 4
-lxc.pts = 1024
-lxc.rootfs = $rootfs_path
-lxc.mount  = $config_path/fstab
-#networking
-lxc.network.type = $lxc_network_type
-lxc.network.flags = up
-lxc.network.link = $lxc_network_link
-lxc.network.name = $IFNAME
-lxc.network.mtu = 1500
-lxc.network.ipv4 = $IP/$CIDR
-lxc.network.veth.pair = $veth_pair
-#cgroups
-#lxc.cgroup.devices.deny = a
-# /dev/null and zero
-lxc.cgroup.devices.allow = c 1:3 rwm
-lxc.cgroup.devices.allow = c 1:5 rwm
-# consoles
-lxc.cgroup.devices.allow = c 5:1 rwm
-lxc.cgroup.devices.allow = c 5:0 rwm
-lxc.cgroup.devices.allow = c 4:0 rwm
-lxc.cgroup.devices.allow = c 4:1 rwm
-# /dev/{,u}random
-lxc.cgroup.devices.allow = c 1:9 rwm
-lxc.cgroup.devices.allow = c 1:8 rwm
-lxc.cgroup.devices.allow = c 136:* rwm
-lxc.cgroup.devices.allow = c 5:2 rwm
-# rtc
-lxc.cgroup.devices.allow = c 254:0 rwm
-lxc.cgroup.devices.allow = b 255:0 rwm
-EOF
-
-
-
-    cat <<EOF > $config_path/fstab
-proc            $rootfs_path/proc         proc    nodev,noexec,nosuid 0 0
-devpts          $rootfs_path/dev/pts      devpts defaults 0 0
-sysfs           $rootfs_path/sys          sysfs defaults  0 0
-EOF
-    if [ $? -ne 0 ]; then
-        echo "Failed to add configuration"
-        return 1
-    fi
-
-    return 0
-}
-
-
-
-
 # overwrite lxc's internal yum config
 function configure_yum_in_lxc () {
     set -x 
@@ -509,7 +472,7 @@ EOF
     
     # for using vtest-init-lxc.sh as a general-purpose lxc creation wrapper
     # just mention 'none' as the repo url
-    if [ -n "$TEST_MODE" -a "$REPO_URL" != "none" ] ; then
+    if [ -n "$REPO_URL" ] ; then
 	if [ ! -d $rootfs_path/etc/yum.repos.d ] ; then
 	    echo "WARNING : cannot create myplc repo"
 	else
@@ -575,12 +538,7 @@ function setup_lxc() {
     personality=$1; shift
 
     # create lxc container 
-    copy_configuration
-    if [ $? -ne 0 ]; then
-        echo "failed write configuration file"
-        exit 1
-    fi
-
+    
     pkg_method=$(package_method $fcdistro)
     case $pkg_method in
 	yum)
@@ -640,7 +598,7 @@ function setup_lxc() {
       <target dir='/'/>
     </filesystem>
     <interface type="bridge">
-      <source bridge="br0"/>
+      <source bridge="$INTERFACE_BRIDGE"/>
       <target dev='$veth_pair'/>
     </interface>
     <console type='pty' />
@@ -648,11 +606,11 @@ function setup_lxc() {
   <network>
     <name>host-bridge</name>
     <forward mode="bridge"/>
-    <bridge name="br0"/>
+    <bridge name="$INTERFACE_BRIDGE"/>
   </network>
 </domain>
 EOF
-   
+
     # define lxc container for libvirt
     virsh -c lxc:// define $config_path/$tmpl_name
 
@@ -861,23 +819,27 @@ function wait_for_ssh () {
     return 0
 }
 
+####################
+function failure () {
+    echo "$COMMAND : Bailing out"
+    exit 1
+}
+
 function usage () {
     set +x 
     echo "Usage: $COMMAND_LBUILD [options] lxc-name"
-    echo "Usage: $COMMAND_LTEST [options] lxc-name repo-url [ -- lxc-options ]"
+    echo "Usage: $COMMAND_LTEST [options] lxc-name"
     echo "Description:"
-    echo "   This command creates a fresh lxc instance, for building, or running, myplc"
+    echo "   This command creates a fresh lxc instance, for building, or running a test myplc"
     echo "Supported options"
     echo " -f fcdistro - for creating the root filesystem - defaults to $DEFAULT_FCDISTRO"
     echo " -d pldistro - defaults to $DEFAULT_PLDISTRO"
     echo " -p personality - defaults to $DEFAULT_PERSONALITY"
-    echo " -i ifname: determines ip and netmask attached to ifname, and passes it to the lxc"
-    echo "-- lxc-options"
-    echo "  --netdev : interface to be defined inside lxc"
-    echo "  --interface : IP to be defined for the lxc"
-    echo "  --hostname : Hostname to be defined for the lxc"
-    echo "With $COMMAND_LTEST you can give 'none' as the URL, in which case"
-    echo "   myplc.repo does not get created"
+    echo " -n hostname - the hostname to use in container - required with $COMMAND_LTEST"
+    echo " -r repo-url - used to populate yum.repos.d - required with $COMMAND_LTEST"
+    echo " -P pkgs_file - defines the set of extra pacakges"
+    echo "    by default we use vtest.pkgs or devel.pkgs according to $COMMAND"
+    echo " -v be verbose"
     exit 1
 }
 
@@ -886,6 +848,11 @@ function main () {
 
     #set -e
     #trap failure ERR INT
+
+    if [ "$(id -u)" != "0" ]; then
+          echo "This script should be run as 'root'"
+          exit 1
+    fi
 
     case "$COMMAND" in
 	$COMMAND_LBUILD)
@@ -896,10 +863,7 @@ function main () {
 	    usage ;;
     esac
 
-    VERBOSE=
-    RESISTANT=""
-    IFNAME=""
-    LXC_OPTIONS=""
+    echo 'build mode=' $BUILD_MODE 'test mode=' $TEST_MODE
 
     # the set of preinstalled packages - depends on vbuild or vtest
     if [ -n "$VBUILD_MODE" ] ; then
@@ -907,13 +871,15 @@ function main () {
     else
 	PREINSTALLED=vtest.pkgs
     fi
-    while getopts "f:d:p:P:i:" opt ; do
+    while getopts "f:d:p:n:r:P:v" opt ; do
 	case $opt in
 	    f) fcdistro=$OPTARG;;
 	    d) pldistro=$OPTARG;;
 	    p) personality=$OPTARG;;
+	    n) HOSTNAME=$OPTARG;;
+	    r) REPO_URL=$OPTARG;;
 	    P) PREINSTALLED=$OPTARG;;
-	    i) IFNAME=$OPTARG;;
+	    v) VERBOSE=true; set -x;;
 	    *) usage ;;
 	esac
     done
@@ -923,43 +889,22 @@ function main () {
     # parse fixed arguments
     [[ -z "$@" ]] && usage
     lxc=$1 ; shift
-    if [ -n "$TEST_MODE" ] ; then
-	[[ -z "$@" ]] && usage
-	REPO_URL=$1 ; shift
-    fi
 
-    # parse vserver options
-    if [[ -n "$@" ]] ; then
-	if [ "$1" == "--" ] ; then
-	    shift
-	    LXC_OPTIONS="$@"
-	else
-	    usage
-	fi
-    fi
-
-    eval set -- "$LXC_OPTIONS"
-
-    while true
-     do
-        case "$1" in
-             --netdev)      IFNAME=$2; shift 2;;
-             --interface)   IP=$2; shift 2;;
-             --hostname)    HOSTNAME=$2; shift 2;;
-             *)             break ;;
-        esac
-      done
-
-   
-    if [ -n "$BUILD_MODE" ] ; then
-	[ -z "$IFNAME" ] && IFNAME=$DEFAULT_IFNAME
-        [ -z "$HOSTNAME" ] && HOSTNAME=$lxc
-    fi
+    # check we've exhausted the arguments
+    [[ -n "$@" ]] && usage
 
     [ -z "$fcdistro" ] && fcdistro=$DEFAULT_FCDISTRO
     [ -z "$pldistro" ] && pldistro=$DEFAULT_PLDISTRO
     [ -z "$personality" ] && personality=$DEFAULT_PERSONALITY
     
+    if [ -n "$BUILD_MODE" ] ; then
+        [ -z "$HOSTNAME" ] && HOSTNAME=$lxc
+    else
+	[[ -z "$HOSTNAME" ]] && usage
+	[[ -z "$REPO_URL" ]] && echo "WARNING -- setting up a yum repo is recommended" 
+    fi
+
+    ##########
     release=$(echo $fcdistro | cut -df -f2)
 
     if [ "$personality" == "linux32" ]; then
@@ -974,41 +919,33 @@ function main () {
 
     # need lxc installed before we can run lxc-ls
     # need bridge installed
-    prepare_host    
+    create_bridge_if_needed
 
     if [ -n "$BUILD_MODE" ] ; then
 
 	# Bridge IP affectation
-	x=$(echo $personality | cut -dx -f2)
-	y=$(echo $fcdistro | cut -df -f2)
-	z=$(($x + $y))
-
-        IP="192.168.122.$z"
-        NETMASK="255.255.255.0"
-        GATEWAY="192.168.122.1"
+	byte=$(random_private_byte)
+	IP=${PRIVATE_PREFIX}$byte
+	NETMASK=$(masklen_to_netmask $PRIVATE_MASKLEN)
+	GATEWAY=$PRIVATE_GATEWAY
 	
         lxc_network_type=veth
         lxc_network_link=virbr0
-	veth_pair="veth$z"
+	veth_pair="veth$byte"
         echo "the IP address of container $lxc is $IP "
     else
-        [[ -z "$REPO_URL" ]] && usage
-        [[ -z "$IP" ]] && usage
+        [[ -z "HOSTNAME" ]] && usage
        
-        NETMASK=$(ifconfig br0 | grep 'inet ' | awk '{print $4}' | sed -e 's/.*://')
-        GATEWAY=$(route -n | grep 'UG' | awk '{print $2}')
-        [[ -z "$HOSTNAME" ]] && usage
+	IP=$(gethostbyname $HOSTNAME)
+	# use same NETMASK as bridge interface br0
+	MASKLEN=$(ip addr show $INTERFACE_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
+	
+        NETMASK=$(masklen_to_netmask $MASKLEN)
+        GATEWAY=$(ip route show | grep default | awk '{print $3}')
         lxc_network_type=veth
-        lxc_network_link=br0
+        lxc_network_link=$INTERFACE_BRIDGE
         veth_pair="i$(echo $HOSTNAME | cut -d. -f1)"
-    fi
 
-    CIDR=$(cidr_notation $NETMASK)
-    
-
-    if [ "$(id -u)" != "0" ]; then
-          echo "This script should be run as 'root'"
-          exit 1
     fi
 
     path=/vservers
@@ -1021,7 +958,10 @@ function main () {
     
     # check whether the rootfs directory is created to know if the container exists
     # bacause /var/lib/lxc/$lxc is already created while putting $lxc.timestamp
-    [ -d $rootfs_path ] && { echo "container $lxc already exists - exiting" ; exit 1 ; }
+    [ -d $rootfs_path ] && \
+	{ echo "container $lxc already exists in filesystem - exiting" ; exit 1 ; }
+    virsh --connect lxc:// domuuid $lxc >& /dev/null && \
+	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
 
