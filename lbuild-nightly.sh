@@ -673,7 +673,7 @@ function main () {
 
             # Create lxc vm
 	    cd $tmpdir
-	    ./lbuild-initvm.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} -i ${IFNAME} ${PREINSTALLED} ${BASE} 
+	    ./lbuild-initvm.sh $VERBOSE -f ${FCDISTRO} -d ${PLDISTRO} -p ${PERSONALITY} ${PREINSTALLED} ${BASE} 
 	    # cleanup
 	    cd -
 	    rm -rf $tmpdir
