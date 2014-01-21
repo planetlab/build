@@ -5,6 +5,11 @@
 # can be obtained through rpm/yum
 # it is used here as a replacement for 'vserver <> exec'
 # that is used throughout this code
+RUN_IN_DOMAIN="lxcsu -ro"
+# PS.
+# virsh lxc-enter-namespace $dom command to run
+# could maybe be used instead but it seems to require command's full path..
+#RUN_IN_DOMAIN="virsh lxc-enter-namespace"
 
 COMMANDPATH=$0
 COMMAND=$(basename $0)
@@ -15,7 +20,6 @@ DEFAULT_PLDISTRO=planetlab
 DEFAULT_PERSONALITY=linux64
 DEFAULT_BASE="@DATE@--@PLDISTRO@-@FCDISTRO@-@PERSONALITY@"
 DEFAULT_BUILD_SCM_URL="git://git.onelab.eu/build"
-DEFAULT_IFNAME=eth0
 
 # default gpg path used in signing yum repo
 DEFAULT_GPGPATH="/etc/planetlab"
@@ -289,7 +293,7 @@ function run_log () {
     ssh -n ${testmaster_ssh} rm -rf ${testdir} ${testdir}.git
 
     # check it out in the build
-    lxcsu -ro $BASE make -C /build tests-module
+    $RUN_IN_DOMAIN $BASE make -C /build tests-module
     
     # push it onto the testmaster - just the 'system' subdir is enough
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/tests/system/ ${testmaster_ssh}:${BASE}
@@ -455,7 +459,6 @@ function usage () {
     echo " -n - dry-run: -n passed to make - vm gets created though - no mail sent"
     echo " -v - be verbose"
     echo " -7 - uses weekday-@FCDISTRO@ as base"
-    echo " -i ifname - defaults to $DEFAULT_IFNAME - used to determine local IP"
     echo " --build-branch branch - build using the branch from build module"
     exit 1
 }
@@ -519,7 +522,6 @@ function main () {
 	    -n) DRY_RUN="-n" ; shift ;;
 	    -v) set -x ; VERBOSE="-v" ; shift ;;
 	    -7) BASE="$(date +%a|tr A-Z a-z)-@FCDISTRO@" ; shift ;;
-	    -i) IFNAME=$2; shift 2 ;;
 	    -P) PREINSTALLED="-P $2"; shift 2;;
 	    -h) usage ; shift ;;
             --) shift; break ;;
@@ -551,7 +553,6 @@ function main () {
     [ -z "$WEBROOT" ] && WEBROOT="$DEFAULT_WEBROOT"
     [ -z "$GPGPATH" ] && GPGPATH="$DEFAULT_GPGPATH"
     [ -z "$GPGUID" ] && GPGUID="$DEFAULT_GPGUID"
-    [ -z "$IFNAME" ] && IFNAME="$DEFAULT_IFNAME"
     [ -z "$BUILD_SCM_URL" ] && BUILD_SCM_URL="$DEFAULT_BUILD_SCM_URL"
     [ -z "$TESTCONFIG" ] && TESTCONFIG="$DEFAULT_TESTCONFIG"
     [ -z "$TESTMASTER" ] && TESTMASTER="$DEFAULT_TESTMASTER"
@@ -621,17 +622,17 @@ function main () {
 	    # start in case e.g. we just rebooted
 	    virsh --connect lxc:/// start ${BASE} || :
 	    # retrieve environment from the previous run
-	    FCDISTRO=$(lxcsu -ro ${BASE} /build/getdistroname.sh)
-	    BUILD_SCM_URL=$(lxcsu -ro ${BASE} make --no-print-directory -C /build stage1=skip +build-GITPATH)
+	    FCDISTRO=$($RUN_IN_DOMAIN ${BASE} /build/getdistroname.sh)
+	    BUILD_SCM_URL=$($RUN_IN_DOMAIN ${BASE} make --no-print-directory -C /build stage1=skip +build-GITPATH)
 	    # for efficiency, crop everything in one make run
 	    tmp=/tmp/${BASE}-env.sh
-	    lxcsu -ro ${BASE} make --no-print-directory -C /build stage1=skip \
+	    $RUN_IN_DOMAIN ${BASE} make --no-print-directory -C /build stage1=skip \
 		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILTO ++WEBPATH ++TESTBUILDURL ++WEBROOT > $tmp
 	    . $tmp
 	    rm -f $tmp
 	    # update build
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    lxcsu -ro $BASE bash -c "cd /build; git pull; make tests-clean"
+	    $RUN_IN_DOMAIN $BASE bash -c "cd /build; git pull; make tests-clean"
 	    # make sure we refresh the tests place in case it has changed
 	    rm -f /build/MODULES/tests
 	    options=(${options[@]} -d $PLDISTRO -t $PLDISTROTAGS -s $BUILD_SCM_URL)
@@ -679,7 +680,7 @@ function main () {
 	    # Extract build again - in the vm
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
 	    # xxx not working as of now - waiting for Sapan to look into this
-	    lxcsu -ro $BASE -- bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
+	    $RUN_IN_DOMAIN $BASE -- bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
 	fi
 	echo "XXXXXXXXXX $COMMAND: preparation of vm $BASE done" $(date)
 
@@ -711,8 +712,8 @@ function main () {
 	    cp $COMMANDPATH $(rootdir ${BASE})/build/
 
 	    # invoke this command in the vm for building (-T)
-	    lxcsu -ro ${BASE} chmod +x /build/$COMMAND
-	    lxcsu -ro ${BASE} /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
+	    $RUN_IN_DOMAIN ${BASE} chmod +x /build/$COMMAND
+	    $RUN_IN_DOMAIN ${BASE} /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
 	fi
 
 	# publish to the web so run_log can find them
@@ -726,7 +727,7 @@ function main () {
 	else
 	    # run scanpackages so we can use apt-get on this
 	    # (not needed on fedora b/c this is done by the regular build already)
-	    lxcsu -ro $BASE bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
+	    $RUN_IN_DOMAIN $BASE bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
 	    webpublish mkdir -p $WEBPATH/$BASE/DEBIAN
 	    webpublish_rsync_files $WEBPATH/$BASE/DEBIAN/ $(rootdir $BASE)/build/DEBIAN/*.deb 
 	    webpublish_rsync_files $WEBPATH/$BASE/ $(rootdir $BASE)/build/Packages.gz

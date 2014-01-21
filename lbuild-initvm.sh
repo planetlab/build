@@ -33,7 +33,7 @@ PRIVATE_ATTEMPTS=20
 INTERFACE_BRIDGE=br0
 
 # the network interface name as seen from the container
-VIFNAME=eth0
+VIF_GUEST=eth0
 
 ##############################
 ## stolen from tests/system/template-qemu/qemu-bridge-init
@@ -211,8 +211,8 @@ function configure_fedora() {
 
    # configure the network 
 
-    cat <<EOF > ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIFNAME
-DEVICE=$VIFNAME
+    cat <<EOF > ${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
+DEVICE=$VIF_GUEST
 BOOTPROTO=static
 ONBOOT=yes
 HOSTNAME=$HOSTNAME
@@ -560,7 +560,7 @@ function setup_lxc() {
 	    ;;
     esac
 
-    # Enable cgroup
+    # Enable cgroup -- xxx -- is this really useful ?
     mkdir $rootfs_path/cgroup
     
     # set up resolv.conf
@@ -573,7 +573,6 @@ function setup_lxc() {
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
     # copy libvirt xml template
-    veth_pair="i$(echo $HOSTNAME | cut -d. -f1)" 
     tmpl_name="$lxc.xml"
     cat > $config_path/$tmpl_name<<EOF
 <domain type='lxc'>
@@ -599,7 +598,7 @@ function setup_lxc() {
     </filesystem>
     <interface type="bridge">
       <source bridge="$INTERFACE_BRIDGE"/>
-      <target dev='$veth_pair'/>
+      <target dev='$VIF_HOST'/>
     </interface>
     <console type='pty' />
   </devices>
@@ -901,7 +900,12 @@ function main () {
         [ -z "$HOSTNAME" ] && HOSTNAME=$lxc
     else
 	[[ -z "$HOSTNAME" ]] && usage
-	[[ -z "$REPO_URL" ]] && echo "WARNING -- setting up a yum repo is recommended" 
+	# use -r none to get rid of this warning
+	if [ "$REPO_URL" == "none" ] ; then
+	    REPO_URL=""
+	elif [ -z "$REPO_URL" ] ; then
+	    echo "WARNING -- setting up a yum repo is recommended" 
+	fi
     fi
 
     ##########
@@ -928,25 +932,19 @@ function main () {
 	IP=${PRIVATE_PREFIX}$byte
 	NETMASK=$(masklen_to_netmask $PRIVATE_MASKLEN)
 	GATEWAY=$PRIVATE_GATEWAY
-	
-        lxc_network_type=veth
-        lxc_network_link=virbr0
-	veth_pair="veth$byte"
-        echo "the IP address of container $lxc is $IP "
+	VIF_HOST="veth$byte"
     else
         [[ -z "HOSTNAME" ]] && usage
        
 	IP=$(gethostbyname $HOSTNAME)
 	# use same NETMASK as bridge interface br0
 	MASKLEN=$(ip addr show $INTERFACE_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
-	
         NETMASK=$(masklen_to_netmask $MASKLEN)
         GATEWAY=$(ip route show | grep default | awk '{print $3}')
-        lxc_network_type=veth
-        lxc_network_link=$INTERFACE_BRIDGE
-        veth_pair="i$(echo $HOSTNAME | cut -d. -f1)"
-
+        VIF_HOST="i$(echo $HOSTNAME | cut -d. -f1)"
     fi
+
+    echo "the IP address of container $lxc is $IP, host virtual interface is $VIF_HOST"
 
     path=/vservers
     [ ! -d $path ] && mkdir $path
