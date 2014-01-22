@@ -574,7 +574,7 @@ function setup_lxc() {
     fi
     
     # define lxc container for libvirt
-    virsh -c lxc:// define $config_xml
+    virsh -c lxc:/// define $config_xml
 
     return 0
 }
@@ -845,7 +845,7 @@ function lxc_start() {
 
     lxc=$1; shift
   
-    virsh -c lxc:// start $lxc
+    virsh -c lxc:/// start $lxc
   
     return 0
 }
@@ -1016,7 +1016,7 @@ function main () {
     # bacause /var/lib/lxc/$lxc is already created while putting $lxc.timestamp
     [ -d $rootfs_path ] && \
 	{ echo "container $lxc already exists in filesystem - exiting" ; exit 1 ; }
-    virsh --connect lxc:// domuuid $lxc >& /dev/null && \
+    virsh -c lxc:/// domuuid $lxc >& /dev/null && \
 	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
