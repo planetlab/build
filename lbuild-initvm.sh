@@ -749,6 +749,17 @@ function devel_or_vtest_tools () {
     return 0
 }
 
+# would be much simpler if enter-lxc-namespace was looking along a PATH...
+function bin_in_container () {
+    binary=$1; shift
+    lxc=$1; shift
+
+    for path in /sbin /bin /usr/bin /usr/sbin; do
+	[ -f $rootfs_path/$path/$binary ] && { echo $path/$binary; return; }
+    done
+    echo bin_in_container_cannot_find_$binary
+}
+
 function post_install () {
     lxc=$1; shift 
     personality=$1; shift
@@ -756,7 +767,7 @@ function post_install () {
 	post_install_build $lxc $personality
 	lxc_start $lxc
 	# manually run dhclient in guest - somehow this network won't start on its own
-	virsh -c lxc:/// lxc-enter-namespace $lxc /usr/sbin/dhclient $VIF_GUEST
+	virsh -c lxc:/// lxc-enter-namespace $lxc $(bin_in_container dhclient $lxc) $VIF_GUEST
     else
 	post_install_myplc $lxc $personality
 	lxc_start $lxc
