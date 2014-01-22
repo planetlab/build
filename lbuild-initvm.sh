@@ -508,7 +508,9 @@ function debian_install () {
     mkdir -p $rootfs_path
     arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
-    debootstrap --arch $arch $fcdistro $rootfs_path $mirror
+    # old guests have mount in /bin but this is no longer part of 
+    # the standard PATH in recent hosts
+    PATH=$PATH:/bin:/sbin debootstrap --arch $arch $fcdistro $rootfs_path $mirror
 }
 
 function debian_configure () {
