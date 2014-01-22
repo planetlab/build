@@ -249,7 +249,7 @@ function fedora_install() {
             fedora_download || { echo "Failed to download 'fedora base'"; return 1; }
         else
             echo "Updating cache $cache/rootfs ..."
-	    if ! yum --installroot $cache/rootfs -y --nogpgcheck update 
+	    if ! yum --installroot $cache/rootfs -y --nogpgcheck update ; then
                 echo "Failed to update 'fedora base', continuing with last known good cache"
             else
                 echo "Update finished"
