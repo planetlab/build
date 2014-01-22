@@ -539,8 +539,6 @@ function setup_lxc() {
 	debootstrap)
 	    debian_install || { echo "failed to install debian/ubuntu root image"; exit 1 ; }
 	    debian_configure || { echo "failed to configure debian/ubuntu for a container"; exit 1 ; }
-	    echo "$COMMAND: no support for debootstrap-based systems - yet"
-	    exit 1
 	    ;;
 	*)
 	    echo "$COMMAND:: unknown package_method - exiting"
