@@ -9,6 +9,11 @@ BUILD_DIR=$(pwd)
 
 # pkgs parsing utilities
 PATH=$(dirname $0):$PATH export PATH
+
+# old guests have e.g. mount in /bin but this is no longer part of 
+# the standard PATH in recent hosts after usrmove, so let's keep it simple
+export PATH=PATH=$PATH:/bin:/sbin 
+
 . build.common
 
 DEFAULT_FCDISTRO=f20
@@ -408,8 +413,8 @@ function fedora_configure_init() {
     # don't mount devpts, for pete's sake
     sed -i 's/^.*dev.pts.*$/#\0/' ${rootfs_path}/etc/rc.sysinit
     sed -i 's/^.*dev.pts.*$/#\0/' ${rootfs_path}/etc/rc.d/rc.sysinit
-    chroot ${rootfs_path} /sbin/chkconfig udev-post off
-    chroot ${rootfs_path} /sbin/chkconfig network on
+    chroot ${rootfs_path} chkconfig udev-post off
+    chroot ${rootfs_path} chkconfig network on
 }
 
 # this code of course is for guests that do run on systemd
@@ -432,7 +437,7 @@ function fedora_configure_systemd() {
     ln -sf /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
     rm -f ${rootfs_path}/etc/systemd/system/getty.target.wants/*service || :
 # can't seem to handle this one with systemctl
-    chroot ${rootfs_path} /sbin/chkconfig network on
+    chroot ${rootfs_path} chkconfig network on
 }
 
 # overwrite container yum config
@@ -446,7 +451,7 @@ function fedora_configure_yum () {
     pldistro=$1; shift
 
     # rpm --rebuilddb
-    chroot $rootfs_path /bin/rpm --rebuilddb
+    chroot $rootfs_path rpm --rebuilddb
 
     echo "Initializing yum.repos.d in $lxc"
     rm -f $rootfs_path/etc/yum.repos.d/*
@@ -511,9 +516,7 @@ function debian_install () {
     mkdir -p $rootfs_path
     arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
-    # old guests have mount in /bin but this is no longer part of 
-    # the standard PATH in recent hosts
-    PATH=$PATH:/bin:/sbin debootstrap --arch $arch $fcdistro $rootfs_path $mirror
+    debootstrap --arch $arch $fcdistro $rootfs_path $mirror
 }
 
 function debian_configure () {
@@ -688,27 +691,27 @@ function devel_or_vtest_tools () {
     ### install individual packages, then groups
     # get target arch - use uname -i here (we want either x86_64 or i386)
    
-    lxc_arch=$(chroot $rootfs_path /bin/uname -i)
+    lxc_arch=$(chroot $rootfs_path uname -i)
     # on debian systems we get arch through the 'arch' command
-    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $rootfs_path /bin/arch)
+    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $rootfs_path arch)
 
     packages=$(pl_getPackages -a $lxc_arch $fcdistro $pldistro $pkgsfile)
     groups=$(pl_getGroups -a $lxc_arch $fcdistro $pldistro $pkgsfile)
 
     case "$pkg_method" in
 	yum)
-	    [ -n "$packages" ] && chroot $rootfs_path /usr/bin/yum -y install $packages
+	    [ -n "$packages" ] && chroot $rootfs_path yum -y install $packages
 	    for group_plus in $groups; do
 		group=$(echo $group_plus | sed -e "s,+++, ,g")
-		chroot $rootfs_path /usr/bin/yum -y groupinstall "$group"
+		chroot $rootfs_path yum -y groupinstall "$group"
 	    done
 	    # store current rpm list in /init-lxc.rpms in case we need to check the contents
-	    chroot $rootfs_path /bin/rpm -aq > $rootfs_path/init-lxc.rpms
+	    chroot $rootfs_path rpm -aq > $rootfs_path/init-lxc.rpms
 	    ;;
 	debootstrap)
-	    chroot $rootfs_path /usr/bin/apt-get update
+	    chroot $rootfs_path apt-get update
 	    for package in $packages ; do 
-	        chroot $rootfs_path  /usr/bin/apt-get install -y $package 
+	        chroot $rootfs_path apt-get install -y $package 
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
@@ -748,7 +751,7 @@ function post_install_build () {
 
 ### From myplc-devel-native.spec
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $rootfs_path /bin/bash -x
+    cat << EOF | chroot $rootfs_path bash -x
     # set up /dev/loop* in lxc
     for i in \$(seq 0 255) ; do
 	/bin/mknod -m 640 /dev/loop\$i b 7 \$i
@@ -806,7 +809,7 @@ function post_install_myplc  () {
     personality=$1; shift
 
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $rootfs_path /bin/bash -x
+    cat << EOF | chroot $rootfs_path bash -x
 
     # create /etc/sysconfig/network if missing
     [ -f /etc/sysconfig/network ] || /bin/echo NETWORKING=yes > /etc/sysconfig/network
