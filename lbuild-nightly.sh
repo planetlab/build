@@ -293,7 +293,7 @@ function run_log () {
     ssh -n ${testmaster_ssh} rm -rf ${testdir} ${testdir}.git
 
     # check it out in the build
-    $RUN_IN_DOMAIN $BASE make -C /build tests-module
+    $RUN_IN_DOMAIN $BASE -- make -C /build tests-module
     
     # push it onto the testmaster - just the 'system' subdir is enough
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/tests/system/ ${testmaster_ssh}:${BASE}
@@ -632,7 +632,7 @@ function main () {
 	    rm -f $tmp
 	    # update build
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    $RUN_IN_DOMAIN $BASE -- -c "cd /build; git pull; make tests-clean"
+	    $RUN_IN_DOMAIN $BASE -- "cd /build; git pull; make tests-clean"
 	    # make sure we refresh the tests place in case it has changed
 	    rm -f /build/MODULES/tests
 	    options=(${options[@]} -d $PLDISTRO -t $PLDISTROTAGS -s $BUILD_SCM_URL)
