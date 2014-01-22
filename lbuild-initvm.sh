@@ -736,7 +736,7 @@ function post_install () {
 	post_install_build $lxc $personality
 	lxc_start $lxc
 	# manually run dhclient in guest - somehow this network won't start on its own
-	virsh lxc-enter-namespace $lxc /usr/sbin/dhclient $VIF_GUEST
+	virsh -c lxc:/// lxc-enter-namespace $lxc /usr/sbin/dhclient $VIF_GUEST
     else
 	post_install_myplc $lxc $personality
 	lxc_start $lxc
