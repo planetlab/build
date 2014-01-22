@@ -710,8 +710,9 @@ function devel_or_vtest_tools () {
 	    ;;
 	debootstrap)
 	    chroot $rootfs_path apt-get update
-	    for package in $packages ; do 
-	        chroot $rootfs_path apt-get install -y $package 
+	    for package in $packages ; do
+		# close stdin in an attempt to avoid this hanging
+	        chroot $rootfs_path apt-get install -y $package < /dev/null
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
