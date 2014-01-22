@@ -520,7 +520,25 @@ function debian_install () {
 }
 
 function debian_configure () {
-    echo "WARNING No debian config available yet"
+    guest_interfaces=${rootfs_path}/etc/network/interfaces
+    ( [ -n "$BUILD_MODE" ] && write_guest_interfaces_build || write_guest_interfaces_test ) > $guest_interfaces
+}
+
+function write_guest_interfaces_build () {
+    cat <<EOF
+auto $VIF_GUEST
+iface $VIF_GUEST inet dhcp
+EOF
+}
+
+function write_guest_interfaces_test () {
+    cat <<EOF
+auto $VIF_GUEST
+iface $VIF_GUEST
+    address $IP
+    netmask $NETMASK
+    gateway $GATEWAY
+EOF
 }
 ##############################
 function setup_lxc() {
