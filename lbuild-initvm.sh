@@ -730,7 +730,14 @@ function devel_or_vtest_tools () {
 	    chroot $rootfs_path apt-get update
 	    for package in $packages ; do
 		# close stdin in an attempt to avoid this hanging
-	        chroot $rootfs_path apt-get install -y $package < /dev/null
+		# xxx also we ignore result for now, not sure if the kind of errors like below
+		# truly is serious or not
+#Setting up at (3.1.13-2ubuntu2) ...
+#initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
+#initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
+#start: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
+
+	        chroot $rootfs_path apt-get install -y $package < /dev/null || :
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
