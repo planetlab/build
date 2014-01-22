@@ -505,9 +505,9 @@ sfa-MODULES := sfa
 sfa-SPEC := sfa.spec
 ALL += sfa
 
-sface-MODULES := sface
-sface-SPEC := sface.spec
-ALL += sface
+#sface-MODULES := sface
+#sface-SPEC := sface.spec
+#ALL += sface
 endif
 
 ##############################
