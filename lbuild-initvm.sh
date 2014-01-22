@@ -506,7 +506,7 @@ function debian_install () {
     set -e
     set -x
     mkdir -p $rootfs_path
-    arch=$(canonical_arch $personality)
+    arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
     debootstrap --arch $arch $fcdistro $rootfs_path $mirror
 }
