@@ -12,7 +12,7 @@ PATH=$(dirname $0):$PATH export PATH
 
 # old guests have e.g. mount in /bin but this is no longer part of 
 # the standard PATH in recent hosts after usrmove, so let's keep it simple
-export PATH=PATH=$PATH:/bin:/sbin 
+PATH=$PATH:/bin:/sbin export PATH
 
 . build.common
 
