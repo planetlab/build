@@ -393,7 +393,7 @@ EOF
     fi
 
     guest_ifcfg=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
-    [ -n "$BUILD_MODE" ] && write_guest_ifcfg_build || write_guest_ifcfg_test > $guest_ifcfg
+    ( [ -n "$BUILD_MODE" ] && write_guest_ifcfg_build || write_guest_ifcfg_test ) > $guest_ifcfg
 
     fedora_configure_yum $lxc $fcdistro $pldistro
 
@@ -562,7 +562,7 @@ function setup_lxc() {
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
     config_xml=$config_path/"lxc.xml"
-    [ -n "$BUILD_MODE" ] && write_lxc_xml_build $lxc || write_lxc_xml_test $lxc > $config_xml
+    ( [ -n "$BUILD_MODE" ] && write_lxc_xml_build $lxc || write_lxc_xml_test $lxc ) > $config_xml
     
     # define lxc container for libvirt
     virsh -c lxc:/// define $config_xml
