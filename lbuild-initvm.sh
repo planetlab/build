@@ -190,6 +190,39 @@ function create_bridge_if_needed() {
 
 }
 
+##############################
+# return yum or debootstrap
+function package_method () {
+    fcdistro=$1; shift
+    case $fcdistro in
+	f[0-9]*|centos[0-9]*|sl[0-9]*) echo yum ;;
+	squeeze|wheezy|oneiric|precise|quantal|raring|saucy) echo debootstrap ;;
+	*) echo Unknown distro $fcdistro ;;
+    esac 
+}
+
+# return arch from debian distro and personality
+function canonical_arch () {
+    personality=$1; shift
+    fcdistro=$1; shift
+    case $(package_method $fcdistro) in
+	yum)
+	    case $personality in *32) echo i386 ;; *64) echo x86_64 ;; *) echo Unknown-arch-1 ;; esac ;;
+	debootstrap)
+	    case $personality in *32) echo i386 ;; *64) echo amd64 ;; *) echo Unknown-arch-2 ;; esac ;;
+	*)
+	    echo Unknown-arch-3 ;;
+    esac
+}
+
+# the new test framework creates /timestamp in /vservers/<name> *before* populating it
+function almost_empty () { 
+    dir="$1"; shift ; 
+    # non existing is fine
+    [ ! -d $dir ] && return 0; 
+    # need to have at most one file
+    count=$(cd $dir; ls | wc -l); [ $count -le 1 ]; 
+}
 
 ##############################
 function check_yum_installed () {
@@ -203,8 +236,109 @@ function check_yumgroup_installed () {
 }
 
 ##############################
+function fedora_install() {
+    set -x
+    set -e
 
-function configure_fedora() {
+    mkdir -p /var/lock/subsys/
+    (
+        flock -n -x 200 || { echo "Cache repository is busy." ; return 1 ; }
+
+        if [ ! -e "$cache/rootfs" ]; then
+            echo "Getting cache download in $cache/rootfs ... "
+            fedora_download || { echo "Failed to download 'fedora base'"; return 1; }
+        else
+            echo "Updating cache $cache/rootfs ..."
+	    if ! yum --installroot $cache/rootfs -y --nogpgcheck update 
+                echo "Failed to update 'fedora base', continuing with last known good cache"
+            else
+                echo "Update finished"
+            fi
+        fi
+
+        echo "Copy $cache/rootfs to $rootfs_path ... "
+	mkdir -p $rootfs_path
+	rsync -a $cache/rootfs/ $rootfs_path/
+	
+        return 0
+
+        ) 200>/var/lock/subsys/lxc
+
+    return $?
+}
+
+function fedora_download() {
+    set -x
+    # check the mini fedora was not already downloaded
+    INSTALL_ROOT=$cache/partial
+    echo $INSTALL_ROOT
+
+    # download a mini fedora into a cache
+    echo "Downloading fedora minimal ..."
+
+    mkdir -p $INSTALL_ROOT || { echo "Failed to create '$INSTALL_ROOT' directory" ; return 1; }
+
+    mkdir -p $INSTALL_ROOT/etc/yum.repos.d   
+    mkdir -p $INSTALL_ROOT/dev
+    mknod -m 0444 $INSTALL_ROOT/dev/random c 1 8
+    mknod -m 0444 $INSTALL_ROOT/dev/urandom c 1 9
+
+    # copy yum config and repo files
+    cp /etc/yum.conf $INSTALL_ROOT/etc/
+    cp /etc/yum.repos.d/fedora* $INSTALL_ROOT/etc/yum.repos.d/
+
+    # append fedora repo files with desired $release and $basearch
+    for f in $INSTALL_ROOT/etc/yum.repos.d/* ; do
+      sed -i "s/\$basearch/$arch/g; s/\$releasever/$release/g;" $f
+    done 
+
+    MIRROR_URL=http://mirror.onelab.eu/fedora/releases/$release/Everything/$arch/os
+    RELEASE_URL1="$MIRROR_URL/Packages/fedora-release-$release-1.noarch.rpm"
+    # with fedora18 the rpms are scattered by first name
+    RELEASE_URL2="$MIRROR_URL/Packages/f/fedora-release-$release-1.noarch.rpm"
+    RELEASE_TARGET=$INSTALL_ROOT/fedora-release-$release.noarch.rpm
+    found=""
+    for attempt in $RELEASE_URL1 $RELEASE_URL2; do
+	if curl -f $attempt -o $RELEASE_TARGET ; then
+	    echo "Retrieved $attempt"
+	    found=true
+	    break
+	else
+	    echo "Failed attempt $attempt"
+	fi
+    done
+    [ -n "$found" ] || { echo "Could not retrieve fedora-release rpm - exiting" ; exit 1; }
+    
+    mkdir -p $INSTALL_ROOT/var/lib/rpm
+    rpm --root $INSTALL_ROOT  --initdb
+    # when installing f12 this apparently is already present, so ignore result
+    rpm --root $INSTALL_ROOT -ivh $INSTALL_ROOT/fedora-release-$release.noarch.rpm || :
+    # however f12 root images won't get created on a f18 host
+    # (the issue here is the same as the one we ran into when dealing with a vs-box)
+    # in a nutshell, in f12 the glibc-common and filesystem rpms have an apparent conflict
+    # >>> file /usr/lib/locale from install of glibc-common-2.11.2-3.x86_64 conflicts 
+    #          with file from package filesystem-2.4.30-2.fc12.x86_64
+    # in fact this was - of course - allowed by f12's rpm but later on a fix was made 
+    #   http://rpm.org/gitweb?p=rpm.git;a=commitdiff;h=cf1095648194104a81a58abead05974a5bfa3b9a
+    # So ideally if we want to be able to build f12 images from f18 we need an rpm that has
+    # this patch undone, like we have in place on our f14 boxes (our f14 boxes need a f18-like rpm)
+
+    YUM="yum --installroot=$INSTALL_ROOT --nogpgcheck -y"
+    PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
+    echo "$YUM install $PKG_LIST"
+    $YUM install $PKG_LIST || { echo "Failed to download rootfs, aborting." ; return 1; }
+
+    mv "$INSTALL_ROOT" "$cache/rootfs"
+    echo "Download complete."
+
+    return 0
+}
+
+##############################
+function fedora_configure() {
+
+    set -x
+    set -e
 
     # disable selinux in fedora
     mkdir -p $rootfs_path/selinux
@@ -252,11 +386,20 @@ EOF
     #echo "setting root passwd to $root_password"
     #echo "root:$root_password" | chroot $rootfs_path chpasswd
 
+    if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
+	fedora_configure_init
+    else
+	fedora_configure_systemd
+    fi
+
+    fedora_configure_yum $lxc $fcdistro $pldistro
+
     return 0
 }
 
-function configure_fedora_init() {
-
+function fedora_configure_init() {
+    set -e
+    set -x
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.sysinit
     sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.d/rc.sysinit
     # don't mount devpts, for pete's sake
@@ -267,7 +410,9 @@ function configure_fedora_init() {
 }
 
 # this code of course is for guests that do run on systemd
-function configure_fedora_systemd() {
+function fedora_configure_systemd() {
+    set -e
+    set -x
     # so ignore if we can't find /etc/systemd at all 
     [ -d ${rootfs_path}/etc/systemd ] || return 0
     # otherwise let's proceed
@@ -287,146 +432,8 @@ function configure_fedora_systemd() {
     chroot ${rootfs_path} /sbin/chkconfig network on
 }
 
-function download_fedora() {
-set -x
-    # check the mini fedora was not already downloaded
-    INSTALL_ROOT=$cache/partial
-    echo $INSTALL_ROOT
-
-    # download a mini fedora into a cache
-    echo "Downloading fedora minimal ..."
-
-    mkdir -p $INSTALL_ROOT
-    if [ $? -ne 0 ]; then
-        echo "Failed to create '$INSTALL_ROOT' directory"
-        return 1
-    fi
-
-    mkdir -p $INSTALL_ROOT/etc/yum.repos.d   
-    mkdir -p $INSTALL_ROOT/dev
-    mknod -m 0444 $INSTALL_ROOT/dev/random c 1 8
-    mknod -m 0444 $INSTALL_ROOT/dev/urandom c 1 9
-
-    # copy yum config and repo files
-    cp /etc/yum.conf $INSTALL_ROOT/etc/
-    cp /etc/yum.repos.d/fedora* $INSTALL_ROOT/etc/yum.repos.d/
-
-    # append fedora repo files with desired $release and $basearch
-    for f in $INSTALL_ROOT/etc/yum.repos.d/*
-    do
-      sed -i "s/\$basearch/$arch/g; s/\$releasever/$release/g;" $f
-    done 
-
-    MIRROR_URL=http://mirror.onelab.eu/fedora/releases/$release/Everything/$arch/os
-    RELEASE_URL1="$MIRROR_URL/Packages/fedora-release-$release-1.noarch.rpm"
-    # with fedora18 the rpms are scattered by first name
-    RELEASE_URL2="$MIRROR_URL/Packages/f/fedora-release-$release-1.noarch.rpm"
-    RELEASE_TARGET=$INSTALL_ROOT/fedora-release-$release.noarch.rpm
-    found=""
-    for attempt in $RELEASE_URL1 $RELEASE_URL2; do
-	if curl -f $attempt -o $RELEASE_TARGET ; then
-	    echo "Retrieved $attempt"
-	    found=true
-	    break
-	else
-	    echo "Failed attempt $attempt"
-	fi
-    done
-    [ -n "$found" ] || { echo "Could not retrieve fedora-release rpm - exiting" ; exit 1; }
-    
-    mkdir -p $INSTALL_ROOT/var/lib/rpm
-    rpm --root $INSTALL_ROOT  --initdb
-    # when installing f12 this apparently is already present, so ignore result
-    rpm --root $INSTALL_ROOT -ivh $INSTALL_ROOT/fedora-release-$release.noarch.rpm || :
-    # however f12 root images won't get created on a f18 host
-    # (the issue here is the same as the one we ran into when dealing with a vs-box)
-    # in a nutshell, in f12 the glibc-common and filesystem rpms have an apparent conflict
-    # >>> file /usr/lib/locale from install of glibc-common-2.11.2-3.x86_64 conflicts 
-    #          with file from package filesystem-2.4.30-2.fc12.x86_64
-    # in fact this was - of course - allowed by f12's rpm but later on a fix was made 
-    #   http://rpm.org/gitweb?p=rpm.git;a=commitdiff;h=cf1095648194104a81a58abead05974a5bfa3b9a
-    # So ideally if we want to be able to build f12 images from f18 we need an rpm that has
-    # this patch undone, like we have in place on our f14 boxes (our f14 boxes need a f18-like rpm)
-
-    YUM="yum --installroot=$INSTALL_ROOT --nogpgcheck -y"
-    PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
-    echo "$YUM install $PKG_LIST"
-    $YUM install $PKG_LIST
-
-    if [ $? -ne 0 ]; then
-        echo "Failed to download the rootfs, aborting."
-        return 1
-    fi
-
-    mv "$INSTALL_ROOT" "$cache/rootfs"
-    echo "Download complete."
-
-    return 0
-}
-
-
-function copy_fedora() {
-set -x
-    # make a local copy of the minifedora
-    echo -n "Copying rootfs to $rootfs_path ..."
-    mkdir -p $rootfs_path
-    rsync -a $cache/rootfs/ $rootfs_path/
-    return 0
-}
-
-
-function update_fedora() {
-set -x
-    YUM="yum --installroot $cache/rootfs -y --nogpgcheck"
-    $YUM update
-}
-
-
-function install_fedora() {
-    set -x
-
-    mkdir -p /var/lock/subsys/
-    (
-        flock -n -x 200
-        if [ $? -ne 0 ]; then
-            echo "Cache repository is busy."
-            return 1
-        fi
-
-        echo "Checking cache download in $cache/rootfs ... "
-        if [ ! -e "$cache/rootfs" ]; then
-            download_fedora
-            if [ $? -ne 0 ]; then
-                echo "Failed to download 'fedora base'"
-                return 1
-            fi
-        else
-            echo "Cache found. Updating..."
-            update_fedora
-            if [ $? -ne 0 ]; then
-                echo "Failed to update 'fedora base', continuing with last known good cache"
-            else
-                echo "Update finished"
-            fi
-        fi
-
-        echo "Copy $cache/rootfs to $rootfs_path ... "
-        copy_fedora
-        if [ $? -ne 0 ]; then
-            echo "Failed to copy rootfs"
-            return 1
-        fi
-
-        return 0
-
-        ) 200>/var/lock/subsys/lxc
-
-    return $?
-}
-
-
-# overwrite lxc's internal yum config
-function configure_yum_in_lxc () {
+# overwrite container yum config
+function fedora_configure_yum () {
     set -x 
     set -e 
     trap failure ERR INT
@@ -434,6 +441,9 @@ function configure_yum_in_lxc () {
     lxc=$1; shift
     fcdistro=$1; shift
     pldistro=$1; shift
+
+    # rpm --rebuilddb
+    chroot $rootfs_path /bin/rpm --rebuilddb
 
     echo "Initializing yum.repos.d in $lxc"
     rm -f $rootfs_path/etc/yum.repos.d/*
@@ -479,39 +489,32 @@ EOF
     fi
 }    
 
-# return yum or debootstrap
-function package_method () {
+##############################
+# need to specify the right mirror for debian variants like ubuntu and the like
+function debian_mirror () {
     fcdistro=$1; shift
     case $fcdistro in
-	f[0-9]*|centos[0-9]*|sl[0-9]*) echo yum ;;
-	squeeze|wheezy|oneiric|precise|quantal|raring|saucy) echo debootstrap ;;
-	*) echo Unknown distro $fcdistro ;;
-    esac 
-}
-
-# return arch from debian distro and personality
-function canonical_arch () {
-    personality=$1; shift
-    fcdistro=$1; shift
-    case $(package_method $fcdistro) in
-	yum)
-	    case $personality in *32) echo i386 ;; *64) echo x86_64 ;; *) echo Unknown-arch-1 ;; esac ;;
-	debootstrap)
-	    case $personality in *32) echo i386 ;; *64) echo amd64 ;; *) echo Unknown-arch-2 ;; esac ;;
-	*)
-	    echo Unknown-arch-3 ;;
+	squeeze|wheezy) 
+	    echo http://ftp2.fr.debian.org/debian/ ;;
+	oneiric|precise|quantal|raring|saucy) 
+	    echo http://mir1.ovh.net/ubuntu/ubuntu/ ;;
+	*) echo unknown distro $fcdistro; exit 1;;
     esac
 }
 
-# the new test framework creates /timestamp in /vservers/<name> *before* populating it
-function almost_empty () { 
-    dir="$1"; shift ; 
-    # non existing is fine
-    [ ! -d $dir ] && return 0; 
-    # need to have at most one file
-    count=$(cd $dir; ls | wc -l); [ $count -le 1 ]; 
+function debian_install () {
+    set -e
+    set -x
+    mkdir -p $rootfs_path
+    arch=$(canonical_arch $personality)
+    mirror=$(debian_mirror $fcdistro)
+    debootstrap --arch $arch $fcdistro $rootfs_path $mirror
 }
 
+function debian_configure () {
+    echo "WARNING No debian config available yet"
+}
+##############################
 function setup_lxc() {
 
     set -x
@@ -528,15 +531,12 @@ function setup_lxc() {
     pkg_method=$(package_method $fcdistro)
     case $pkg_method in
 	yum)
-	    install_fedora || { echo "failed to install fedora"; exit 1 ; }
-	    configure_fedora || { echo "failed to configure fedora for a container"; exit 1 ; }
-	    if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
-		configure_fedora_init
-	    else
-		configure_fedora_systemd
-	    fi
+	    fedora_install || { echo "failed to install fedora root image"; exit 1 ; }
+	    fedora_configure || { echo "failed to configure fedora for a container"; exit 1 ; }
 	    ;;
 	debootstrap)
+	    debian_install || { echo "failed to install debian/ubuntu root image"; exit 1 ; }
+	    debian_configure || { echo "failed to configure debian/ubuntu for a container"; exit 1 ; }
 	    echo "$COMMAND: no support for debootstrap-based systems - yet"
 	    exit 1
 	    ;;
@@ -545,11 +545,6 @@ function setup_lxc() {
 	    exit 1
 	    ;;
     esac
-
-    # rpm --rebuilddb
-    chroot $rootfs_path /bin/rpm --rebuilddb
-
-    configure_yum_in_lxc $lxc $fcdistro $pldistro
 
     # Enable cgroup -- xxx -- is this really useful ?
     mkdir $rootfs_path/cgroup
