@@ -41,3 +41,5 @@ package: vsys-wrapper
 package: sliver-openvswitch
 package: ipfwslice
 
+# convenience
+package: less emacs-nox
