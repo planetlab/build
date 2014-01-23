@@ -63,22 +63,6 @@ function discover_interface () {
     # still not found ? that's bad
     echo unknown
 }
-########## check for a free IP
-function ip_is_busy () {
-    target=$1; shift
-    ping -c 1 -W 1 $target >& /dev/null
-}
-
-function random_private_byte () {
-    for attempt in $(seq $PRIVATE_ATTEMPTS); do
-	byte=$(($RANDOM % 256))
-	if [ "$byte" == 0 -o "$byte" == 1 ] ; then continue; fi
-	ip=${PRIVATE_PREFIX}${byte}
-	ip_is_busy $ip || { echo $byte; return; }
-    done
-    echo "Cannot seem to find a free IP address in range ${PRIVATE_PREFIX}.xx/24 after $PRIVATE_ATTEMPTS attempts - exiting"
-    exit 1
-}
 
 ########## networking -- ctd
 function gethostbyname () {
@@ -532,7 +516,7 @@ function write_guest_interfaces_test () {
     cat <<EOF
 auto $VIF_GUEST
 iface $VIF_GUEST
-    address $IP
+    address $GUEST_IP
     netmask $NETMASK
     gateway $GATEWAY
 EOF
@@ -673,14 +657,14 @@ MTU=1500
 EOF
 }
 
-# use fixed IP as specified by GUEST_HOSTNAME
+# use fixed GUEST_IP as specified by GUEST_HOSTNAME
 function write_guest_ifcfg_test () {
     cat <<EOF
 DEVICE=$VIF_GUEST
 BOOTPROTO=static
 ONBOOT=yes
 HOSTNAME=$GUEST_HOSTNAME
-IPADDR=$IP
+IPADDR=$GUEST_IP
 NETMASK=$NETMASK
 GATEWAY=$GATEWAY
 NM_CONTROLLED=no
@@ -883,7 +867,7 @@ function wait_for_ssh () {
 
     lxc=$1; shift
   
-    echo $IP is up, waiting for ssh...
+    echo network in guest is up, waiting for ssh...
 
     #wait max 5 min for sshd to start 
     ssh_up=""
@@ -893,7 +877,7 @@ function wait_for_ssh () {
     counter=1
     while [ "$current_time" -lt "$stop_time" ] ; do
          echo "$counter-th attempt to reach sshd in container $lxc ..."
-         ssh -o "StrictHostKeyChecking no" $IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
+         ssh -o "StrictHostKeyChecking no" $GUEST_IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
          sleep 10
          current_time=$(($current_time + 10))
          counter=$(($counter+1))
@@ -1014,28 +998,21 @@ function main () {
         echo "Unknown personality: $personality"
     fi
 
-    if [ -n "$BUILD_MODE" ] ; then
+    # compute networking details for the test mode
+    # (build mode relies entirely on dhcp on the private subnet)
+    if [ -z "$BUILD_MODE" ] ; then
 
-	# Bridge IP affectation
-	byte=$(random_private_byte)
-	IP=${PRIVATE_PREFIX}$byte
-	NETMASK=$(masklen_to_netmask $PRIVATE_MASKLEN)
-	GATEWAY=$PRIVATE_GATEWAY
-	VIF_HOST="i$byte"
-    else
         [[ -z "GUEST_HOSTNAME" ]] && usage
        
 	create_bridge_if_needed
 
-	IP=$(gethostbyname $GUEST_HOSTNAME)
+	GUEST_IP=$(gethostbyname $GUEST_HOSTNAME)
 	# use same NETMASK as bridge interface br0
 	MASKLEN=$(ip addr show $PUBLIC_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
         NETMASK=$(masklen_to_netmask $MASKLEN)
         GATEWAY=$(ip route show | grep default | awk '{print $3}')
         VIF_HOST="i$(echo $GUEST_HOSTNAME | cut -d. -f1)"
     fi
-
-    echo "the IP address of container $lxc is $IP, host virtual interface is $VIF_HOST"
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
 
