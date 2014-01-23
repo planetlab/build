@@ -722,12 +722,12 @@ function devel_or_vtest_tools () {
 	    ;;
 	debootstrap)
 	    # for ubuntu
-	    if grep -iq ubuntu /vservers/$vserver/rootfs/etc/lsb-release 2> /dev/null; then
+	    if grep -iq ubuntu /vservers/$lxc/rootfs/etc/lsb-release 2> /dev/null; then
 		# on ubuntu, at this point we end up with a single feed in /etc/apt/sources.list
  	        # we need at least to add the 'universe' feed for python-rpm
-		( cd /vservers/$vserver/rootfs/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
+		( cd /vservers/$lxc/rootfs/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
 	        # also adding a link to updates sounds about right
-		( cd /vservers/$vserver/rootfs/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
+		( cd /vservers/$lxc/rootfs/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
 	    fi
 	    chroot $rootfs_path apt-get update
 	    for package in $packages ; do
