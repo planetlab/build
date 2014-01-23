@@ -1,18 +1,10 @@
 #!/bin/bash
 
-# NOTE on lxcsu
-# this tool derives from the PL code, from the lxc-userspace module
-# can be obtained through rpm/yum
-# it is used here as a replacement for 'vserver <> exec'
-# that is used throughout this code
-RUN_IN_DOMAIN="lxcsu -ro"
-# PS.
-# virsh lxc-enter-namespace $dom command to run
-# could maybe be used instead but it seems to require command's full path..
-#RUN_IN_DOMAIN="virsh lxc-enter-namespace"
-
 COMMANDPATH=$0
 COMMAND=$(basename $0)
+
+# needed only so we can share bin_in_container
+. build.common
 
 # default values, tunable with command-line options
 DEFAULT_FCDISTRO=f20
@@ -219,6 +211,12 @@ function success () {
     exit 0
 }
 
+##############################
+# manage root / container contexts
+function in_root_context () {
+    rpm -q libvirt > /dev/null 
+}
+
 # run in the vm - do not manage success/failure, will be done from the root ctx
 function build () {
     set -x
@@ -293,7 +291,7 @@ function run_log () {
     ssh -n ${testmaster_ssh} rm -rf ${testdir} ${testdir}.git
 
     # check it out in the build
-    $RUN_IN_DOMAIN $BASE -- make -C /build tests-module
+    virsh -c lxc:/// lxc-enter-namespace $BASE -- $(bin_in_container $BASE make) -C /build tests-module
     
     # push it onto the testmaster - just the 'system' subdir is enough
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/tests/system/ ${testmaster_ssh}:${BASE}
@@ -322,10 +320,6 @@ function run_log () {
 	failure
     fi
     
-}
-
-function in_root_context () {
-    rpm -q libvirt > /dev/null 
 }
 
 # this part won't work if WEBHOST does not match the local host
@@ -622,19 +616,19 @@ function main () {
 	    set -x
 	    echo "XXXXXXXXXX $COMMAND: using existing vm $BASE" $(date)
 	    # start in case e.g. we just rebooted
-	    virsh --connect lxc:/// start ${BASE} || :
+	    virsh -c lxc:/// start ${BASE} || :
 	    # retrieve environment from the previous run
-	    FCDISTRO=$($RUN_IN_DOMAIN ${BASE} /build/getdistroname.sh)
-	    BUILD_SCM_URL=$($RUN_IN_DOMAIN ${BASE} -- make --no-print-directory -C /build stage1=skip +build-GITPATH)
+	    FCDISTRO=$(virsh -c lxc:/// lxc-enter-namespace ${BASE} /build/getdistroname.sh)
+	    BUILD_SCM_URL=$(virsh -c lxc:/// lxc-enter-namespace ${BASE} -- $(bin_in_container $BASE make) --no-print-directory -C /build stage1=skip +build-GITPATH)
 	    # for efficiency, crop everything in one make run
 	    tmp=/tmp/${BASE}-env.sh
-	    $RUN_IN_DOMAIN ${BASE} -- make --no-print-directory -C /build stage1=skip \
+	    virsh -c lxc:/// lxc-enter-namespace ${BASE} -- $(bin_in_container $BASE make) --no-print-directory -C /build stage1=skip \
 		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILTO ++WEBPATH ++TESTBUILDURL ++WEBROOT > $tmp
 	    . $tmp
 	    rm -f $tmp
 	    # update build
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    $RUN_IN_DOMAIN $BASE -- "cd /build; git pull; make tests-clean"
+	    virsh -c lxc:/// lxc-enter-namespace $BASE /bin/bash -c "cd /build; git pull; make tests-clean"
 	    # make sure we refresh the tests place in case it has changed
 	    rm -f /build/MODULES/tests
 	    options=(${options[@]} -d $PLDISTRO -t $PLDISTROTAGS -s $BUILD_SCM_URL)
@@ -682,7 +676,7 @@ function main () {
 	    # Extract build again - in the vm
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
 	    # xxx not working as of now - waiting for Sapan to look into this
-	    $RUN_IN_DOMAIN $BASE -- "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
+	    virsh -c lxc:/// lxc-enter-namespace $BASE /bin/bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
 	fi
 	echo "XXXXXXXXXX $COMMAND: preparation of vm $BASE done" $(date)
 
@@ -714,8 +708,8 @@ function main () {
 	    cp $COMMANDPATH $(rootdir ${BASE})/build/
 
 	    # invoke this command in the vm for building (-T)
-	    $RUN_IN_DOMAIN ${BASE} chmod +x /build/$COMMAND
-	    $RUN_IN_DOMAIN ${BASE} -- /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
+	    virsh -c lxc:/// lxc-enter-namespace ${BASE} $(bin_in_container $BASE chmod) +x /build/$COMMAND
+	    virsh -c lxc:/// lxc-enter-namespace ${BASE} /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
 	fi
 
 	# publish to the web so run_log can find them
@@ -729,7 +723,7 @@ function main () {
 	else
 	    # run scanpackages so we can use apt-get on this
 	    # (not needed on fedora b/c this is done by the regular build already)
-	    $RUN_IN_DOMAIN $BASE -- -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
+	    virsh -c lxc:/// lxc-enter-namespace $BASE /bin/bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
 	    webpublish mkdir -p $WEBPATH/$BASE/DEBIAN
 	    webpublish_rsync_files $WEBPATH/$BASE/DEBIAN/ $(rootdir $BASE)/build/DEBIAN/*.deb 
 	    webpublish_rsync_files $WEBPATH/$BASE/ $(rootdir $BASE)/build/Packages.gz
