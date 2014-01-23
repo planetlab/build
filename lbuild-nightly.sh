@@ -3,9 +3,6 @@
 COMMANDPATH=$0
 COMMAND=$(basename $0)
 
-# needed only so we can share bin_in_container
-. build.common
-
 # default values, tunable with command-line options
 DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=planetlab
@@ -215,6 +212,23 @@ function success () {
 # manage root / container contexts
 function in_root_context () {
     rpm -q libvirt > /dev/null 
+}
+
+# copied from build.common because this cannot have deps. 
+# (when pulled from infrastructure/scripts/lbuild-nightly.sh)
+# old guests have e.g. mount in /bin but this is no longer part of 
+# the standard PATH in recent hosts after usrmove, so let's keep it simple
+export PATH=$PATH:/bin:/sbin
+
+# would be much simpler if enter-lxc-namespace was looking along a PATH...
+function bin_in_container () {
+    lxc=$1; shift
+    binary=$1; shift
+    for path in $(echo $PATH | sed -e 's,:, ,g' ); do
+	[ -f /vservers/$lxc/$path/$binary ] && { echo $path/$binary; return; }
+	[ -f /vservers/$lxc/rootfs/$path/$binary ] && { echo $path/$binary; return; }
+    done
+    echo bin_in_container_cannot_find_$binary
 }
 
 # run in the vm - do not manage success/failure, will be done from the root ctx

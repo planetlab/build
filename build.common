@@ -21,7 +21,7 @@ export PATH=$PATH:/bin:/sbin
 function bin_in_container () {
     lxc=$1; shift
     binary=$1; shift
-    for path in $(echo $PATH | sed -e s,:, ); do
+    for path in $(echo $PATH | sed -e 's,:, ,g' ); do
 	[ -f /vservers/$lxc/$path/$binary ] && { echo $path/$binary; return; }
 	[ -f /vservers/$lxc/rootfs/$path/$binary ] && { echo $path/$binary; return; }
     done
