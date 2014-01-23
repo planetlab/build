@@ -921,8 +921,6 @@ function main () {
 	    usage ;;
     esac
 
-    echo 'build mode=' $BUILD_MODE 'test mode=' $TEST_MODE
-
     # the set of preinstalled packages - depends on vbuild or vtest
     if [ -n "$BUILD_MODE" ] ; then
 	PREINSTALLED=devel.pkgs
@@ -949,8 +947,8 @@ function main () {
     lxc=$1 ; shift
     lxc_root=/vservers/$lxc
     # rainchecks
-    [ -d $lxc_root ] && \
-	{ echo "container $lxc already exists in filesystem - exiting" ; exit 1 ; }
+    almost_empty $lxc_root || \
+	{ echo "container $lxc already exists in $lxc_root - exiting" ; exit 1 ; }
     virsh -c lxc:/// domuuid $lxc >& /dev/null && \
 	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }
     mkdir -p $lxc_root
