@@ -241,6 +241,8 @@ function fedora_install() {
     set -x
     set -e
 
+    cache=/var/cache/lxc/fedora/$arch/$release
+    
     mkdir -p /var/lock/subsys/
     (
         flock -n -x 200 || { echo "Cache repository is busy." ; return 1 ; }
@@ -257,9 +259,8 @@ function fedora_install() {
             fi
         fi
 
-        echo "Copy $cache/rootfs to $rootfs_path ... "
-	mkdir -p $rootfs_path
-	rsync -a $cache/rootfs/ $rootfs_path/
+        echo "Copy $cache/rootfs to $lxc_root ... "
+	rsync -a $cache/rootfs/ $lxc_root/
 	
         return 0
 
@@ -342,29 +343,29 @@ function fedora_configure() {
     set -e
 
     # disable selinux in fedora
-    mkdir -p $rootfs_path/selinux
-    echo 0 > $rootfs_path/selinux/enforce
+    mkdir -p $lxc_root/selinux
+    echo 0 > $lxc_root/selinux/enforce
 
     # set the hostname
     case "$fcdistro" in 
 	f18|f2?)
-	    cat <<EOF > ${rootfs_path}/etc/hostname
+	    cat <<EOF > ${lxc_root}/etc/hostname
 $GUEST_HOSTNAME
 EOF
 	    echo ;;
 	*)
-            cat <<EOF > ${rootfs_path}/etc/sysconfig/network
+            cat <<EOF > ${lxc_root}/etc/sysconfig/network
 NETWORKING=yes
 HOSTNAME=$GUEST_HOSTNAME
 EOF
             # set minimal hosts
-	    cat <<EOF > $rootfs_path/etc/hosts
+	    cat <<EOF > $lxc_root/etc/hosts
 127.0.0.1 localhost $GUEST_HOSTNAME
 EOF
 	    echo ;;
     esac
 
-    dev_path="${rootfs_path}/dev"
+    dev_path="${lxc_root}/dev"
     rm -rf $dev_path
     mkdir -p $dev_path
     mknod -m 666 ${dev_path}/null c 1 3
@@ -390,7 +391,7 @@ EOF
 	fedora_configure_systemd
     fi
 
-    guest_ifcfg=${rootfs_path}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
+    guest_ifcfg=${lxc_root}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
     ( [ -n "$BUILD_MODE" ] && write_guest_ifcfg_build || write_guest_ifcfg_test ) > $guest_ifcfg
 
     fedora_configure_yum $lxc $fcdistro $pldistro
@@ -401,13 +402,13 @@ EOF
 function fedora_configure_init() {
     set -e
     set -x
-    sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.sysinit
-    sed -i 's|.sbin.start_udev||' ${rootfs_path}/etc/rc.d/rc.sysinit
+    sed -i 's|.sbin.start_udev||' ${lxc_root}/etc/rc.sysinit
+    sed -i 's|.sbin.start_udev||' ${lxc_root}/etc/rc.d/rc.sysinit
     # don't mount devpts, for pete's sake
-    sed -i 's/^.*dev.pts.*$/#\0/' ${rootfs_path}/etc/rc.sysinit
-    sed -i 's/^.*dev.pts.*$/#\0/' ${rootfs_path}/etc/rc.d/rc.sysinit
-    chroot ${rootfs_path} chkconfig udev-post off
-    chroot ${rootfs_path} chkconfig network on
+    sed -i 's/^.*dev.pts.*$/#\0/' ${lxc_root}/etc/rc.sysinit
+    sed -i 's/^.*dev.pts.*$/#\0/' ${lxc_root}/etc/rc.d/rc.sysinit
+    chroot ${lxc_root} chkconfig udev-post off
+    chroot ${lxc_root} chkconfig network on
 }
 
 # this code of course is for guests that do run on systemd
@@ -415,22 +416,22 @@ function fedora_configure_systemd() {
     set -e
     set -x
     # so ignore if we can't find /etc/systemd at all 
-    [ -d ${rootfs_path}/etc/systemd ] || return 0
+    [ -d ${lxc_root}/etc/systemd ] || return 0
     # otherwise let's proceed
-    ln -sf /lib/systemd/system/multi-user.target ${rootfs_path}/etc/systemd/system/default.target
-    touch ${rootfs_path}/etc/fstab
-    ln -sf /dev/null ${rootfs_path}/etc/systemd/system/udev.service
+    ln -sf /lib/systemd/system/multi-user.target ${lxc_root}/etc/systemd/system/default.target
+    touch ${lxc_root}/etc/fstab
+    ln -sf /dev/null ${lxc_root}/etc/systemd/system/udev.service
 # Thierry - Feb 2013
 # this was intended for f16 initially, in order to enable getty that otherwise would not start
 # having a getty running is helpful only if ssh won't start though, and we see a correlation between
 # VM's that refuse to lxc-stop and VM's that run crazy getty's
 # so, turning getty off for now instead
 #   #dependency on a device unit fails it specially that we disabled udev
-#    sed -i 's/After=dev-%i.device/After=/' ${rootfs_path}/lib/systemd/system/getty\@.service
-    ln -sf /dev/null ${rootfs_path}/etc/systemd/system/"getty@.service"
-    rm -f ${rootfs_path}/etc/systemd/system/getty.target.wants/*service || :
+#    sed -i 's/After=dev-%i.device/After=/' ${lxc_root}/lib/systemd/system/getty\@.service
+    ln -sf /dev/null ${lxc_root}/etc/systemd/system/"getty@.service"
+    rm -f ${lxc_root}/etc/systemd/system/getty.target.wants/*service || :
 # can't seem to handle this one with systemctl
-    chroot ${rootfs_path} chkconfig network on
+    chroot ${lxc_root} chkconfig network on
 }
 
 # overwrite container yum config
@@ -444,12 +445,12 @@ function fedora_configure_yum () {
     pldistro=$1; shift
 
     # rpm --rebuilddb
-    chroot $rootfs_path rpm --rebuilddb
+    chroot $lxc_root rpm --rebuilddb
 
     echo "Initializing yum.repos.d in $lxc"
-    rm -f $rootfs_path/etc/yum.repos.d/*
+    rm -f $lxc_root/etc/yum.repos.d/*
 
-    cat > $rootfs_path/etc/yum.repos.d/building.repo <<EOF
+    cat > $lxc_root/etc/yum.repos.d/building.repo <<EOF
 [fedora]
 name=Fedora $release - $arch
 baseurl=http://mirror.onelab.eu/fedora/releases/$release/Everything/$arch/os/
@@ -470,16 +471,16 @@ EOF
     # for using vtest-init-lxc.sh as a general-purpose lxc creation wrapper
     # just mention 'none' as the repo url
     if [ -n "$REPO_URL" ] ; then
-	if [ ! -d $rootfs_path/etc/yum.repos.d ] ; then
+	if [ ! -d $lxc_root/etc/yum.repos.d ] ; then
 	    echo "WARNING : cannot create myplc repo"
 	else
             # exclude kernel from fedora repos 
 	    yumexclude=$(pl_plcyumexclude $fcdistro $pldistro $DIRNAME)
-	    for repo in $rootfs_path/etc/yum.repos.d/* ; do
+	    for repo in $lxc_root/etc/yum.repos.d/* ; do
 		[ -f $repo ] && yumconf_exclude $repo "exclude=$yumexclude" 
 	    done
 	    # the build repo is not signed at this stage
-	    cat > $rootfs_path/etc/yum.repos.d/myplc.repo <<EOF
+	    cat > $lxc_root/etc/yum.repos.d/myplc.repo <<EOF
 [myplc]
 name= MyPLC
 baseurl=$REPO_URL
@@ -506,14 +507,14 @@ function debian_mirror () {
 function debian_install () {
     set -e
     set -x
-    mkdir -p $rootfs_path
+    mkdir -p $lxc_root
     arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
-    debootstrap --arch $arch $fcdistro $rootfs_path $mirror
+    debootstrap --arch $arch $fcdistro $lxc_root $mirror
 }
 
 function debian_configure () {
-    guest_interfaces=${rootfs_path}/etc/network/interfaces
+    guest_interfaces=${lxc_root}/etc/network/interfaces
     ( [ -n "$BUILD_MODE" ] && write_guest_interfaces_build || write_guest_interfaces_test ) > $guest_interfaces
 }
 
@@ -564,16 +565,16 @@ function setup_lxc() {
     esac
 
     # Enable cgroup -- xxx -- is this really useful ?
-    mkdir $rootfs_path/cgroup
+    mkdir $lxc_root/cgroup
     
     # set up resolv.conf
-    cp /etc/resolv.conf $rootfs_path/etc/resolv.conf
+    cp /etc/resolv.conf $lxc_root/etc/resolv.conf
     # and /etc/hosts for at least localhost
-    [ -f $rootfs_path/etc/hosts ] || echo "127.0.0.1 localhost localhost.localdomain" > $rootfs_path/etc/hosts
+    [ -f $lxc_root/etc/hosts ] || echo "127.0.0.1 localhost localhost.localdomain" > $lxc_root/etc/hosts
     
     # grant ssh access from host to guest
-    mkdir $rootfs_path/root/.ssh
-    cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
+    mkdir $lxc_root/root/.ssh
+    cat /root/.ssh/id_rsa.pub >> $lxc_root/root/.ssh/authorized_keys
     
     # don't keep the input xml, this can be retrieved at all times with virsh dumpxml
     config_xml=$tmp/$lxc.xml
@@ -606,7 +607,7 @@ function write_lxc_xml_test () {
   <devices>
     <emulator>/usr/libexec/libvirt_lxc</emulator>
     <filesystem type='mount'>
-      <source dir='$rootfs_path'/>
+      <source dir='$lxc_root'/>
       <target dir='/'/>
     </filesystem>
     <interface type="bridge">
@@ -645,7 +646,7 @@ function write_lxc_xml_build () {
   <devices>
     <emulator>/usr/libexec/libvirt_lxc</emulator>
     <filesystem type='mount'>
-      <source dir='$rootfs_path'/>
+      <source dir='$lxc_root'/>
       <target dir='/'/>
     </filesystem>
     <interface type="network">
@@ -703,33 +704,33 @@ function devel_or_vtest_tools () {
     ### install individual packages, then groups
     # get target arch - use uname -i here (we want either x86_64 or i386)
    
-    lxc_arch=$(chroot $rootfs_path uname -i)
+    lxc_arch=$(chroot $lxc_root uname -i)
     # on debian systems we get arch through the 'arch' command
-    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $rootfs_path arch)
+    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $lxc_root arch)
 
     packages=$(pl_getPackages -a $lxc_arch $fcdistro $pldistro $pkgsfile)
     groups=$(pl_getGroups -a $lxc_arch $fcdistro $pldistro $pkgsfile)
 
     case "$pkg_method" in
 	yum)
-	    [ -n "$packages" ] && chroot $rootfs_path yum -y install $packages
+	    [ -n "$packages" ] && chroot $lxc_root yum -y install $packages
 	    for group_plus in $groups; do
 		group=$(echo $group_plus | sed -e "s,+++, ,g")
-		chroot $rootfs_path yum -y groupinstall "$group"
+		chroot $lxc_root yum -y groupinstall "$group"
 	    done
 	    # store current rpm list in /init-lxc.rpms in case we need to check the contents
-	    chroot $rootfs_path rpm -aq > $rootfs_path/init-lxc.rpms
+	    chroot $lxc_root rpm -aq > $lxc_root/init-lxc.rpms
 	    ;;
 	debootstrap)
 	    # for ubuntu
-	    if grep -iq ubuntu /vservers/$lxc/rootfs/etc/lsb-release 2> /dev/null; then
+	    if grep -iq ubuntu /vservers/$lxc/etc/lsb-release 2> /dev/null; then
 		# on ubuntu, at this point we end up with a single feed in /etc/apt/sources.list
  	        # we need at least to add the 'universe' feed for python-rpm
-		( cd /vservers/$lxc/rootfs/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
+		( cd /vservers/$lxc/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
 	        # also adding a link to updates sounds about right
-		( cd /vservers/$lxc/rootfs/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
+		( cd /vservers/$lxc/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
 	    fi
-	    chroot $rootfs_path apt-get update
+	    chroot $lxc_root apt-get update
 	    for package in $packages ; do
 		# close stdin in an attempt to avoid this hanging
 		# xxx also we ignore result for now, not sure if the kind of errors like below
@@ -739,7 +740,7 @@ function devel_or_vtest_tools () {
 #initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
 #start: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
 
-	        chroot $rootfs_path apt-get install -y $package < /dev/null || :
+	        chroot $lxc_root apt-get install -y $package < /dev/null || :
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
@@ -765,7 +766,7 @@ function post_install () {
 	wait_for_ssh $lxc
     fi
     # setup localtime from the host
-    cp /etc/localtime $rootfs_path/etc/localtime
+    cp /etc/localtime $lxc_root/etc/localtime
 }
 
 function post_install_build () {
@@ -779,7 +780,7 @@ function post_install_build () {
 
 ### From myplc-devel-native.spec
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $rootfs_path bash -x
+    cat << EOF | chroot $lxc_root bash -x
     # set up /dev/loop* in lxc
     for i in \$(seq 0 255) ; do
 	/bin/mknod -m 640 /dev/loop\$i b 7 \$i
@@ -837,7 +838,7 @@ function post_install_myplc  () {
     personality=$1; shift
 
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $rootfs_path bash -x
+    cat << EOF | chroot $lxc_root bash -x
 
     # create /etc/sysconfig/network if missing
     [ -f /etc/sysconfig/network ] || /bin/echo NETWORKING=yes > /etc/sysconfig/network
@@ -970,6 +971,8 @@ function main () {
     # parse fixed arguments
     [[ -z "$@" ]] && usage
     lxc=$1 ; shift
+    lxc_root=$path/$lxc
+    mkdir -p $lxc_root
 
     # check we've exhausted the arguments
     [[ -n "$@" ]] && usage
@@ -1026,16 +1029,8 @@ function main () {
 
     echo "the IP address of container $lxc is $IP, host virtual interface is $VIF_HOST"
 
-    path=/vservers
-    [ ! -d $path ] && mkdir $path
-    rootfs_path=$path/$lxc/rootfs
-    config_path=$path/$lxc
-    cache_base=/var/cache/lxc/fedora/$arch
-    cache=$cache_base/$release
-    
-    # check whether the rootfs directory is created to know if the container exists
-    # bacause /var/lib/lxc/$lxc is already created while putting $lxc.timestamp
-    [ -d $rootfs_path ] && \
+    # rainchecks
+    [ -d $lxc_root ] && \
 	{ echo "container $lxc already exists in filesystem - exiting" ; exit 1 ; }
     virsh -c lxc:/// domuuid $lxc >& /dev/null && \
 	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }

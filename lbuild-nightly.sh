@@ -46,7 +46,7 @@ DATE=$(date +'%Y.%m.%d')
 # but the PL code still uses this name for now, so let's keep it simple
 function rootdir () {
     slice=$1; shift
-    echo /vservers/$slice/rootfs
+    echo /vservers/$slice
 }
 function logfile () {
     slice=$1; shift
@@ -226,7 +226,6 @@ function bin_in_container () {
     binary=$1; shift
     for path in $(echo $PATH | sed -e 's,:, ,g' ); do
 	[ -f /vservers/$lxc/$path/$binary ] && { echo $path/$binary; return; }
-	[ -f /vservers/$lxc/rootfs/$path/$binary ] && { echo $path/$binary; return; }
     done
     echo bin_in_container_cannot_find_$binary
 }
