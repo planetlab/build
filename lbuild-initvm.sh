@@ -1,6 +1,9 @@
 #!/bin/bash
 # -*-shell-*-
 
+# close stdin, as with ubuntu and debian VMs this script tends to hang and wait for input ..
+0<&-
+
 #shopt -s huponexit
 
 COMMAND=$(basename $0)
