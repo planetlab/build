@@ -384,9 +384,6 @@ EOF
     mknod -m 600 ${dev_path}/initctl p
     mknod -m 666 ${dev_path}/ptmx c 5 2
 
-    #echo "setting root passwd to $root_password"
-    #echo "root:$root_password" | chroot $rootfs_path chpasswd
-
     if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
 	fedora_configure_init
     else
@@ -1026,7 +1023,6 @@ function main () {
     config_path=$path/$lxc
     cache_base=/var/cache/lxc/fedora/$arch
     cache=$cache_base/$release
-    root_password=root
     
     # check whether the rootfs directory is created to know if the container exists
     # bacause /var/lib/lxc/$lxc is already created while putting $lxc.timestamp
