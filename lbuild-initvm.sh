@@ -974,7 +974,12 @@ function main () {
     # parse fixed arguments
     [[ -z "$@" ]] && usage
     lxc=$1 ; shift
-    lxc_root=$path/$lxc
+    lxc_root=/vservers/$lxc
+    # rainchecks
+    [ -d $lxc_root ] && \
+	{ echo "container $lxc already exists in filesystem - exiting" ; exit 1 ; }
+    virsh -c lxc:/// domuuid $lxc >& /dev/null && \
+	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }
     mkdir -p $lxc_root
 
     # check we've exhausted the arguments
@@ -1031,12 +1036,6 @@ function main () {
     fi
 
     echo "the IP address of container $lxc is $IP, host virtual interface is $VIF_HOST"
-
-    # rainchecks
-    [ -d $lxc_root ] && \
-	{ echo "container $lxc already exists in filesystem - exiting" ; exit 1 ; }
-    virsh -c lxc:/// domuuid $lxc >& /dev/null && \
-	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
 
