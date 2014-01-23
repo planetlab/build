@@ -575,7 +575,8 @@ function setup_lxc() {
     mkdir $rootfs_path/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $rootfs_path/root/.ssh/authorized_keys
     
-    config_xml=$config_path/"lxc.xml"
+    # don't keep the input xml, this can be retrieved at all times with virsh dumpxml
+    config_xml=$tmp/$lxc.xml
     ( [ -n "$BUILD_MODE" ] && write_lxc_xml_build $lxc || write_lxc_xml_test $lxc ) > $config_xml
     
     # define lxc container for libvirt
