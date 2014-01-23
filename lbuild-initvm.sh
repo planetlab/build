@@ -23,17 +23,6 @@ COMMAND_LBUILD="lbuild-initvm.sh"
 COMMAND_LTEST="ltest-initvm.sh"
 
 ##########
-# when creating build boxes we use private NAT'ed addresses for the VMs
-# as per virbr0 that is taken care of by libvirt at startup
-PRIVATE_BRIDGE="virbr0"
-PRIVATE_PREFIX="192.168.122."
-PRIVATE_GATEWAY="192.168.122.1"
-# beware that changing this would break the logic of random_private_byte...
-PRIVATE_MASKLEN=24
-
-# we just try randomly in that range until a free IP address shows up
-PRIVATE_ATTEMPTS=20
-
 # constant
 PUBLIC_BRIDGE=br0
 
