@@ -317,6 +317,7 @@ function run_log () {
     set -e
     
     # interpret retcod of TestMain.py; 2 means there were ignored steps that failed
+    echo "received from run_log" $retcod
     case $retcod in
 	0) success=true; IGNORED="" ;;
 	1) success=true; IGNORED=true ;;
