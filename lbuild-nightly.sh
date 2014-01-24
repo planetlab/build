@@ -319,7 +319,7 @@ function run_log () {
     # interpret retcod of TestMain.py; 2 means there were ignored steps that failed
     case $retcod in
 	0) success=true; IGNORED="" ;;
-	2) success=true; IGNORED=true ;;
+	1) success=true; IGNORED=true ;;
 	*) success="" ;; 
     esac
 
