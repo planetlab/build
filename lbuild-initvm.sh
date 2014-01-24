@@ -19,9 +19,6 @@ DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
 
-COMMAND_LBUILD="lbuild-initvm.sh"
-COMMAND_LTEST="ltest-initvm.sh"
-
 ##########
 # constant
 PUBLIC_BRIDGE=br0
@@ -885,18 +882,21 @@ function failure () {
 
 function usage () {
     set +x 
-    echo "Usage: $COMMAND_LBUILD [options] lxc-name"
-    echo "Usage: $COMMAND_LTEST [options] lxc-name"
+    echo "Usage: $COMMAND [options] lxc-name             (aka build mode)"
+    echo "Usage: $COMMAND -n hostname [options] lxc-name (aka test mode)"
     echo "Description:"
-    echo "   This command creates a fresh lxc instance, for building, or running a test myplc"
+    echo "    This command creates a fresh lxc instance, for building, or running a test myplc"
+    echo "In its first form, spawned VM gets a private IP bridged with virbr0 over dhcp/nat"
+    echo "With the second form, spawned VM gets a public IP bridged on public bridge br0"
+    echo ""
     echo "Supported options"
+    echo " -n hostname - the hostname to use in container"
     echo " -f fcdistro - for creating the root filesystem - defaults to $DEFAULT_FCDISTRO"
-    echo " -d pldistro - defaults to $DEFAULT_PLDISTRO"
+    echo " -d pldistro - defaults to $DEFAULT_PLDISTRO - current support for fedoras debians ubuntus"
     echo " -p personality - defaults to $DEFAULT_PERSONALITY"
-    echo " -n hostname - the hostname to use in container - required with $COMMAND_LTEST"
-    echo " -r repo-url - used to populate yum.repos.d - required with $COMMAND_LTEST"
-    echo " -P pkgs_file - defines the set of extra pacakges"
-    echo "    by default we use vtest.pkgs or devel.pkgs according to $COMMAND"
+    echo " -r repo-url - used to populate yum.repos.d - required in test mode"
+    echo " -P pkgs_file - defines a set of extra packages to install in guest"
+    echo "    by default we use devel.pkgs (build mode) or runtime.pkgs (test mode)"
     echo " -v be verbose"
     exit 1
 }
@@ -912,27 +912,12 @@ function main () {
           exit 1
     fi
 
-    case "$COMMAND" in
-	$COMMAND_LBUILD)
-	    BUILD_MODE=true ;;
-	$COMMAND_LTEST)
-	    TEST_MODE=true;;
-	*)
-	    usage ;;
-    esac
-
-    # the set of preinstalled packages - depends on vbuild or vtest
-    if [ -n "$BUILD_MODE" ] ; then
-	PREINSTALLED=devel.pkgs
-    else
-	PREINSTALLED=vtest.pkgs
-    fi
-    while getopts "f:d:p:n:r:P:v" opt ; do
+    while getopts "n:f:d:p:r:P:v" opt ; do
 	case $opt in
+	    n) GUEST_HOSTNAME=$OPTARG;;
 	    f) fcdistro=$OPTARG;;
 	    d) pldistro=$OPTARG;;
 	    p) personality=$OPTARG;;
-	    n) GUEST_HOSTNAME=$OPTARG;;
 	    r) REPO_URL=$OPTARG;;
 	    P) PREINSTALLED=$OPTARG;;
 	    v) VERBOSE=true; set -x;;
@@ -956,14 +941,29 @@ function main () {
     # check we've exhausted the arguments
     [[ -n "$@" ]] && usage
 
+    # BUILD_MODE is true unless we specified a hostname
+    [ -n "$GUEST_HOSTNAME" ] || BUILD_MODE=true
+
+    # set default values
     [ -z "$fcdistro" ] && fcdistro=$DEFAULT_FCDISTRO
     [ -z "$pldistro" ] && pldistro=$DEFAULT_PLDISTRO
     [ -z "$personality" ] && personality=$DEFAULT_PERSONALITY
     
+    # the set of preinstalled packages - depends on mode
+    if [ -z "$PREINSTALLED"] ; then
+	if [ -n "$BUILD_MODE" ] ; then
+	    PREINSTALLED=devel.pkgs
+	else
+	    PREINSTALLED=runtime.pkgs
+	fi
+    fi
+
     if [ -n "$BUILD_MODE" ] ; then
+	# we can now set GUEST_HOSTNAME safely
         [ -z "$GUEST_HOSTNAME" ] && GUEST_HOSTNAME=$lxc
     else
-	[[ -z "$GUEST_HOSTNAME" ]] && usage
+	# as this command can be used in other contexts, not specifying
+	# a repo is considered a warning
 	# use -r none to get rid of this warning
 	if [ "$REPO_URL" == "none" ] ; then
 	    REPO_URL=""
@@ -989,8 +989,6 @@ function main () {
     # (build mode relies entirely on dhcp on the private subnet)
     if [ -z "$BUILD_MODE" ] ; then
 
-        [[ -z "GUEST_HOSTNAME" ]] && usage
-       
 	create_bridge_if_needed
 
 	GUEST_IP=$(gethostbyname $GUEST_HOSTNAME)
