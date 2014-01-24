@@ -44,6 +44,8 @@ fi
 ####################
 # assuming vm runs in UTC
 DATE=$(date +'%Y.%m.%d')
+BUILD_BEG=$(date +'%H:%M')
+BUILD_BEG_S=$(date +'%s')
 
 # still using /vservers for legacy reasons
 # as far as the build & test infra, we could adopt a new name
@@ -180,12 +182,15 @@ function success () {
     summary $LOG | webpublish_append_stdin_to_file $WEBLOG
     if [ -n "$DO_TEST" ] ; then
 	short_message="PASS"
+	ext="pass"
+	if [ -n "$IGNORED" ] ; then short_message="PASS/WARN"; ext="warn"; fi
 	( \
 	    echo "Successfully built and tested" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
 	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
 	    echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
-	    ) | webpublish_cp_stdin_to_file $WEBBASE.pass
+	    [ -n "$IGNORED" ] && echo "WARNING: some tests steps failed but were ignored - see trace file" ; \
+	    ) | webpublish_cp_stdin_to_file $WEBBASE.$ext
 	webpublish rm -f $WEBBASE.pkg-ok $WEBBASE.ko
     else
 	short_message="PKGOK"
@@ -196,6 +201,8 @@ function success () {
 	    ) | webpublish_cp_stdin_to_file $WEBBASE.pkg-ok
 	webpublish rm -f $WEBBASE.ko
     fi
+    BUILD_END=$(date +'%H:%M')
+    BUILD_END_S=$(date +'%s')
     if [ -n "$MAILTO" ] ; then
 	( \
 	    echo "Subject: $short_message ${BASE} ${MAIL_SUBJECT}" ; \
@@ -203,8 +210,10 @@ function success () {
 	    echo "$PLDISTRO ($BASE) build for $FCDISTRO completed on $(date)" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
 	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
-            [ -n "$DO_TEST" ] && echo "and complete test logs at   $WEBBASE_URL/testlogs" ) \
-	    | sendmail $MAILTO
+            [ -n "$DO_TEST" ] && echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
+	    [ -n "$IGNORED" ] && echo "WARNING: some tests steps failed but were ignored - see trace file" ; \
+	    echo "BUILD TIME: begin $BUILD_BEG -- end $BUILD_END -- duration $(($BUILD_END_S-$BUILD_BEG_S))" ; \
+	    ) | sendmail $MAILTO
     fi
     # XXX For some reason, we haven't been getting this email for successful builds. If this sleep
     # doesn't fix the problem, I'll remove it -- Sapan.
@@ -302,10 +311,17 @@ function run_log () {
     # invoke test on testbox - pass url and build url - so the tests can use vtest-init-lxc.sh
     run_log_env="-p $PERSONALITY -d $PLDISTRO -f $FCDISTRO"
 
-    # need to proceed despite of set -e
-    success=true
-    # passing the build_scm_url should not be needed anymore
-    ssh 2>&1 -n ${testmaster_ssh} ${testdir}/run_log --build ${BUILD_SCM_URL} --url ${url} $run_log_env $RUN_LOG_EXTRAS $VERBOSE --all || success=
+    # temporarily turn off set -e
+    set +e
+    ssh 2>&1 -n ${testmaster_ssh} ${testdir}/run_log --build ${BUILD_SCM_URL} --url ${url} $run_log_env $RUN_LOG_EXTRAS $VERBOSE --all; retcod=$?
+    set -e
+    
+    # interpret retcod of TestMain.py; 2 means there were ignored steps that failed
+    case $retcod in
+	0) success=true; IGNORED="" ;;
+	2) success=true; IGNORED=true ;;
+	*) success="" ;; 
+    esac
 
     # gather logs in the build vm
     mkdir -p $(rootdir $BASE)/build/testlogs
