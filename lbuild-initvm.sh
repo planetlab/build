@@ -13,6 +13,10 @@ BUILD_DIR=$(pwd)
 # pkgs parsing utilities
 export PATH=$(dirname $0):$PATH
 
+# old guests have e.g. mount in /bin but this is no longer part of 
+# the standard PATH in recent hosts after usrmove, so let's keep it simple
+export PATH=$PATH:/bin:/sbin
+
 . build.common
 
 DEFAULT_FCDISTRO=f20
@@ -732,7 +736,7 @@ function post_install () {
 	post_install_build $lxc $personality
 	lxc_start $lxc
 	# manually run dhclient in guest - somehow this network won't start on its own
-	virsh -c lxc:/// lxc-enter-namespace $lxc $(bin_in_container $lxc dhclient) $VIF_GUEST
+	virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "dhclient $VIF_GUEST"
     else
 	post_install_myplc $lxc $personality
 	lxc_start $lxc

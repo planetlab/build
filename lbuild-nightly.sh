@@ -3,6 +3,10 @@
 COMMANDPATH=$0
 COMMAND=$(basename $0)
 
+# old guests have e.g. mount in /bin but this is no longer part of 
+# the standard PATH in recent hosts after usrmove, so let's keep it simple
+export PATH=$PATH:/bin:/sbin
+
 # default values, tunable with command-line options
 DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=planetlab
@@ -214,22 +218,6 @@ function in_root_context () {
     rpm -q libvirt > /dev/null 
 }
 
-# copied from build.common because this cannot have deps. 
-# (when pulled from infrastructure/scripts/lbuild-nightly.sh)
-# old guests have e.g. mount in /bin but this is no longer part of 
-# the standard PATH in recent hosts after usrmove, so let's keep it simple
-export PATH=$PATH:/bin:/sbin
-
-# would be much simpler if enter-lxc-namespace was looking along a PATH...
-function bin_in_container () {
-    lxc=$1; shift
-    binary=$1; shift
-    for path in $(echo $PATH | sed -e 's,:, ,g' ); do
-	[ -f /vservers/$lxc/$path/$binary ] && { echo $path/$binary; return; }
-    done
-    echo bin_in_container_cannot_find_$binary
-}
-
 # run in the vm - do not manage success/failure, will be done from the root ctx
 function build () {
     set -x
@@ -304,7 +292,7 @@ function run_log () {
     ssh -n ${testmaster_ssh} rm -rf ${testdir} ${testdir}.git
 
     # check it out in the build
-    virsh -c lxc:/// lxc-enter-namespace $BASE -- $(bin_in_container $BASE make) -C /build tests-module
+    virsh -c lxc:/// lxc-enter-namespace $BASE /bin/bash -c "make -C /build tests-module"
     
     # push it onto the testmaster - just the 'system' subdir is enough
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/tests/system/ ${testmaster_ssh}:${BASE}
@@ -632,11 +620,11 @@ function main () {
 	    virsh -c lxc:/// start ${BASE} || :
 	    # retrieve environment from the previous run
 	    FCDISTRO=$(virsh -c lxc:/// lxc-enter-namespace ${BASE} /build/getdistroname.sh)
-	    BUILD_SCM_URL=$(virsh -c lxc:/// lxc-enter-namespace ${BASE} -- $(bin_in_container $BASE make) --no-print-directory -C /build stage1=skip +build-GITPATH)
+	    BUILD_SCM_URL=$(virsh -c lxc:/// lxc-enter-namespace ${BASE} /bin/bash -c "make --no-print-directory -C /build stage1=skip +build-GITPATH")
 	    # for efficiency, crop everything in one make run
 	    tmp=/tmp/${BASE}-env.sh
-	    virsh -c lxc:/// lxc-enter-namespace ${BASE} -- $(bin_in_container $BASE make) --no-print-directory -C /build stage1=skip \
-		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILTO ++WEBPATH ++TESTBUILDURL ++WEBROOT > $tmp
+	    virsh -c lxc:/// lxc-enter-namespace ${BASE} /bin/bash -c "make --no-print-directory -C /build stage1=skip \
+		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILTO ++WEBPATH ++TESTBUILDURL ++WEBROOT" > $tmp
 	    . $tmp
 	    rm -f $tmp
 	    # update build
@@ -721,7 +709,7 @@ function main () {
 	    cp $COMMANDPATH $(rootdir ${BASE})/build/
 
 	    # invoke this command in the vm for building (-T)
-	    virsh -c lxc:/// lxc-enter-namespace ${BASE} $(bin_in_container $BASE chmod) +x /build/$COMMAND
+	    virsh -c lxc:/// lxc-enter-namespace ${BASE} /bin/bash -c "chmod +x /build/$COMMAND"
 	    virsh -c lxc:/// lxc-enter-namespace ${BASE} /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
 	fi
 
