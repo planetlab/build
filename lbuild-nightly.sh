@@ -320,8 +320,8 @@ function run_log () {
     echo "received from run_log" $retcod
     case $retcod in
 	0) success=true; IGNORED="" ;;
-	1) success=true; IGNORED=true ;;
-	*) success="" ;; 
+	2) success=true; IGNORED=true ;;
+	*) success="";   IGNORED="" ;; 
     esac
 
     # gather logs in the build vm
