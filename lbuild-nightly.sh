@@ -139,6 +139,17 @@ function webpublish_rsync_files () {
     rsync --archive $VERBOSE "$@" root@${WEBHOST}:"$remote" ;
 }
 
+function pretty_duration () {
+    total_seconds=$1; shift
+
+    seconds=$(($total_seconds%60))
+    total_minutes=$(($total_seconds/60))
+    minutes=$(($total_minutes%60))
+    hours=$(($total_minutes/60))
+    
+    printf "%02d:%02d:%02d" $hours $minutes $seconds
+}
+
 # Notify recipient of failure or success, manage various stamps 
 function failure() {
     set -x
@@ -212,7 +223,7 @@ function success () {
 	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
             [ -n "$DO_TEST" ] && echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
 	    [ -n "$IGNORED" ] && echo "WARNING: some tests steps failed but were ignored - see trace file" ; \
-	    echo "BUILD TIME: begin $BUILD_BEG -- end $BUILD_END -- duration $(($BUILD_END_S-$BUILD_BEG_S))" ; \
+	    echo "BUILD TIME: begin $BUILD_BEG -- end $BUILD_END -- duration $(pretty_duration $(($BUILD_END_S-$BUILD_BEG_S)))" ; \
 	    ) | sendmail $MAILTO
     fi
     # XXX For some reason, we haven't been getting this email for successful builds. If this sleep
