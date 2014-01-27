@@ -324,17 +324,17 @@ function run_log () {
 
     # temporarily turn off set -e
     set +e
-    ssh 2>&1 -n ${testmaster_ssh} ${testdir}/run_log --build ${BUILD_SCM_URL} --url ${url} $run_log_env $RUN_LOG_EXTRAS $VERBOSE --all; retcod=$?
-    set -e
-    
+    ssh 2>&1 ${testmaster_ssh} ${testdir}/run_log --build ${BUILD_SCM_URL} --url ${url} $run_log_env $RUN_LOG_EXTRAS $VERBOSE --all; retcod=$?
+
     # interpret retcod of TestMain.py; 2 means there were ignored steps that failed
-    echo "received from run_log" $retcod
+    echo "retcod from run_log" $retcod
     case $retcod in
 	0) success=true; IGNORED="" ;;
 	2) success=true; IGNORED=true ;;
 	*) success="";   IGNORED="" ;; 
     esac
 
+    set -e
     # gather logs in the build vm
     mkdir -p $(rootdir $BASE)/build/testlogs
     rsync --verbose --archive ${testmaster_ssh}:$BASE/logs/ $(rootdir $BASE)/build/testlogs
