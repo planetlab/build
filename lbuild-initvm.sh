@@ -554,7 +554,7 @@ function setup_lxc() {
     cat /root/.ssh/id_rsa.pub >> $lxc_root/root/.ssh/authorized_keys
     
     # don't keep the input xml, this can be retrieved at all times with virsh dumpxml
-    config_xml=$tmp/$lxc.xml
+    config_xml=/tmp/$lxc.xml
     ( [ -n "$BUILD_MODE" ] && write_lxc_xml_build $lxc || write_lxc_xml_test $lxc ) > $config_xml
     
     # define lxc container for libvirt
@@ -758,50 +758,12 @@ function post_install_build () {
 ### From myplc-devel-native.spec
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
     cat << EOF | chroot $lxc_root bash -x
-    # set up /dev/loop* in lxc
-    for i in \$(seq 0 255) ; do
-	/bin/mknod -m 640 /dev/loop\$i b 7 \$i
-    done
-    
-    # create symlink for /dev/fd
-    [ ! -e "/dev/fd" ] && /bin/ln -s /proc/self/fd /dev/fd
-
-    # modify /etc/rpm/macros to not use /sbin/new-kernel-pkg
-    /bin/sed -i 's,/sbin/new-kernel-pkg:,,' /etc/rpm/macros
-    if [ -h "/sbin/new-kernel-pkg" ] ; then
-	filename=\$(/bin/readlink -f /sbin/new-kernel-pkg)
-	if [ "\$filename" == "/sbin/true" ] ; then
-		/bin/echo "WARNING: /sbin/new-kernel-pkg symlinked to /sbin/true"
-		/bin/echo "\tmost likely /etc/rpm/macros has /sbin/new-kernel-pkg declared in _netsharedpath."
-		/bin/echo "\tPlease remove /sbin/new-kernel-pkg from _netsharedpath and reintall mkinitrd."
-		exit 1
-	fi
-    fi
     
     # customize root's prompt
     /bin/cat << PROFILE > /root/.profile
 export PS1="[$lxc] \\w # "
 PROFILE
 
-    uid=2000
-    gid=2000
-    
-    # add a "build" user to the system
-    builduser=\$(grep "^build:" /etc/passwd | wc -l)
-    if [ \$builduser -eq 0 ] ; then
-	groupadd -o -g \$gid build;
-	useradd -o -c 'Automated Build' -u \$uid -g \$gid -n -M -s /bin/bash build;
-    fi
-
-# Allow build user to build certain RPMs as root
-    if [ -f /etc/sudoers ] ; then
-	buildsudo=\$(grep "^build.*ALL=(ALL).*NOPASSWD:.*ALL"  /etc/sudoers | wc -l)
-	if [ \$buildsudo -eq 0 ] ; then
-	    echo "build   ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
-	fi
-        sed -i 's,^Defaults.*requiretty,#Defaults requiretty,' /etc/sudoers
-    fi
-#
 EOF
 	
 }
@@ -820,14 +782,8 @@ function post_install_myplc  () {
     # create /etc/sysconfig/network if missing
     [ -f /etc/sysconfig/network ] || /bin/echo NETWORKING=yes > /etc/sysconfig/network
 
-    # create symlink for /dev/fd
-    [ ! -e "/dev/fd" ] && /bin/ln -s /proc/self/fd /dev/fd
-
     # turn off regular crond, as plc invokes plc_crond
     /sbin/chkconfig crond off
-
-    # take care of loginuid in /etc/pam.d 
-    /bin/sed -i "s,#*\(.*loginuid.*\),#\1," /etc/pam.d/*
 
     # customize root's prompt
     /bin/cat << PROFILE > /root/.profile
