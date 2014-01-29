@@ -24,22 +24,11 @@ DEFAULT_TESTCONFIG="default"
 RUN_LOG_EXTRAS=""
 
 # for publishing results, and the tests settings
-x=$(hostname)
-y=$(hostname|sed -e s,inria,,)
-# INRIA defaults
-if [ "$x" != "$y" ] ; then
-    DEFAULT_WEBPATH="/build/@PLDISTRO@/"
-    DEFAULT_TESTBUILDURL="http://build.onelab.eu/"
-    # this is where the buildurl is pointing towards
-    DEFAULT_WEBROOT="/build/"
-    DEFAULT_TESTMASTER="testmaster.onelab.eu"
-else
-    DEFAULT_WEBPATH="/build/@FCDISTRO@/@PLDISTRO@/"
-    DEFAULT_TESTBUILDURL="http://build.planet-lab.org/"
-    # this is where the buildurl is pointing towards
-    DEFAULT_WEBROOT="/build/"
-    DEFAULT_TESTMASTER="manager.test.planet-lab.org"
-fi    
+DEFAULT_WEBPATH="/build/@PLDISTRO@/"
+DEFAULT_TESTBUILDURL="http://build.onelab.eu/"
+# this is where the buildurl is pointing towards
+DEFAULT_WEBROOT="/build/"
+DEFAULT_TESTMASTER="testmaster.onelab.eu"
 
 ####################
 # assuming vm runs in UTC
