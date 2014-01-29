@@ -3,6 +3,9 @@
 COMMANDPATH=$0
 COMMAND=$(basename $0)
 
+# close stdin, as with ubuntu and debian VMs this script tends to hang and wait for input ..
+0<&-
+
 # old guests have e.g. mount in /bin but this is no longer part of 
 # the standard PATH in recent hosts after usrmove, so let's keep it simple
 export PATH=$PATH:/bin:/sbin
