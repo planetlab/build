@@ -234,6 +234,7 @@ function in_root_context () {
 function build () {
     set -x
     set -e
+    trap failure ERR INT
 
     echo -n "============================== Starting $COMMAND:build on "
     date
@@ -311,13 +312,16 @@ function run_log () {
     # toss the build in the bargain, so the tests don't need to mess with extracting it
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/build ${testmaster_ssh}:${BASE}/
 
-    # invoke test on testbox - pass url and build url - so the tests can use vtest-init-lxc.sh
+    # invoke test on testbox - pass url and build url - so the tests can use lbuild-initvm.sh
     run_log_env="-p $PERSONALITY -d $PLDISTRO -f $FCDISTRO"
 
     # temporarily turn off set -e
     set +e
+    trap - ERR INT
     ssh 2>&1 ${testmaster_ssh} ${testdir}/run_log --build ${BUILD_SCM_URL} --url ${url} $run_log_env $RUN_LOG_EXTRAS $VERBOSE --all; retcod=$?
 
+    set -e
+    trap failure ERR INT
     # interpret retcod of TestMain.py; 2 means there were ignored steps that failed
     echo "retcod from run_log" $retcod
     case $retcod in
@@ -326,7 +330,6 @@ function run_log () {
 	*) success="";   IGNORED="" ;; 
     esac
 
-    set -e
     # gather logs in the build vm
     mkdir -p $(rootdir $BASE)/build/testlogs
     rsync --verbose --archive ${testmaster_ssh}:$BASE/logs/ $(rootdir $BASE)/build/testlogs
@@ -482,6 +485,7 @@ function usage () {
 function main () {
 
     set -e
+    trap failure ERR INT
 
     # parse arguments
     MAKEVARS=()
@@ -735,6 +739,7 @@ function main () {
 
 	# publish to the web so run_log can find them
 	set +e
+	trap - ERR INT
 	webpublish rm -rf $WEBPATH/$BASE 
 	# guess if we've been doing any debian-related build
 	if [ ! -f $(rootdir $BASE)/etc/debian_version  ] ; then
@@ -753,6 +758,7 @@ function main () {
 	release=$(rootdir $BASE)/build/myplc-release
 	[ -f $release ] && webpublish_rsync_files $WEBPATH/$BASE $release
 	set -e
+	trap failure ERR INT
 
         # create yum repo and sign packages.
 	if [ -n "$SIGNYUMREPO" ] ; then
