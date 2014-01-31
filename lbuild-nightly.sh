@@ -234,7 +234,6 @@ function in_root_context () {
 function build () {
     set -x
     set -e
-    trap failure ERR INT
 
     echo -n "============================== Starting $COMMAND:build on "
     date
