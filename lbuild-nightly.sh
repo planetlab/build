@@ -146,8 +146,8 @@ function pretty_duration () {
 function failure() {
     set -x
     # early stage ? - let's not create /build/@PLDISTRO@
-    if test -z "$WEBLOG" ; then
-	WEBHOST=$(hostname)
+    if  [ -z "$WEBLOG" ] ; then
+	WEBHOST=localhost
 	WEBPATH=/tmp
 	WEBBASE=/tmp/lbuild-early-$(date +%Y-%m-%d)
 	WEBLOG=/tmp/lbuild-early-$(date +%Y-%m-%d).log.txt
@@ -175,8 +175,8 @@ function failure() {
 function success () {
     set -x
     # early stage ? - let's not create /build/@PLDISTRO@
-    if test -z "$WEBLOG" ; then
-	WEBHOST=$(hostname)
+    if [ -z "$WEBLOG" ] ; then
+	WEBHOST=localhost
 	WEBPATH=/tmp
 	WEBLOG=/tmp/lbuild-early-$(date +%Y-%m-%d).log.txt
     fi
