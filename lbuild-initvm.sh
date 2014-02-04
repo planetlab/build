@@ -41,6 +41,7 @@ for line in file("/proc/net/dev"):
     if ifname.find("lo")==0: continue
     if ifname.find("br")==0: continue
     if ifname.find("virbr")==0: continue
+    if ifname.find("veth")==0: continue
     if ifname.find("tap")==0: continue
     print ifname
 EOF
@@ -955,7 +956,7 @@ function main () {
 	# use same NETMASK as bridge interface br0
 	MASKLEN=$(ip addr show $PUBLIC_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
         NETMASK=$(masklen_to_netmask $MASKLEN)
-        GATEWAY=$(ip route show | grep default | awk '{print $3}')
+        GATEWAY=$(ip route show | grep default | awk '{print $3}' | head -1)
         VIF_HOST="i$(echo $GUEST_HOSTNAME | cut -d. -f1)"
     fi
 
