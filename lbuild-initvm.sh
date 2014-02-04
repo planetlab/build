@@ -505,6 +505,7 @@ EOF
 
 function write_guest_interfaces_test () {
     cat <<EOF
+auto $VIF_GUEST
 iface $VIF_GUEST inet static
 address $GUEST_IP
 netmask $NETMASK
