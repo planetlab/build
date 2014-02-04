@@ -25,7 +25,8 @@ function pl_getDistro() {
 	case $(cat /etc/debian_version) in
 	    6.*) distro=squeeze ;;
 	    7.*) distro=wheezy  ;;
-	    8.*) distro=jessie  ;;
+	    # might be that I'm getting 'jessie'sid' just because it's still testing..
+	    8.*|jessie*) distro=jessie  ;;
 	    *)	 distro=unknown.debian.in.build.common ;;
 	esac
     fi
