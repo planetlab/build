@@ -815,10 +815,10 @@ function wait_for_ssh () {
   
     echo network in guest is up, waiting for ssh...
 
-    #wait max 5 min for sshd to start 
+    #wait max 2 min for sshd to start 
     ssh_up=""
-    stop_time=$(($(date +%s) + 300))
     current_time=$(date +%s)
+    stop_time=$(($current_time + 120))
     
     counter=1
     while [ "$current_time" -lt "$stop_time" ] ; do
