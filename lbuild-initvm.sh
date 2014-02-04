@@ -174,7 +174,7 @@ function package_method () {
     fcdistro=$1; shift
     case $fcdistro in
 	f[0-9]*|centos[0-9]*|sl[0-9]*) echo yum ;;
-	squeeze|wheezy|oneiric|precise|quantal|raring|saucy) echo debootstrap ;;
+	squeeze|wheezy|jessie|oneiric|precise|quantal|raring|saucy) echo debootstrap ;;
 	*) echo Unknown distro $fcdistro ;;
     esac 
 }
@@ -473,7 +473,7 @@ EOF
 function debian_mirror () {
     fcdistro=$1; shift
     case $fcdistro in
-	squeeze|wheezy) 
+	squeeze|wheezy|jessie) 
 	    echo http://ftp2.fr.debian.org/debian/ ;;
 	oneiric|precise|quantal|raring|saucy) 
 	    echo http://mir1.ovh.net/ubuntu/ubuntu/ ;;

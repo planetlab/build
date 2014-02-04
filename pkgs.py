@@ -38,7 +38,7 @@ known_fcdistros = [ 'centos5','centos6',
                     'f8', 'f10','f12', 'f14', 'f16', 'f18','f20',
                     'sl6', 
                     # debians
-                    'squeeze','wheezy',
+                    'squeeze','wheezy','jessie',
                     # ubuntus
                     'oneiric', 'precise', 'quantal', 'raring', 'saucy' ]
 default_pldistro='onelab'

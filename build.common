@@ -24,8 +24,9 @@ function pl_getDistro() {
     elif [ -f /etc/debian_version ] ; then
 	case $(cat /etc/debian_version) in
 	    6.*) distro=squeeze ;;
-	    7.*)   distro=wheezy  ;;
-	    *)	   distro=unknown.debian.in.build.common ;;
+	    7.*) distro=wheezy  ;;
+	    8.*) distro=jessie  ;;
+	    *)	 distro=unknown.debian.in.build.common ;;
 	esac
     fi
     [ -z "$distro" ] && { echo "build.common.pl_getDistro-unknown"; exit 1; }
@@ -64,7 +65,7 @@ function pl_getReleaseName () {
 	[Ss]L*)
 	    releasename=sl$release
 	    ;;
-	squeeze|wheezy|oneiric|precise|quantal|raring|saucy)
+	squeeze|wheezy|jessie|oneiric|precise|quantal|raring|saucy)
 	    releasename=$distro
 	    ;;
 	*)
