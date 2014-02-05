@@ -559,7 +559,9 @@ function setup_lxc() {
     # grant ssh access from host to guest
     mkdir $lxc_root/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $lxc_root/root/.ssh/authorized_keys
-    
+    chmod 700 $lxc_root/root/.ssh
+    chmod 600 $lxc_root/root/.ssh/authorized_keys
+
     # don't keep the input xml, this can be retrieved at all times with virsh dumpxml
     config_xml=/tmp/$lxc.xml
     ( [ -n "$BUILD_MODE" ] && write_lxc_xml_build $lxc || write_lxc_xml_test $lxc ) > $config_xml
