@@ -493,8 +493,8 @@ function debian_install () {
     mirror=$(debian_mirror $fcdistro)
     debootstrap --arch $arch $fcdistro $lxc_root $mirror
     # just like with fedora we ensure a few packages get installed as well
-    virsh -c lxc:/// $lxc lxc-enter-namespace /bin/bash -c "apt-get update"
-    virsh -c lxc:/// $lxc lxc-enter-namespace /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
+    virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get update"
+    virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
 }
 
 function debian_configure () {
