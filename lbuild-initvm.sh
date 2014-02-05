@@ -499,6 +499,11 @@ function debian_install () {
     #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
     chroot $lxc_root apt-get update
     chroot $lxc_root apt-get -y install $DEBIAN_PREINSTALLED
+    # configure hostname
+    cat <<EOF > ${lxc_root}/etc/hostname
+$GUEST_HOSTNAME
+EOF
+    
 }
 
 function debian_configure () {
