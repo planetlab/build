@@ -1,4 +1,5 @@
 #!/bin/bash
+# -*-shell-*-
 
 # close stdin, as with ubuntu and debian VMs this script tends to hang and wait for input ..
 0<&-
@@ -308,7 +309,7 @@ function fedora_download() {
 
     YUM="yum --installroot=$INSTALL_ROOT --nogpgcheck -y"
     echo "$YUM install $FEDORA_PREINSTALLED"
-    $YUM install $PKG_LIST || { echo "Failed to download rootfs, aborting." ; return 1; }
+    $YUM install $FEDORA_PREINSTALLED || { echo "Failed to download rootfs, aborting." ; return 1; }
 
     mv "$INSTALL_ROOT" "$cache/rootfs"
     echo "Download complete."
@@ -493,8 +494,11 @@ function debian_install () {
     mirror=$(debian_mirror $fcdistro)
     debootstrap --arch $arch $fcdistro $lxc_root $mirror
     # just like with fedora we ensure a few packages get installed as well
-    virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get update"
-    virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
+    # not started yet
+    #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get update"
+    #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
+    chroot $lxc_root apt-get update
+    chroot $lxc_root apt-get -y install $DEBIAN_PREINSTALLED
 }
 
 function debian_configure () {
@@ -716,15 +720,10 @@ function devel_or_vtest_tools () {
 	        # also adding a link to updates sounds about right
 		( cd /vservers/$lxc/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
 	    fi
-	    # already done earlier - chroot $lxc_root apt-get update
 	    for package in $packages ; do
-# xxx also we ignore result for now, not sure if the kind of errors like below
-# truly is serious or not
-#Setting up at (3.1.13-2ubuntu2) ...
-#initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
-#initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
-#start: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
-	        virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get install -y $package" || :
+		# container not started yet
+	        #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get install -y $package" || :
+		chroot $lxc_root apt-get install -y $package || :
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
@@ -741,12 +740,12 @@ function post_install () {
     personality=$1; shift
     if [ -n "$BUILD_MODE" ] ; then
 	post_install_build $lxc $personality
-	lxc_start $lxc
+	virsh -c lxc:/// start $lxc
 	# manually run dhclient in guest - somehow this network won't start on its own
 	virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "dhclient $VIF_GUEST"
     else
 	post_install_myplc $lxc $personality
-	lxc_start $lxc
+	virsh -c lxc:/// start $lxc
 # it sounds like we don't need ssh per se any more
 # it still makes sense to wait for network readiness though
 # some day maybe...
@@ -801,19 +800,6 @@ export PS1="[$lxc] \\w # "
 PROFILE
 
 EOF
-}
-
-function lxc_start() {
-
-    set -x
-    set -e
-    #trap failure ERR INT
-
-    lxc=$1; shift
-  
-    virsh -c lxc:/// start $lxc
-  
-    return 0
 }
 
 function wait_for_ssh () {
@@ -973,6 +959,7 @@ function main () {
 
     devel_or_vtest_tools $lxc $fcdistro $pldistro $personality
 
+    # container gets started here
     post_install $lxc $personality
     
     echo $COMMAND Done
