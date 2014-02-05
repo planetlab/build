@@ -921,7 +921,7 @@ function main () {
 
     if [ -n "$BUILD_MODE" ] ; then
 	# we can now set GUEST_HOSTNAME safely
-        [ -z "$GUEST_HOSTNAME" ] && GUEST_HOSTNAME=$lxc
+        [ -z "$GUEST_HOSTNAME" ] && GUEST_HOSTNAME=$(echo $lxc | sed -e 's,\.,-,g')
     else
 	# as this command can be used in other contexts, not specifying
 	# a repo is considered a warning
