@@ -1,5 +1,4 @@
 #!/bin/bash
-# -*-shell-*-
 
 # close stdin, as with ubuntu and debian VMs this script tends to hang and wait for input ..
 0<&-
@@ -29,6 +28,10 @@ PUBLIC_BRIDGE=br0
 
 # the network interface name as seen from the container
 VIF_GUEST=eth0
+
+##########
+FEDORA_PREINSTALLED="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
+DEBIAN_PREINSTALLED="openssh-server openssh-client"
 
 ##############################
 ## stolen from tests/system/template-qemu/qemu-bridge-init
@@ -304,8 +307,7 @@ function fedora_download() {
     # this patch undone, like we have in place on our f14 boxes (our f14 boxes need a f18-like rpm)
 
     YUM="yum --installroot=$INSTALL_ROOT --nogpgcheck -y"
-    PKG_LIST="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
-    echo "$YUM install $PKG_LIST"
+    echo "$YUM install $FEDORA_PREINSTALLED"
     $YUM install $PKG_LIST || { echo "Failed to download rootfs, aborting." ; return 1; }
 
     mv "$INSTALL_ROOT" "$cache/rootfs"
@@ -485,10 +487,14 @@ function debian_mirror () {
 function debian_install () {
     set -e
     set -x
+    lxc=$1; shift
     mkdir -p $lxc_root
     arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
     debootstrap --arch $arch $fcdistro $lxc_root $mirror
+    # just like with fedora we ensure a few packages get installed as well
+    virsh -c lxc:/// $lxc lxc-enter-namespace /bin/bash -c "apt-get update"
+    virsh -c lxc:/// $lxc lxc-enter-namespace /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
 }
 
 function debian_configure () {
@@ -533,7 +539,7 @@ function setup_lxc() {
 	    fedora_configure || { echo "failed to configure fedora for a container"; exit 1 ; }
 	    ;;
 	debootstrap)
-	    debian_install || { echo "failed to install debian/ubuntu root image"; exit 1 ; }
+	    debian_install $lxc || { echo "failed to install debian/ubuntu root image"; exit 1 ; }
 	    debian_configure || { echo "failed to configure debian/ubuntu for a container"; exit 1 ; }
 	    ;;
 	*)
@@ -708,17 +714,15 @@ function devel_or_vtest_tools () {
 	        # also adding a link to updates sounds about right
 		( cd /vservers/$lxc/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
 	    fi
-	    chroot $lxc_root apt-get update
+	    # already done earlier - chroot $lxc_root apt-get update
 	    for package in $packages ; do
-		# close stdin in an attempt to avoid this hanging
-		# xxx also we ignore result for now, not sure if the kind of errors like below
-		# truly is serious or not
+# xxx also we ignore result for now, not sure if the kind of errors like below
+# truly is serious or not
 #Setting up at (3.1.13-2ubuntu2) ...
 #initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
 #initctl: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
 #start: Unable to connect to Upstart: Failed to connect to socket /com/ubuntu/upstart: Connection refused
-
-	        chroot $lxc_root apt-get install -y $package < /dev/null || :
+	        virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get install -y $package" || :
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
@@ -741,6 +745,9 @@ function post_install () {
     else
 	post_install_myplc $lxc $personality
 	lxc_start $lxc
+# it sounds like we don't need ssh per se any more
+# it still makes sense to wait for network readiness though
+# some day maybe...
 	wait_for_ssh $lxc
     fi
     # setup localtime from the host
