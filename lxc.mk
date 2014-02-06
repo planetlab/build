@@ -137,7 +137,7 @@ IN_NODEIMAGE += fprobe-ulog
 
 #################### using our own libvirt on f18, and the stock version later on
 local_libvirt=false
-ifeq "$(DISTRONAME)" "f18"
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20)"
 local_libvirt=true
 endif
 
