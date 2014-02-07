@@ -12,7 +12,14 @@ nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@mast
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.planet-lab.org/codemux.git@codemux-0.1-15
 fprobe-ulog-GITPATH             := git://git.planet-lab.org/fprobe-ulog.git@fprobe-ulog-1.1.4-3
+# tmp - hopefully we can get to use the same version on both 
+ifeq "$(DISTRONAME)" "f18"
+# this is a tag
 libvirt-GITPATH                 := git://git.onelab.eu/libvirt.git@libvirt-1.0.4-3
+# this is an ongoing branch
+else
+libvirt-GITPATH			:= git://git.onelab.eu/libvirt.git@1.2.1
+endif
 pf2slice-SVNPATH		:= http://svn.planet-lab.org/svn/pf2slice/tags/pf2slice-1.0-2
 mom-GITPATH                     := git://git.planet-lab.org/mom.git@mom-2.3-5
 inotify-tools-GITPATH		:= git://git.planet-lab.org/inotify-tools.git@inotify-tools-3.13-2
