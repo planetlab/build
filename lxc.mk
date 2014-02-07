@@ -153,6 +153,9 @@ libvirt-STOCK-DEVEL-RPMS += xhtml1-dtds gettext gettext-devel libtasn1-devel gnu
 libvirt-STOCK-DEVEL-RPMS += libattr-devel augeas libpciaccess-devel yajl-devel 
 libvirt-STOCK-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel 
 libvirt-STOCK-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
+# for 1.2.1 - first seen on f20, not sure for the other ones
+libvirt-STOCK-DEVEL-RPMS += libblkid-devel glusterfs-api-devel glusterfs-devel
+
 ifeq "$(DISTRONAME)" "f16"
 libvirt-STOCK-DEVEL-RPMS += libnl-devel libudev-devel
 endif
