@@ -19,6 +19,7 @@ libvirt-GITPATH                 := git://git.onelab.eu/libvirt.git@libvirt-1.0.4
 # this is an ongoing branch
 else
 libvirt-GITPATH			:= git://git.onelab.eu/libvirt.git@1.2.1
+libvirt-python-GITPATH                 := git://git.onelab.eu/libvirt-python.git@1.2.1
 endif
 pf2slice-SVNPATH		:= http://svn.planet-lab.org/svn/pf2slice/tags/pf2slice-1.0-2
 mom-GITPATH                     := git://git.planet-lab.org/mom.git@mom-2.3-5
