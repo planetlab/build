@@ -137,9 +137,14 @@ IN_NODEIMAGE += fprobe-ulog
 
 #################### using our own libvirt on f18, and the stock version later on
 local_libvirt=false
+separate_libvirt_python=false
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20)"
 local_libvirt=true
+ifeq "$(DISTRONAME)" "f20"
+separate_libvirt_python=true
 endif
+endif
+
 
 ifeq "$(local_libvirt)" "true"
 #
@@ -168,6 +173,19 @@ libvirt-RPMFLAGS :=	--define 'packager PlanetLab'
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
+endif
+
+ifeq "$(separate_libvirt_python)" "true"
+#
+## libvirt-python
+#
+libvirt-python-MODULES := libvirt-python
+libvirt-python-SPEC    := libvirt-python.spec
+libvirt-python-BUILD-FROM-SRPM := yes
+libvirt-python-RPMFLAGS :=     --define 'packager PlanetLab'
+ALL += libvirt-python
+IN_NODEREPO += libvirt-python
+IN_NODEIMAGE += libvirt-python
 endif
 
 #
