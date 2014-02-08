@@ -724,6 +724,8 @@ function devel_or_vtest_tools () {
 		( cd /vservers/$lxc/etc/apt ; head -1 sources.list | sed -e s,main,universe, > sources.list.d/universe.list )
 	        # also adding a link to updates sounds about right
 		( cd /vservers/$lxc/etc/apt ; head -1 sources.list | sed -e 's, main,-updates main,' > sources.list.d/updates.list )
+		# tell apt about the changes
+		chroot /vservers/$lxc apt-get update
 	    fi
 	    for package in $packages ; do
 		# container not started yet
