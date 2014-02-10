@@ -970,6 +970,8 @@ function main () {
     post_install $lxc $personality
     
     echo $COMMAND Done
+
+    exit 0
 }
 
 main "$@"
