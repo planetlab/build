@@ -135,7 +135,7 @@ fprobe-ulog-SPEC := fprobe-ulog.spec
 ALL += fprobe-ulog
 IN_NODEIMAGE += fprobe-ulog
 
-#################### using our own libvirt on f18, and the stock version later on
+#################### using our own libvirt on f18 and f20 
 local_libvirt=false
 separate_libvirt_python=false
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20)"
@@ -167,9 +167,8 @@ endif
 # strictly speaking fuse-devel is not required anymore but we might wish to turn fuse back on again in the future
 ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20)"
 libvirt-STOCK-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
-libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 libgcrypt-devel
+libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 libgcrypt-devel netcf-devel
 endif
-libvirt-RPMFLAGS :=	--define 'packager PlanetLab'
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
