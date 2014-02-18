@@ -544,11 +544,15 @@ function setup_lxc() {
     pkg_method=$(package_method $fcdistro)
     case $pkg_method in
 	yum)
-	    fedora_install || { echo "failed to install fedora root image"; exit 1 ; }
+            if [ -z "$IMAGE" ]; then
+                fedora_install ||  { echo "failed to install fedora root image"; exit 1 ; }
+            fi
 	    fedora_configure || { echo "failed to configure fedora for a container"; exit 1 ; }
 	    ;;
 	debootstrap)
-	    debian_install $lxc || { echo "failed to install debian/ubuntu root image"; exit 1 ; }
+            if [ -z "$IMAGE" ]; then
+	        debian_install $lxc || { echo "failed to install debian/ubuntu root image"; exit 1 ; }
+            fi
 	    debian_configure || { echo "failed to configure debian/ubuntu for a container"; exit 1 ; }
 	    ;;
 	*)
@@ -566,7 +570,7 @@ function setup_lxc() {
     [ -f $lxc_root/etc/hosts ] || echo "127.0.0.1 localhost localhost.localdomain" > $lxc_root/etc/hosts
     
     # grant ssh access from host to guest
-    mkdir $lxc_root/root/.ssh
+    mkdir -p $lxc_root/root/.ssh
     cat /root/.ssh/id_rsa.pub >> $lxc_root/root/.ssh/authorized_keys
     chmod 700 $lxc_root/root/.ssh
     chmod 600 $lxc_root/root/.ssh/authorized_keys
@@ -860,6 +864,7 @@ function usage () {
     echo " -r repo-url - used to populate yum.repos.d - required in test mode"
     echo " -P pkgs_file - defines a set of extra packages to install in guest"
     echo "    by default we use devel.pkgs (build mode) or runtime.pkgs (test mode)"
+    echo " -i image - the location of the rootfs"
     echo " -v be verbose"
     exit 1
 }
@@ -875,7 +880,7 @@ function main () {
           exit 1
     fi
 
-    while getopts "n:f:d:p:r:P:v" opt ; do
+    while getopts "n:f:d:p:r:P:i:v" opt ; do
 	case $opt in
 	    n) GUEST_HOSTNAME=$OPTARG;;
 	    f) fcdistro=$OPTARG;;
@@ -883,6 +888,7 @@ function main () {
 	    p) personality=$OPTARG;;
 	    r) REPO_URL=$OPTARG;;
 	    P) PREINSTALLED=$OPTARG;;
+            i) IMAGE=$OPTARG;;
 	    v) VERBOSE=true; set -x;;
 	    *) usage ;;
 	esac
@@ -894,12 +900,21 @@ function main () {
     [[ -z "$@" ]] && usage
     lxc=$1 ; shift
     lxc_root=/vservers/$lxc
+
     # rainchecks
     almost_empty $lxc_root || \
 	{ echo "container $lxc already exists in $lxc_root - exiting" ; exit 1 ; }
     virsh -c lxc:/// domuuid $lxc >& /dev/null && \
 	{ echo "container $lxc already exists in libvirt - exiting" ; exit 1 ; }
     mkdir -p $lxc_root
+
+    # if IMAGE, copy the provided rootfs to lxc_root
+    if [ -n "$IMAGE" ] ; then
+        [ ! -d "$IMAGE" ] && \
+        { echo "$IMAGE rootfs folder does not exist - exiting" ; exit 1 ; }
+        cp -r $IMAGE/* $lxc_root/
+    fi
+
 
     # check we've exhausted the arguments
     [[ -n "$@" ]] && usage
