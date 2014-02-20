@@ -50,7 +50,7 @@ myplc-GITPATH                   := git://git.onelab.eu/myplc.git@master
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
 #
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-1
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-2
 #sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
 #
 myslice-GITPATH			:= git://git.onelab.eu/myslice.git@master

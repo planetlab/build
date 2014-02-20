@@ -42,7 +42,7 @@ pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopen
 pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-3
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-1
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-2
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.2-3
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.2-1
