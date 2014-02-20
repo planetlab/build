@@ -375,7 +375,7 @@ EOF
     guest_ifcfg=${lxc_root}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
     ( [ -n "$BUILD_MODE" ] && write_guest_ifcfg_build || write_guest_ifcfg_test ) > $guest_ifcfg
 
-    fedora_configure_yum $lxc $fcdistro $pldistro
+    [ -z "$IMAGE" ] && fedora_configure_yum $lxc $fcdistro $pldistro
 
     return 0
 }
@@ -912,7 +912,7 @@ function main () {
     if [ -n "$IMAGE" ] ; then
         [ ! -d "$IMAGE" ] && \
         { echo "$IMAGE rootfs folder does not exist - exiting" ; exit 1 ; }
-        cp -r $IMAGE/* $lxc_root/
+        rsync -a $IMAGE/ $lxc_root/
     fi
 
 
