@@ -30,7 +30,6 @@ vsys-scripts-GITPATH            := git://git.planet-lab.org/vsys-scripts.git@vsy
 bind_public-GITPATH             := git://git.planet-lab.org/bind_public.git@bind_public-0.1-2
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-2.0.90-1
 plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@master
-mod_python-GITPATH              := git://git.onelab.eu/mod_python.git@mod_python-3.3.1-1
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.planet-lab.org/plewww.git@plewww-5.2-4
 www-register-wizard-SVNPATH	:= http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5

@@ -275,23 +275,6 @@ ALL += plcapi
 IN_MYPLC += plcapi
 
 #
-# mod_python
-# 
-# this was dropped in fedora18, at which point the intention has been to
-# move to wsgi instead; however our using wsgi currently looks unstable
-# so you have the option to install this manually, in which case myplc will 
-# swap to using mod_python - see plc.d/httpd
-ifeq "$(DISTRO)" "Fedora"
-ifneq "$(DISTRONAME)" "f16"
-mod_python-MODULES := mod_python
-mod_python-SPEC	:= mod_python.spec
-mod_python-STOCK-DEVEL-RPMS := httpd-devel
-mod_python-BUILD-FROM-SRPM := yes
-ALL += mod_python
-endif
-endif
-
-#
 # drupal
 # 
 drupal-MODULES := drupal
