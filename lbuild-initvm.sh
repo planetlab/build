@@ -22,6 +22,7 @@ export PATH=$PATH:/bin:/sbin
 DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
+DEFAULT_MEMORY=512
 
 ##########
 # constant
@@ -590,7 +591,7 @@ function write_lxc_xml_test () {
     cat <<EOF
 <domain type='lxc'>
   <name>$lxc</name>
-  <memory>524288</memory>
+  <memory>$MEMORY</memory>
   <os>
     <type arch='$arch2'>exe</type>
     <init>/sbin/init</init>
@@ -629,7 +630,7 @@ function write_lxc_xml_build () {
     cat <<EOF
 <domain type='lxc'>
   <name>$lxc</name>
-  <memory>524288</memory>
+  <memory>$MEMORY</memory>
   <os>
     <type arch='$arch2'>exe</type>
     <init>/sbin/init</init>
@@ -865,6 +866,7 @@ function usage () {
     echo " -P pkgs_file - defines a set of extra packages to install in guest"
     echo "    by default we use devel.pkgs (build mode) or runtime.pkgs (test mode)"
     echo " -i image - the location of the rootfs"
+    echo " -m memory - the amount of allocated memory in MB - defaults to $DEFAULT_MEMORY MB"
     echo " -v be verbose"
     exit 1
 }
@@ -880,7 +882,7 @@ function main () {
           exit 1
     fi
 
-    while getopts "n:f:d:p:r:P:i:v" opt ; do
+    while getopts "n:f:d:p:r:P:i:m:v" opt ; do
 	case $opt in
 	    n) GUEST_HOSTNAME=$OPTARG;;
 	    f) fcdistro=$OPTARG;;
@@ -889,6 +891,7 @@ function main () {
 	    r) REPO_URL=$OPTARG;;
 	    P) PREINSTALLED=$OPTARG;;
             i) IMAGE=$OPTARG;;
+            m) MEMORY=$OPTARG;;
 	    v) VERBOSE=true; set -x;;
 	    *) usage ;;
 	esac
@@ -926,6 +929,10 @@ function main () {
     [ -z "$fcdistro" ] && fcdistro=$DEFAULT_FCDISTRO
     [ -z "$pldistro" ] && pldistro=$DEFAULT_PLDISTRO
     [ -z "$personality" ] && personality=$DEFAULT_PERSONALITY
+    [ -z "$MEMORY" ] && MEMORY=$DEFAULT_MEMORY
+    
+    # set memory in KB
+    MEMORY=$(($MEMORY * 1024))
     
     # the set of preinstalled packages - depends on mode
     if [ -z "$PREINSTALLED"] ; then
