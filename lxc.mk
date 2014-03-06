@@ -136,41 +136,11 @@ ALL += fprobe-ulog
 IN_NODEIMAGE += fprobe-ulog
 
 #################### libvirt version selection
-# for now things are a bit confused
-# on f18 we build with our own 1.0.4 and that works fine
-# on f20 we have tried the mainstream (1.1.3) libvirt, 
-# as well as the latest 1.2.1 release, and both exhibit an issue that needs to be fixed
-# in addition once this is done we might need to have f18+1.2.1 as well
-# so for now we leave the option to set the following on the command line
-# LIBVIRT=104 (for f18)
-# LIBVIRT=mainstream (for f20) 
-# LIBVIRT=121 (for f18 or f20)
+# settling with using version 1.2.1 on all fedoras
+# although this does not solve the slice re-creation issue seen on f20
 
-# set default according to distro
-ifeq "$(LIBVIRT)" ""
-ifeq "$(DISTRONAME)" "f18"
-LIBVIRT=104
-else
-LIBVIRT=121
-endif
-endif
-
-ifeq "$(LIBVIRT)" "104"
-local_libvirt=true
-separate_libvirt_python=false
-libvirt-GITPATH                 := git://git.onelab.eu/libvirt.git@libvirt-1.0.4-3
-endif
-
-ifeq "$(LIBVIRT)" "121"
 local_libvirt=true
 separate_libvirt_python=true
-libvirt-GITPATH			:= git://git.onelab.eu/libvirt.git@1.2.1
-libvirt-python-GITPATH		:= git://git.onelab.eu/libvirt-python.git@1.2.1
-endif
-
-ifeq "$(LIBVIRT)" "mainstream"
-local_libvirt=false
-endif
 
 #
 # libvirt
@@ -187,18 +157,13 @@ libvirt-STOCK-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel
 libvirt-STOCK-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
 # for 1.2.1 - first seen on f20, not sure for the other ones
 libvirt-STOCK-DEVEL-RPMS += libblkid-devel glusterfs-api-devel glusterfs-devel
-
-ifeq "$(DISTRONAME)" "f16"
-libvirt-STOCK-DEVEL-RPMS += libnl-devel libudev-devel
-endif
 # strictly speaking fuse-devel is not required anymore but we might wish to turn fuse back on again in the future
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20)"
 libvirt-STOCK-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
 libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 libgcrypt-devel netcf-devel
-endif
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
+
 endif
 
 #
@@ -215,6 +180,7 @@ libvirt-python-RPMFLAGS :=     --define 'packager PlanetLab'
 ALL += libvirt-python
 IN_NODEREPO += libvirt-python
 IN_NODEIMAGE += libvirt-python
+
 endif
 
 #
