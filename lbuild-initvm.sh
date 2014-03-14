@@ -10,7 +10,7 @@ COMMAND=$(basename $0)
 DIRNAME=$(dirname $0)
 BUILD_DIR=$(pwd)
 
-# pkgs parsing utilities
+# pkgs parsing utilities + lbuild-bridge.sh
 export PATH=$(dirname $0):$PATH
 
 # old guests have e.g. mount in /bin but this is no longer part of 
@@ -35,32 +35,7 @@ VIF_GUEST=eth0
 FEDORA_PREINSTALLED="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
 DEBIAN_PREINSTALLED="openssh-server openssh-client"
 
-##############################
-## stolen from tests/system/template-qemu/qemu-bridge-init
-# use /proc/net/dev instead of a hard-wired list
-function gather_interfaces () {
-    python <<EOF
-for line in file("/proc/net/dev"):
-    if ':' not in line: continue
-    ifname=line.replace(" ","").split(":")[0]
-    if ifname.find("lo")==0: continue
-    if ifname.find("br")==0: continue
-    if ifname.find("virbr")==0: continue
-    if ifname.find("veth")==0: continue
-    if ifname.find("tap")==0: continue
-    print ifname
-EOF
-}
-
-function discover_interface () {
-    for ifname in $(gather_interfaces); do
-	ip link show $ifname | grep -qi 'state UP' && { echo $ifname; return; }
-    done
-    # still not found ? that's bad
-    echo unknown
-}
-
-########## networking -- ctd
+########## networking utilities
 function gethostbyname () {
     hostname=$1
     python -c "import socket; print socket.gethostbyname('"$hostname"')" 2> /dev/null
@@ -86,92 +61,6 @@ for i in range(4):
 print ".".join([ str(256-2**(8-i)) for i in result ])
   
 EOF
-}
-
-#################### bridge initialization
-function create_bridge_if_needed() {
-   
-    # turn on verbosity
-    set -x
-
-    # already created ? - we're done
-    ip addr show $PUBLIC_BRIDGE >& /dev/null && {
-	echo "Bridge already set up - skipping create_bridge_if_needed"
-	return 0
-    }
-
-    # find out the physical interface to bridge onto
-    if_lan=$(discover_interface)
-
-    ip addr show $if_lan &>/dev/null || {
-        echo "Cannot use interface $if_lan - exiting"
-        exit 1
-    }
-
-    #################### bride initialization
-    check_yum_installed bridge-utils
-
-    echo "========== $COMMAND: entering create_bridge - beg"
-    hostname
-    uname -a
-    ip addr show
-    ip route
-    echo "========== $COMMAND: entering create_bridge - end"
-
-    # disable netfilter calls for bridge interface (they cause panick on 2.6.35 anyway)
-    #
-    # another option would be to accept the all forward packages for
-    # bridged interface like: -A FORWARD -m physdev --physdev-is-bridged -j ACCEPT
-    sysctl net.bridge.bridge-nf-call-iptables=0
-    sysctl net.bridge.bridge-nf-call-ip6tables=0
-    sysctl net.bridge.bridge-nf-call-arptables=0
-
-    
-    #Getting host IP/masklen
-    address=$(ip addr show $if_lan | grep -v inet6 | grep inet | head --lines=1 | awk '{print $2;}')
-    [ -z "$address" ] && { echo "ERROR: Could not determine IP address for $if_lan" ; exit 1 ; }
-
-    broadcast=$(ip addr show $if_lan | grep -v inet6 | grep inet | head --lines=1 | awk '{print $4;}')
-    [ -z "$broadcast" ] && echo "WARNING: Could not determine broadcast address for $if_lan"
-
-    gateway=$(ip route show | grep default | awk '{print $3;}')
-    [ -z "$gateway" ] && echo "WARNING: Could not determine gateway IP"
-
-
-    # creating the bridge
-    echo "Creating bridge PUBLIC_BRIDGE=$PUBLIC_BRIDGE"
-    brctl addbr $PUBLIC_BRIDGE
-    brctl addif $PUBLIC_BRIDGE $if_lan
-    echo "Activating promiscuous mode if_lan=$if_lan"
-    ip link set $if_lan up promisc on
-    sleep 2
-    # rely on dhcp to re assign IP.. 
-    echo "Starting dhclient on $PUBLIC_BRIDGE"
-    dhclient $PUBLIC_BRIDGE
-    sleep 1
-
-    #Reconfigure the routing table
-    echo "Configuring gateway=$gateway"
-    ip route add default via $gateway dev $PUBLIC_BRIDGE
-    ip route del default via $gateway dev $if_lan
-    # at this point we have an extra route like e.g.
-    ## ip route show
-    #default via 138.96.112.250 dev br0
-    #138.96.112.0/21 dev em1  proto kernel  scope link  src 138.96.112.57
-    #138.96.112.0/21 dev br0  proto kernel  scope link  src 138.96.112.57
-    #192.168.122.0/24 dev virbr0  proto kernel  scope link  src 192.168.122.1
-    route_dest=$(ip route show | grep -v default | grep "dev $PUBLIC_BRIDGE" | awk '{print $1;}')
-    ip route del $route_dest dev $if_lan
-
-    echo "========== $COMMAND: exiting create_bridge - beg"
-    ip addr show
-    ip route show
-    echo "========== $COMMAND: exiting create_bridge - end"
-
-    # for safety
-    sleep 3
-    return 0
-
 }
 
 ##############################
@@ -974,12 +863,13 @@ function main () {
     # (build mode relies entirely on dhcp on the private subnet)
     if [ -z "$BUILD_MODE" ] ; then
 
-	create_bridge_if_needed
+	#create_bridge_if_needed $PUBLIC_BRIDGE
+	lbuild-bridge.sh $PUBLIC_BRIDGE
 
 	GUEST_IP=$(gethostbyname $GUEST_HOSTNAME)
 	# use same NETMASK as bridge interface br0
-	MASKLEN=$(ip addr show $PUBLIC_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
-        NETMASK=$(masklen_to_netmask $MASKLEN)
+	masklen=$(ip addr show $PUBLIC_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
+        NETMASK=$(masklen_to_netmask $masklen)
         GATEWAY=$(ip route show | grep default | awk '{print $3}' | head -1)
         VIF_HOST="i$(echo $GUEST_HOSTNAME | cut -d. -f1)"
     fi
