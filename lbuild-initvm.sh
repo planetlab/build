@@ -98,17 +98,6 @@ function almost_empty () {
 }
 
 ##############################
-function check_yum_installed () {
-    package=$1; shift
-    rpm -q $package >& /dev/null || yum -y install $package
-}
-
-function check_yumgroup_installed () {
-    group="$1"; shift
-    yum grouplist "$group" | grep -q Installed || { yum -y groupinstall "$group" ; }
-}
-
-##############################
 function fedora_install() {
     set -x
     set -e

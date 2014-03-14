@@ -34,11 +34,23 @@ function discover_interface () {
     echo unknown
 }
 
+##############################
+function check_yum_installed () {
+    package=$1; shift
+    rpm -q $package >& /dev/null || yum -y install $package
+}
+
+# not used apparently
+function check_yumgroup_installed () {
+    group="$1"; shift
+    yum grouplist "$group" | grep -q Installed || { yum -y groupinstall "$group" ; }
+}
+
 #################### bridge initialization
 function create_bridge_if_needed() {
 
-    # turn on verbosity
-    set -x
+    # do not turn on verbosity
+    # set -x
 
     public_bridge=$1; shift
 
