@@ -22,6 +22,7 @@ for line in file("/proc/net/dev"):
     if ifname.find("virbr")==0: continue
     if ifname.find("veth")==0: continue
     if ifname.find("tap")==0: continue
+    if ifname.find("vif")==0: continue
     print ifname
 EOF
 }

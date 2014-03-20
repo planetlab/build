@@ -441,7 +441,7 @@ function setup_lxc() {
     esac
 
     # Enable cgroup -- xxx -- is this really useful ?
-    mkdir $lxc_root/cgroup
+    [ -d $lxc_root/cgroup ] || mkdir $lxc_root/cgroup
     
     # set up resolv.conf
     cp /etc/resolv.conf $lxc_root/etc/resolv.conf
@@ -860,7 +860,7 @@ function main () {
 	masklen=$(ip addr show $PUBLIC_BRIDGE | grep -v inet6 | grep inet | awk '{print $2;}' | cut -d/ -f2)
         NETMASK=$(masklen_to_netmask $masklen)
         GATEWAY=$(ip route show | grep default | awk '{print $3}' | head -1)
-        VIF_HOST="i$(echo $GUEST_HOSTNAME | cut -d. -f1)"
+        VIF_HOST="vif_$(echo $GUEST_HOSTNAME | cut -d. -f1)"
     fi
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
