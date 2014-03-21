@@ -42,7 +42,7 @@ oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-4
 sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@sliceimage-5.1-6
-nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@master
+nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-3
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.3-2
 
 #
