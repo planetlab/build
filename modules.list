@@ -9,6 +9,7 @@ fprobe-ulog
 ipfw
 iptables
 libvirt
+libvirt-python
 linux-2.6:32
 lxc-userspace
 madwifi
@@ -34,8 +35,7 @@ pyaspects
 pypcilib
 pyplnet
 rvm-ruby:planetlab
-sfa
-sface
+sfa:geni-v3
 sliceimage
 sliver-openvswitch
 tests

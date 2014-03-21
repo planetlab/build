@@ -37,6 +37,7 @@ pyplnet-GITPATH                 := git://git.planet-lab.org/pyplnet.git@pyplnet-
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 ###
+rvm-ruby-BRANCH			:= planetlab
 rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.22.9-1
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
@@ -46,6 +47,7 @@ nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeim
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.3-2
 
 #
+sfa-BRANCH			:= geni-v3
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-2
 #sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 #

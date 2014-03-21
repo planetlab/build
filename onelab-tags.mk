@@ -40,6 +40,7 @@ bootmanager-GITPATH             := git://git.onelab.eu/bootmanager.git@master
 pypcilib-GITPATH                := git://git.onelab.eu/pypcilib.git@pypcilib-0.2-11
 pyplnet-GITPATH                 := git://git.onelab.eu/pyplnet.git@pyplnet-4.3-18
 ###
+rvm-ruby-BRANCH			:= planetlab
 rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.22.9-1
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
@@ -50,6 +51,7 @@ myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-2
 DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRateLimiting/tags/DistributedRateLimiting-0.1-1
 
 #
+sfa-BRANCH			:= geni-v3
 sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-2
 #sface-GITPATH                   := git://git.onelab.eu/sface.git@sface-0.9-9
 #
