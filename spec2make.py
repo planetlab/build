@@ -32,7 +32,7 @@ def main ():
     for (fullsource,_,__) in specobj.sources:
         #print '###fullsource=',fullsource
         print "%s.tarballs += SOURCES/%s" %(package_name,os.path.basename(fullsource))
-        for suffix in [".tar.gz", ".tgz", ".tar.bz2", ] : 
+        for suffix in [".tar.gz", ".tgz", ".tar.bz2", ".tar.xz" ] : 
             #print "# trying %s"%suffix
             if fullsource.endswith(suffix):
                 sourcename=fullsource.replace(suffix,"")
