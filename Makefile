@@ -362,16 +362,40 @@ endef
 
 $(foreach package,$(ALL),$(eval $(call target_spec,$(package))))
 
+####################
+# fetch modules
+# expected input:
+#   $(1) is the name of a git module
+#     $($(1).gitrepo) and $(($1).gittag) are used to determine branch or tag name
+# expected result
+#   $(1)/ in the cwd will hold the result
+
+# fetch svn module
+define fetch_svn_module
+	svn export $($(1)-SVNPATH) $(1)
+endef
+
+# git_fetch_module
+# as far as possible we use git-archive to fetch a git module
+# however if that fails we fallback to a git-clone strategy,
+# for when git-archive is not supported, e.g. for github
+# side effect
+#   $(1)/ gets cleaned up if job cannot be done
+define fetch_git_module
+	mkdir $(1) ; \
+	(git archive --remote=$($(1).gitrepo) $($(1).gittag) | tar -C $(1) -xf - ) || \
+	(echo "==================== git archive FAILED, trying git clone instead" ; \
+         git clone $($(1).gitrepo) $(1); cd $(1) ; git checkout $($(1).gittag) ; rm -rf .git ) || \
+	{ rm -rf $(1); false; }
+endef
+
 ### module extraction
 define target_extract_module
 MODULES/$(1):
 	@(echo -n "XXXXXXXXXXXXXXX -- BEG MODULE $(1) : $@ " ; date)
 	mkdir -p MODULES
 	cd MODULES && \
-	$(if $($(1)-SVNPATH),\
-	  svn export $($(1)-SVNPATH) $(1),\
-	  mkdir $(1) ; (git archive --remote=$($(1).gitrepo) $($(1).gittag) | tar -C $(1) -xf - ) \
-	   || { rm -rf $(1); false; } )
+	$(if $($(1)-SVNPATH),$(call fetch_svn_module,$(1)),$(call fetch_git_module,$(1)) )
 	@(echo -n "XXXXXXXXXXXXXXX -- END MODULE $(1) : $@ " ; date)
 
 $(1)-module: MODULES/$(1)
