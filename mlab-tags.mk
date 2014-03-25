@@ -19,7 +19,7 @@ util-vserver-pl-GITPATH		:= git://git.planet-lab.org/util-vserver-pl.git@util-vs
 nodeupdate-GITPATH		:= git://git.planet-lab.org/nodeupdate.git@nodeupdate-0.5-11
 plnode-utils-GITPATH        	:= git://git.planet-lab.org/plnode-utils.git@plnode-utils-0.2-2
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
-nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-5.2-10
+nodemanager-GITPATH             := git://git.planet-lab.org/nodemanager.git@nodemanager-5.2-11
 # Trellis-specific NodeManager plugins
 nodemanager-topo-GITPATH	:= git://git.planet-lab.org/NodeManager-topo@master
 NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/trunk
