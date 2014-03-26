@@ -1,4 +1,4 @@
-lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@master
+lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-10
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-5
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-3
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
