@@ -104,13 +104,12 @@ function fedora_install() {
 
     cache=/var/cache/lxc/fedora/$arch/$release
     
-    mkdir -p /var/lock/subsys/
     (
-        flock -n -x 200 || { echo "Cache repository is busy." ; return 1 ; }
+        flock --exclusive --timeout 60 200 || { echo "Cache repository is busy." ; return 1 ; }
 
         if [ ! -e "$cache/rootfs" ]; then
             echo "Getting cache download in $cache/rootfs ... "
-            fedora_download || { echo "Failed to download 'fedora base'"; return 1; }
+            fedora_download $cache || { echo "Failed to download 'fedora base'"; return 1; }
         else
             echo "Updating cache $cache/rootfs ..."
 	    if ! yum --installroot $cache/rootfs -y --nogpgcheck update ; then
@@ -120,18 +119,21 @@ function fedora_install() {
             fi
         fi
 
-        echo "Copy $cache/rootfs to $lxc_root ... "
+        echo "Filling $lxc_root from $cache/rootfs ... "
 	rsync -a $cache/rootfs/ $lxc_root/
 	
         return 0
 
-        ) 200>/var/lock/subsys/lxc
+        ) 200> $cache/lock
 
     return $?
 }
 
 function fedora_download() {
     set -x
+
+    cache=$1; shift
+
     # check the mini fedora was not already downloaded
     INSTALL_ROOT=$cache/partial
     echo $INSTALL_ROOT
