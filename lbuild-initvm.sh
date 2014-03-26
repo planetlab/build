@@ -103,6 +103,7 @@ function fedora_install() {
     set -e
 
     cache=/var/cache/lxc/fedora/$arch/$release
+    mkdir -p $cache
     
     (
         flock --exclusive --timeout 60 200 || { echo "Cache repository is busy." ; return 1 ; }
