@@ -30,10 +30,10 @@ pl_fedora_url=$eu_fedora_url
 pl_centos_url=rsync://ftp.tpnet.pl/centos
 pl_epel_url=rsync://ftp.icm.edu.pl/pub/Linux/fedora/linux/epel
 
-default_distroname="f18"
-all_distronames="f18 f20"
+default_distroname="f20"
+all_distronames="f20"
 default_arch="x86_64"
-all_archs="i386 x86_64"
+all_archs="x86_64"
 
 case $(hostname) in 
     blitz*|*.fr|*.de|*.uk)
