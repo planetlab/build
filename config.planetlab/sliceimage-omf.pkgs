@@ -1,4 +1,8 @@
 #
 groupname: rvm-ruby
 groupdesc: rvm and pre-installed ruby for easily deploying omf-rc as a gem
-package: rvm-ruby
+# unfortunately the rvm-ruby build got broken on f18 at some point because of 
+# changes in openssl - see lxc.mk
+# however it's best to define a valid extension here because otherwise
+# the omf sliceimage is not known, and slices cannot be instantiated
+package>=f18: rvm-ruby
