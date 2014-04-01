@@ -482,7 +482,7 @@ all: envfrompreviousrun
 define stage2_variables
 ### devel dependencies
 $(1).rpmbuild = $(RPMBUILD) $($(1)-RPMFLAGS)
-$(1).all-devel-rpm-paths := $(foreach rpm,$($(1)-LOCAL-DEVEL-RPMS) $($(1)-LOCAL-DEVEL-RPMS-CRUCIAL),$($(rpm).rpm-path))
+$(1).all-local-devel-rpm-paths := $(foreach rpm,$($(1)-LOCAL-DEVEL-RPMS) $($(1)-LOCAL-DEVEL-RPMS-CRUCIAL),$($(rpm).rpm-path))
 $(1).depend-devel-packages := $(sort $(foreach rpm,$($(1)-LOCAL-DEVEL-RPMS),$($(rpm).package)))
 ALL-STOCK-DEVEL-RPMS += $($(1)-LOCAL-DEVEL-RPMS)
 endef
@@ -559,7 +559,7 @@ RPMYUM-UNINSTALL-STOCK := rpm -e
 ### these macro handles the LOCAL-DEVEL-RPMS and LOCAL-DEVEL-RPMS-CRUCIAL tags for a given package
 # before building : rpm-install LOCAL-DEVEL-RPMS 
 define rpmyum_install_local_rpms 
-	$(if $($(1).all-devel-rpm-paths), echo "Installing for $(1)-LOCAL-DEVEL-RPMS" ; $(RPMYUM-INSTALL-LOCAL) $($(1).all-devel-rpm-paths)) 
+	$(if $($(1).all-local-devel-rpm-paths), echo "Installing for $(1)-LOCAL-DEVEL-RPMS" ; $(RPMYUM-INSTALL-LOCAL) $($(1).all-local-devel-rpm-paths)) 
 endef
 
 # install stock rpms if defined
@@ -568,10 +568,12 @@ define rpmyum_install_stock_rpms
 endef
 
 define rpmyum_uninstall_stock_rpms
-	-$(if $($(1)-LOCAL-DEVEL-RPMS), echo "Unstalling for $(1)-LOCAL-DEVEL-RPMS" ; $(RPMYUM-UNINSTALL-STOCK) $($(1)-LOCAL-DEVEL-RPMS))
+	-$(if $($(1)-STOCK-DEVEL-RPMS), echo "Unstalling for $(1)-STOCK-DEVEL-RPMS" ; $(RPMYUM-UNINSTALL-STOCK) $($(1)-STOCK-DEVEL-RPMS))
 endef
 
-# similar for debian 
+# similar for debians
+# gdebi acts like yum localinstall; gdebi-core should be mentioned in develdeb.pkgs
+DPKGAPT-INSTALL-LOCAL := gdebi
 DPKGAPT-INSTALL-STOCK := apt-get -y install
 DPKGAPT-UNINSTALL-STOCK := echo WARNING uninstalling stock debs not implemented
 
@@ -580,7 +582,7 @@ define dpkgapt_install_stock_debs
 endef
 
 define dpkgapt_uninstall_stock_debs
-	-$(if $($(1)-LOCAL-DEVEL-DEBS), echo "Unstalling for $(1)-LOCAL-DEVEL-DEBS" ; $(DPKGAPT-UNINSTALL-STOCK) $($(1)-LOCAL-DEVEL-DEBS))
+	-$(if $($(1)-STOCK-DEVEL-DEBS), echo "Unstalling for $(1)-STOCK-DEVEL-DEBS" ; $(DPKGAPT-UNINSTALL-STOCK) $($(1)-STOCK-DEVEL-DEBS))
 endef
 
 

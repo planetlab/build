@@ -9,7 +9,9 @@ package: locales
 # rpm is unfortunately required at a very early stage..
 package: rpm python-rpm
 #
-# populating
+# the build will depend on gdebi-core if you have any -LOCAL-DEVEL-DEBS defined
+package: gdebi-core
+#
 package: git make 
 package: bzip2 gzip
 #
@@ -29,4 +31,4 @@ package: python-dateutil python-openssl python-m2crypto python-lxml xsltproc
 package: python-setuptools
 #
 # convenience
-# emacs23-nox
+emacs23-nox
