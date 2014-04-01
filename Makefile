@@ -577,6 +577,10 @@ DPKGAPT-INSTALL-LOCAL := gdebi
 DPKGAPT-INSTALL-STOCK := apt-get -y install
 DPKGAPT-UNINSTALL-STOCK := echo WARNING uninstalling stock debs not implemented
 
+define dpkgapt_install_local_debs 
+	$(if $($(1)-LOCAL-DEVEL-DEBS), echo "Installing for $(1)-LOCAL-DEVEL-DEBS" ; $(foreach debname,$($(1)-LOCAL-DEVEL-DEBS),$(DPKGAPT-INSTALL-LOCAL) $(wildcard DEBIAN/$(debname)_*.deb);))
+endef
+
 define dpkgapt_install_stock_debs 
 	$(if $($(1)-STOCK-DEVEL-DEBS), echo "Installing for $(1)-STOCK-DEVEL-DEBS" ; $(DPKGAPT-INSTALL-STOCK) $($(1)-STOCK-DEVEL-DEBS))
 endef
@@ -708,6 +712,7 @@ $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 # so I'm reverting to simplicity
 define target_debian
 $(1)-debian: $(1)-tarball
+	$(call dpkgapt_install_local_debs,$(1))
 	$(call dpkgapt_install_stock_debs,$(1))
 	mkdir -p DEBIAN/$(1)
 	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
