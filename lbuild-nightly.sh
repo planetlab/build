@@ -14,8 +14,9 @@ export PATH=$PATH:/bin:/sbin
 DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
-DEFAULT_BASE="@DATE@--@PLDISTRO@-@FCDISTRO@-@PERSONALITY@"
+DEFAULT_MAILTO="build at onelab.eu"
 DEFAULT_BUILD_SCM_URL="git://git.onelab.eu/build"
+DEFAULT_BASE="@DATE@--@PLDISTRO@-@FCDISTRO@-@PERSONALITY@"
 
 # default gpg path used in signing yum repo
 DEFAULT_GPGPATH="/etc/planetlab"
@@ -448,7 +449,7 @@ function usage () {
     echo " -f fcdistro - defaults to $DEFAULT_FCDISTRO"
     echo " -d pldistro - defaults to $DEFAULT_PLDISTRO"
     echo " -p personality - defaults to $DEFAULT_PERSONALITY"
-    echo " -m mailto - no default"
+    echo " -m mailto - defaults to $DEFAULT_MAILTO"
     echo " -s build_scm_url - git URL where to fetch the build module - defaults to $DEFAULT_BUILD_SCM_URL"
     echo "    define GIT tag or branch name appending @tagname to url"
     echo " -t pldistrotags - defaults to \${PLDISTRO}-tags.mk"
@@ -566,6 +567,7 @@ function main () {
     [ -z "$FCDISTRO" ] && FCDISTRO=$DEFAULT_FCDISTRO
     [ -z "$PLDISTRO" ] && PLDISTRO=$DEFAULT_PLDISTRO
     [ -z "$PERSONALITY" ] && PERSONALITY=$DEFAULT_PERSONALITY
+    [ -z "$MAILTO" ]] && MAILTO=$(echo $DEFAULT_MAILTO | sed -e 's, at ,@,')
     [ -z "$PLDISTROTAGS" ] && PLDISTROTAGS="${PLDISTRO}-tags.mk"
     [ -z "$BASE" ] && BASE="$DEFAULT_BASE"
     [ -z "$WEBPATH" ] && WEBPATH="$DEFAULT_WEBPATH"
