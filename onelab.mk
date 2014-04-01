@@ -597,6 +597,9 @@ endif
 
 ##############################
 # don't build these by default, we have separate builds for that
+# corresponding tags are removed from onelab-tags.mk as well
+# as this is not supported on f14 anymore
+# and we target debians and ubuntus anyway
 myslice-MODULES := myslice
 myslice-SPEC := myslice.spec
 myslice-STOCK-DEVEL-RPMS := python-django
