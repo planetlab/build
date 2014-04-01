@@ -7,6 +7,6 @@ myslice-MODULES := myslice
 myslice-SPEC := myslice.spec
 myslice-STOCK-DEVEL-RPMS := python-django
 myslice-STOCK-DEVEL-DEBS := python-django python-django-south
-myslice-LOCAL-DEVEL-RPMS := manifold
+myslice-LOCAL-DEVEL-DEBS := manifold
 ALL += myslice
 
