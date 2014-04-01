@@ -567,7 +567,7 @@ function main () {
     [ -z "$FCDISTRO" ] && FCDISTRO=$DEFAULT_FCDISTRO
     [ -z "$PLDISTRO" ] && PLDISTRO=$DEFAULT_PLDISTRO
     [ -z "$PERSONALITY" ] && PERSONALITY=$DEFAULT_PERSONALITY
-    [ -z "$MAILTO" ]] && MAILTO=$(echo $DEFAULT_MAILTO | sed -e 's, at ,@,')
+    [ -z "$MAILTO" ] && MAILTO=$(echo $DEFAULT_MAILTO | sed -e 's, at ,@,')
     [ -z "$PLDISTROTAGS" ] && PLDISTROTAGS="${PLDISTRO}-tags.mk"
     [ -z "$BASE" ] && BASE="$DEFAULT_BASE"
     [ -z "$WEBPATH" ] && WEBPATH="$DEFAULT_WEBPATH"
