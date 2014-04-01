@@ -27,3 +27,6 @@ package: python-dateutil python-openssl python-m2crypto python-lxml xsltproc
 # 
 # xmlbuilder
 package: python-setuptools
+#
+# convenience
+# emacs23-nox
