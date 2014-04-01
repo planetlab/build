@@ -12,7 +12,7 @@ export PATH=$PATH:/bin:/sbin
 
 # default values, tunable with command-line options
 DEFAULT_FCDISTRO=f20
-DEFAULT_PLDISTRO=planetlab
+DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
 DEFAULT_BASE="@DATE@--@PLDISTRO@-@FCDISTRO@-@PERSONALITY@"
 DEFAULT_BUILD_SCM_URL="git://git.onelab.eu/build"
