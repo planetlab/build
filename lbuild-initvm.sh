@@ -816,7 +816,7 @@ function main () {
     MEMORY=$(($MEMORY * 1024))
     
     # the set of preinstalled packages - depends on mode
-    if [ -z "$PREINSTALLED"] ; then
+    if [ -z "$PREINSTALLED" ] ; then
 	if [ -n "$BUILD_MODE" ] ; then
 	    PREINSTALLED=devel.pkgs
 	else
