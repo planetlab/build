@@ -14,7 +14,7 @@ export PATH=$PATH:/bin:/sbin
 DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
-DEFAULT_MAILTO="build at onelab.eu"
+DEFAULT_MAILDEST="build at onelab.eu"
 DEFAULT_BUILD_SCM_URL="git://git.onelab.eu/build"
 DEFAULT_BASE="@DATE@--@PLDISTRO@-@FCDISTRO@-@PERSONALITY@"
 
@@ -159,16 +159,16 @@ function failure() {
     (echo -n "============================== $COMMAND: failure at " ; date ; \
 	webpublish tail --lines=1000 $WEBLOG) | \
 	webpublish_cp_stdin_to_file $WEBBASE.ko ||:
-    if [ -n "$MAILTO" ] ; then
+    if [ -n "$MAILDEST" ] ; then
 	( \
 	    echo "Subject: KO ${BASE} ${MAIL_SUBJECT}" ; \
-	    echo "To: $MAILTO" ; \
+	    echo "To: $MAILDEST" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
 	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
 	    echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
 	    echo "........................................" ; \
 	    webpublish tail --lines=1000 $WEBLOG ) | \
-	    sendmail $MAILTO
+	    sendmail $MAILDEST
     fi
     exit 1
 }
@@ -207,17 +207,17 @@ function success () {
     fi
     BUILD_END=$(date +'%H:%M')
     BUILD_END_S=$(date +'%s')
-    if [ -n "$MAILTO" ] ; then
+    if [ -n "$MAILDEST" ] ; then
 	( \
 	    echo "Subject: $short_message ${BASE} ${MAIL_SUBJECT}" ; \
-	    echo "To: $MAILTO" ; \
+	    echo "To: $MAILDEST" ; \
 	    echo "$PLDISTRO ($BASE) build for $FCDISTRO completed on $(date)" ; \
 	    echo "see build results at        $WEBBASE_URL" ; \
 	    echo "including full build log at $WEBBASE_URL/log.txt" ; \
             [ -n "$DO_TEST" ] && echo "and complete test logs at   $WEBBASE_URL/testlogs" ; \
 	    [ -n "$IGNORED" ] && echo "WARNING: some tests steps failed but were ignored - see trace file" ; \
 	    echo "BUILD TIME: begin $BUILD_BEG -- end $BUILD_END -- duration $(pretty_duration $(($BUILD_END_S-$BUILD_BEG_S)))" ; \
-	    ) | sendmail $MAILTO
+	    ) | sendmail $MAILDEST
     fi
     # XXX For some reason, we haven't been getting this email for successful builds. If this sleep
     # doesn't fix the problem, I'll remove it -- Sapan.
@@ -249,7 +249,7 @@ function build () {
     MAKEVARS=("PLDISTRO=${PLDISTRO}" "${MAKEVARS[@]}")
     MAKEVARS=("PLDISTROTAGS=${PLDISTROTAGS}" "${MAKEVARS[@]}")
     MAKEVARS=("PERSONALITY=${PERSONALITY}" "${MAKEVARS[@]}")
-    MAKEVARS=("MAILTO=${MAILTO}" "${MAKEVARS[@]}")
+    MAKEVARS=("MAILDEST=${MAILDEST}" "${MAKEVARS[@]}")
     MAKEVARS=("WEBPATH=${WEBPATH}" "${MAKEVARS[@]}")
     MAKEVARS=("TESTBUILDURL=${TESTBUILDURL}" "${MAKEVARS[@]}")
     MAKEVARS=("WEBROOT=${WEBROOT}" "${MAKEVARS[@]}")
@@ -449,7 +449,7 @@ function usage () {
     echo " -f fcdistro - defaults to $DEFAULT_FCDISTRO"
     echo " -d pldistro - defaults to $DEFAULT_PLDISTRO"
     echo " -p personality - defaults to $DEFAULT_PERSONALITY"
-    echo " -m mailto - defaults to $DEFAULT_MAILTO"
+    echo " -m mailto - defaults to $DEFAULT_MAILDEST"
     echo " -s build_scm_url - git URL where to fetch the build module - defaults to $DEFAULT_BUILD_SCM_URL"
     echo "    define GIT tag or branch name appending @tagname to url"
     echo " -t pldistrotags - defaults to \${PLDISTRO}-tags.mk"
@@ -509,7 +509,7 @@ function main () {
 	    -f) FCDISTRO=$2; shift 2 ;;
 	    -d) PLDISTRO=$2; shift 2 ;;
 	    -p) PERSONALITY=$2; shift 2 ;;
-	    -m) MAILTO=$2; shift 2 ;;
+	    -m) MAILDEST=$2; shift 2 ;;
 	    -s) BUILD_SCM_URL=$2; shift 2 ;;
 	    -t) PLDISTROTAGS=$2; shift 2 ;;
 	    -b) BASE=$2; shift 2 ;;
@@ -567,7 +567,7 @@ function main () {
     [ -z "$FCDISTRO" ] && FCDISTRO=$DEFAULT_FCDISTRO
     [ -z "$PLDISTRO" ] && PLDISTRO=$DEFAULT_PLDISTRO
     [ -z "$PERSONALITY" ] && PERSONALITY=$DEFAULT_PERSONALITY
-    [ -z "$MAILTO" ] && MAILTO=$(echo $DEFAULT_MAILTO | sed -e 's, at ,@,')
+    [ -z "$MAILDEST" ] && MAILDEST=$(echo $DEFAULT_MAILDEST | sed -e 's, at ,@,')
     [ -z "$PLDISTROTAGS" ] && PLDISTROTAGS="${PLDISTRO}-tags.mk"
     [ -z "$BASE" ] && BASE="$DEFAULT_BASE"
     [ -z "$WEBPATH" ] && WEBPATH="$DEFAULT_WEBPATH"
@@ -579,7 +579,7 @@ function main () {
     [ -z "$TESTCONFIG" ] && TESTCONFIG="$DEFAULT_TESTCONFIG"
     [ -z "$TESTMASTER" ] && TESTMASTER="$DEFAULT_TESTMASTER"
 
-    [ -n "$DRY_RUN" ] && MAILTO=""
+    [ -n "$DRY_RUN" ] && MAILDEST=""
 
     # elaborate the extra args to be passed to run_log
     for config in ${TESTCONFIG} ; do
@@ -649,7 +649,7 @@ function main () {
 	    # for efficiency, crop everything in one make run
 	    tmp=/tmp/${BASE}-env.sh
 	    virsh -c lxc:/// lxc-enter-namespace ${BASE} /bin/bash -c "make --no-print-directory -C /build stage1=skip \
-		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILTO ++WEBPATH ++TESTBUILDURL ++WEBROOT" > $tmp
+		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILDEST ++WEBPATH ++TESTBUILDURL ++WEBROOT" > $tmp
 	    . $tmp
 	    rm -f $tmp
 	    # update build
@@ -659,7 +659,7 @@ function main () {
 	    rm -f /build/MODULES/tests
 	    options=(${options[@]} -d $PLDISTRO -t $PLDISTROTAGS -s $BUILD_SCM_URL)
 	    [ -n "$PERSONALITY" ] && options=(${options[@]} -p $PERSONALITY)
-	    [ -n "$MAILTO" ] && options=(${options[@]} -m $MAILTO)
+	    [ -n "$MAILDEST" ] && options=(${options[@]} -m $MAILDEST)
 	    [ -n "$WEBPATH" ] && options=(${options[@]} -w $WEBPATH)
 	    [ -n "$TESTBUILDURL" ] && options=(${options[@]} -W $TESTBUILDURL)
 	    [ -n "$WEBROOT" ] && options=(${options[@]} -r $WEBROOT)
