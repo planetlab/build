@@ -31,4 +31,4 @@ package: python-dateutil python-openssl python-m2crypto python-lxml xsltproc
 package: python-setuptools
 #
 # convenience
-emacs23-nox
+package: emacs23-nox
