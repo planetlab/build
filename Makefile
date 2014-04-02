@@ -455,19 +455,20 @@ endef
 $(foreach package,$(ALL),$(eval $(call target_mk,$(package))))
 
 # stores env variables in a file
-# this is done at stage1. later run wont get confused
-SAVED_VARS=PLDISTRO PLDISTROTAGS build-GITPATH PERSONALITY MAILTO BASE WEBPATH TESTBUILDURL WEBROOT
-# also remember variable settings in alias, like sfa-GITPATH=git://git.f-lab.fr/sfa.git@generic
-# but don't save stage1
-ASSIGNS=$(foreach chunk,$(MAKEFLAGS),$(if $(findstring =,$(chunk)),$(if $(findstring stage1,$(chunk)),,$(chunk)),))
+# this is done at stage1. later run won't get confused
+STATIC_VARS=PLDISTRO PLDISTROTAGS build-GITPATH PERSONALITY MAILTO BASE WEBPATH TESTBUILDURL WEBROOT
+# find out names for variables set on the command line
+define assigned_varname
+$(if $(findstring =,$(1)),$(firstword $(subst =, ,$(1))) )
+endef
+ASSIGNED=$(foreach flag,$(MAKEFLAGS),$(call assigned_varname,$(flag)))
+SAVED_VARS=$(sort $(STATIC_VARS) $(ASSIGNED))
 envfrompreviousrun.mk:
 	@echo "# do not edit" > $@
 	@$(foreach var,$(SAVED_VARS),echo "$(var):=$($(var))" >> $@ ;)
-	@$(foreach chunk,$(ASSIGNS),echo "override $(chunk)" | sed -e s,=,:=, >> $@;)
 	@echo "# do not edit" > aliases
 	@echo -n "alias m=\"make " >> aliases
 	@$(foreach var,$(SAVED_VARS),echo -n " $(var)=$($(var))" >> aliases ;)
-	@echo -n $(ASSIGNS) >> aliases
 	@echo "\"" >> aliases
 	@echo "alias m1=\"m stage1=true\"" >> aliases
 
