@@ -461,7 +461,7 @@ STATIC_VARS=PLDISTRO PLDISTROTAGS build-GITPATH PERSONALITY MAILTO BASE WEBPATH 
 define assigned_varname
 $(if $(findstring =,$(1)),$(firstword $(subst =, ,$(1))) )
 endef
-ASSIGNED=$(foreach flag,$(MAKEFLAGS),$(call assigned_varname,$(flag)))
+ASSIGNED=$(filter-out stage1 stage1iter,$(foreach flag,$(MAKEFLAGS),$(call assigned_varname,$(flag))))
 SAVED_VARS=$(sort $(STATIC_VARS) $(ASSIGNED))
 envfrompreviousrun.mk:
 	@echo "# do not edit" > $@
