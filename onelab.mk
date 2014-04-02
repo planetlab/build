@@ -576,13 +576,6 @@ release-RPMDATE := yes
 ALL += release
 
 ##############################
-# sfa requires python-2.7
-build_sfa=true
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
-build_sfa=false
-endif
-
-ifeq "$(build_sfa)" "true"
 #
 # sfa - Slice Facility Architecture
 #
@@ -590,22 +583,3 @@ sfa-MODULES := sfa
 sfa-SPEC := sfa.spec
 ALL += sfa
 
-#sface-MODULES := sface
-#sface-SPEC := sface.spec
-#ALL += sface
-endif
-
-##############################
-# don't build these by default, we have separate builds for that
-# corresponding tags are removed from onelab-tags.mk as well
-# as this is not supported on f14 anymore
-# and we target debians and ubuntus anyway
-myslice-MODULES := myslice
-myslice-SPEC := myslice.spec
-myslice-STOCK-DEVEL-RPMS := python-django
-myslice-STOCK-DEVEL-DEBS := python-django python-django-south
-#ALL += myslice
-
-manifold-MODULES := manifold
-manifold-SPEC := manifold.spec
-#ALL += manifold
