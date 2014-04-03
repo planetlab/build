@@ -1,4 +1,11 @@
 ########## 
+#
+# sfa - Slice Facility Architecture
+#
+sfa-MODULES := sfa
+sfa-SPEC := sfa.spec
+ALL += sfa
+
 manifold-MODULES := manifold
 manifold-SPEC := manifold.spec
 ALL += manifold
