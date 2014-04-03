@@ -705,6 +705,11 @@ endef
 $(foreach package,$(ALL),$(eval $(call target_depends,$(package))))
 
 ####################
+# debian meta-target
+ALL-DEBIAN := $(foreach target,$(ALL),$(target)-debian)
+debian: $(ALL-DEBIAN)
+
+####################
 # very rough for now (one module per package), targets only sfa for now
 # the general idea here is, changing the specfile (for version number and all) is enough, and this
 # gets passed to "make debian" in the module
@@ -783,7 +788,7 @@ clean-help:
 distclean1:
 	rm -rf envfrompreviousrun.mk .rpmmacros spec2make header.spec SPECS MAKE $(DISTCLEANS)
 distclean2:
-	rm -rf MODULES SOURCES BUILD BUILDROOT RPMS SRPMS tmp
+	rm -rf MODULES SOURCES BUILD BUILDROOT RPMS SRPMS DEBIAN tmp
 distclean: distclean1 distclean2
 .PHONY: distclean1 distclean2 distclean
 
