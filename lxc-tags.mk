@@ -40,7 +40,7 @@ DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRate
 pcucontrol-GITPATH              := git://git.planet-lab.org/pcucontrol.git@pcucontrol-1.0-13
 ###
 rvm-ruby-BRANCH			:= planetlab
-rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.22.9-1
+rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@planetlab
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
 bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-4
