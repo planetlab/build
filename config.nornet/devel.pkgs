@@ -1,0 +1,147 @@
+#
+groupname: PlanetLabDevel
+groupdesc: Building PlanetLab
+#
+# general utilities
+package: sendmail sendmail-cf mailx 
+package: make git
+package: glibc glibc-common 
+package: bzip2 gzip
+package: cpio tar
+package: coreutils 
+package: rpm rpm-build rpm-devel 
+package: redhat-rpm-config 
+package: curl curl-devel 
+package: subversion cvs 
+package: less 
+package: openssh
+package: emacs-nox
+# undetermined 
+package: expect 
+package: gd 
+package: httpd mod_ssl 
+package: openssl 
+package: openssl-devel
+package: zlib
+package: zlib-devel
+package: bison flex
+package: libtool 
+package: metadata 
+package: mysql mysql-devel mysql-server 
+package: python python-devel 
+package: doxygen  
+package: cronie
+package: xmlsec1 xmlsec1-openssl 
+package: expat-devel
+package: db4-devel 
+package: ncurses-devel 
+package: readline-devel 
+package: dnsmasq 
+# for spec2make / rpmlib
+package=f8: popt-devel
+# kernel
+package: gnupg 
+package: diffutils 
+package: patchutils 
+package: vconfig 
+package: iptables 
+package: wget 
+package: beecrypt-devel 
+package: tetex-latex
+package: gcc-c++ 
+package: binutils-devel
+# required for perf
+package: xmlto asciidoc newt-devel
+package: perl-ExtUtils-Embed
+# iptables
+package: linuxdoc-tools 
+package: sudo 
+package: yum createrepo 
+## mysql
+#package: gperf 
+#package: time 
+# bootmanager
+package: sharutils 
+# bootcd
+package: nasm 
+package: mkisofs 
+package: dosfstools 
+package: mtools
+package: syslinux
+# myplc
+package: rsync 
+package: ghostscript
+# myplc-docs
+package: ed
+package: docbook-utils-pdf 
+# plcapi
+package: postgresql postgresql-devel postgresql-python postgresql-server 
+# if we don't specify @arch@ for php-devel, we end up with the 2 variants (i386 and x86_64)
+# in an undetermined order, and php-config --extension-dir might return the wrong place
+package: php php-devel.@arch@ php-gd php-pgsql 
+# now this seems to have been fixed in f12
+package>=f12: php-devel
+package<=f18: PyXML 
+# used to reference SOAPpy as well
+# for pypcilib
+package: pciutils-devel
+package: python-simplejson
+##########
+# for vsys - same as for php-devel above
+package: ocaml.@arch@
+# use local inotify-tools on centos
+package>=f8:inotify-tools-devel 
+### ##########
+### ## for util-vserver-pl
+### # use local libnl on centos
+### package>=f8: libnl-devel
+### # for util-vserver
+### package: ctags
+### #
+### package=f8: e2fsprogs-devel.@arch@
+### package>=f12: e2fsprogs-devel
+### package>=f14: e2fsprogs nss-devel
+##########
+# openvswitch
+# starting with f16 we use the stock kernel, and openvswitch needs kernel-devel
+# ????? package>=f16: kernel-devel
+# ????? NorNet: commented out !!!!!
+##########
+# zabbix/monitor
+package=centos5: krb5-devel.@arch@ e2fsprogs-devel.@arch@ libidn-devel.@arch@
+##########
+# for sfa : rebuilding wsdl index at build-time
+package: python-uuid pyOpenSSL m2crypto
+package: libxml2-python libxslt-python
+package: python-ZSI 
+package: python-psycopg2
+package: python-setuptools
+package: python-dateutil
+package: python-lxml
+# DistributedRateLimiting
+package: libxml2-devel
+# myplc-docs
+package>=f18: texlive-ec
+
+
+# ###### NorNet customisation ###############################################
+package: lksctp-tools-devel
+package: valgrind-devel
+package: bzip2-devel
+package: glib2-devel
+package: GeoIP-devel
+package: qt-devel
+package: libpcap-devel
+package: libdnet-devel
+package: lua-devel
+
+# The following packages are needed to build the 3.11+ kernel:
+package: hmaccalc
+package: net-tools
+package: bc
+package: elfutils-devel
+package: audit-libs-devel
+package: gettext
+package: pesign
+package: openssl
+# ###########################################################################

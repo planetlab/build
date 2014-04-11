@@ -1,0 +1,73 @@
+#
+groupname: PlanetLabSlice
+groupdesc: PlanetLab Slice Reference Image
+# packages to exclude from stock repositories
+yumexclude: @NODEYUMEXCLUDE@
+
+package: filesystem bash coreutils
+package: findutils diffutils
+package: crontabs logrotate passwd sudo
+package: gzip bzip2 tar rsync
+package: wget curl
+package: perl
+package: python python-devel
+package: yum
+package: iputils
+package: tcpdump traceroute telnet
+package<=f18: nc
+package>=f20: nmap-ncat
+package: openssh-clients
+package: time
+# this is really old school but well..
+package: rsh which
+
+package: cronie
+
+# xxx not entirely sure this is required any more
+package: openssh-server
+
+# for ifconfig
+package: net-tools
+
+# required for lxc-based nodes
+package: dhclient
+# a PL-specific, also required on lxc-based nodes
+package: bind_public
+
+package: vsyssh
+package: vsys-wrapper
+
+# onelab additions
+package: sliver-openvswitch
+package: ipfwslice
+
+# convenience
+package: less emacs-nox
+
+
+# ###### NorNet customisation ###############################################
+package: bind-utils
+package: colordiff
+package: ethtool
+package: git
+package: joe
+package: htop
+package: libidn
+# package: kernel-modules-extra
+package: lksctp-tools
+package: net-snmp-utils
+package: nfs-utils
+package: nmap
+package: nuttcp
+package: tcpdump
+package: tftp
+package: whois
+package: wireshark
+package: xauth
+
+package: netperfmeter
+package: rsplib
+package: subnetcalc
+package: tracebox
+package: tsctp
+# ###########################################################################

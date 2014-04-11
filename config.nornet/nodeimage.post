@@ -1,0 +1,49 @@
+#!/bin/bash
+
+vdir=$1
+if [ -z "${vdir}" ] ; then
+	echo "ERROR: $0"
+	echo "Provide the directory of the root filesystem to operate on"
+	exit
+fi
+
+# Cleanup yum config entirely, waiting for the config files to populate this
+rm -rf ${vdir}/etc/yum.conf ${vdir}/etc/yum.repos.d
+
+# Tweaking services
+# turn ON openvswitch as it is required for the privatebridge nm plugin
+chroot ${vdir} systemctl enable openvswitch.service || :
+# enabling network as it ends up turned off on systems that come with NetworkManager, starting with fedora9
+chroot ${vdir} systemctl enable network.service || :
+# and turn off NetworkManager if present, as it quite obviously messes with network
+chroot ${vdir} systemctl disable NetworkManager.service || :
+# turn on ntpd
+chroot ${vdir} systemctl enable ntpd.service || :
+# tentatively turn on getty on tty1
+chroot ${vdir} systemctl enable getty@tty1.service || :
+
+# Disable splaying of cron.
+echo > ${vdir}/etc/sysconfig/crontab
+
+# Add site_admin account
+chroot ${vdir} /usr/sbin/useradd -p "" -u 502 -m site_admin
+
+# Add a logrotate script for btmp, which logs failed ssh logins, which can
+# grow unbounded on public plnodes and fill the root fs.
+cat <<EOF > ${vdir}/etc/logrotate.d/btmp
+/var/log/btmp {
+    weekly
+    minsize 1M
+    create 0600 root utmp
+    rotate 2
+    compress
+    notifempty
+}
+EOF
+
+#################### historical notes - see config.planetlab/nodeimage.post
+# xxx turning OFF selinux
+# there used to be some code for that in the historical/vserver version
+# none of that code seems applicable in f16 any longer
+#
+# also a horrible hack to the network initscripts has been removed

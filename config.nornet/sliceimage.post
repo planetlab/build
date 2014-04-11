@@ -1,0 +1,34 @@
+#!/bin/bash
+
+vdir=$1
+
+if [ -z "${vdir}" ] ; then
+	echo "ERROR: $0"
+	echo "Provide the directory of the root filesystem to operate on"
+	exit
+fi
+
+# reset root password to be empty
+echo "in slice image: resetting root password"
+sed -i -e "s/root:[\*|x]/root:/" ${vdir}/etc/passwd
+
+# modify the sudoers file to remove the 'requiretty' attribute
+echo "in slice image: removing requiretty from /etc/sudoers"
+sed -i -e 's,^\(Defaults.*requiretty\),#\1,' ${vdir}/etc/sudoers
+
+# make sure we do not end up with an empty /selinux 
+# libvirt gets all confused when that happens
+cd ${vdir}
+if [ -d selinux ] ; then
+    if [ "$(ls -A selinux)" ] ; then
+	echo "sliceimage.post: WARNING: ${vdir}/selinux is not empty - preserving"
+    else
+	echo "sliceimage.post: REMOVING empty ${vdir}/selinux"
+	rmdir selinux
+    fi
+fi
+
+# for when runing under lxc, make sure we don't try to fsck from a slice
+sed -i -e 's,1 1,0 0,' ${vdir}/etc/fstab
+
+cd -
