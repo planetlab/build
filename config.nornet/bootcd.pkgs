@@ -1,0 +1,97 @@
+groupname: PlanetLabBootcd
+groupdesc: PlanetLab BootCD
+# packages to exclude from stock repositories
+yumexclude: @NODEYUMEXCLUDE@
+# define packages
+package: btrfs-progs
+package: filesystem
+package: dhclient
+package: bash
+package: coreutils
+package: iputils
+package: kernel
+package: bzip2
+package: diffutils
+package: logrotate
+package: passwd
+package: rsync
+package: sudo
+package: tcpdump
+package: telnet
+package: traceroute
+package: time
+package: wget
+package: yum
+package: curl
+package: gzip
+package: python
+package: tar
+package: pciutils
+package: kbd
+package: authconfig
+package: hdparm
+package: lvm2
+package: kexec-tools
+package>=f8 package>=centos5: gnupg
+package>=sl6: gnupg2
+package: nano
+package: parted
+package: pyparted
+package: openssh-server
+package: openssh-clients
+package: ncftp
+package: dosfstools
+package: dos2unix
+package: bind-utils
+package: sharutils
+package: vconfig
+package: ntp
+package: pypcilib
+package: openvpn
+package: vim-enhanced
+# make this explicit for f14 as we need mkfs.ext2 in bm
+package: e2fsprogs
+# used to be installed until f12, make it explicit for f14, might come in handy
+package>=f14: rsyslog 
+package: strace lsof
+package>=f18: net-tools
+#################### formerly in prep.sh
+junk: lib/obsolete
+junk: lib/tls
+junk: usr/share/cracklib
+junk: usr/share/emacs
+junk: usr/share/gnupg
+junk: usr/share/i18n
+junk: usr/share/locale
+junk: usr/share/terminfo
+junk: usr/share/zoneinfo
+junk: usr/sbin/build-locale-archive
+junk: usr/sbin/dbconverter-2
+junk: usr/sbin/sasl*
+junk: usr/sbin/tcpslice
+junk: usr/lib/perl*
+junk: usr/lib/locale
+junk: usr/lib/sasl*
+junk: usr/lib/gconv
+junk: usr/lib/tls
+junk: usr/boot
+#
+precious: usr/share/i18n/locales/en_US
+precious: usr/share/i18n/charmaps/UTF-8.gz
+precious: usr/share/locale/en
+precious: usr/share/terminfo/l/linux
+precious: usr/share/terminfo/v/vt100
+precious: usr/share/terminfo/x/xterm
+precious: usr/share/zoneinfo/UTC
+precious: boot/*@pldistro@*
+precious: boot/config*
+precious: boot/initrd-boot*
+precious: boot/kernel-boot*
+precious: boot/grub
+precious<=f8 precious<=centos5: usr/lib/locale/en_US.utf8
+
+
+# ###### NorNet customisation ###############################################
+package: joe
+package: less 
+# ###########################################################################

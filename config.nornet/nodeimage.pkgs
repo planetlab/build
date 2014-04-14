@@ -1,0 +1,159 @@
+#
+# Keeping the old name as it might be referenced elsewhere (node update..)
+# groupname: Bootstrapfs
+groupname: PlanetLab
+groupdesc: PlanetLab Node Root
+# our own modules
+package: ipfwroot
+package: lxc-userspace
+package: transforward
+package: procprotect
+# packages to exclude from stock repositories
+yumexclude: @NODEYUMEXCLUDE@
+# fedora-release or centos-release are pulled from deps
+# define packages
+package: btrfs-progs
+package: bridge-utils
+package: dnsmasq
+package: bash-completion
+package: kernel
+package: linux-firmware
+package: systemd
+package: basesystem
+package: filesystem
+package: lvm2
+package: bash
+package: coreutils
+package: python
+package: cpio
+package: e2fsprogs
+package: ed
+package: file     
+package: glibc
+package: hdparm
+package: initscripts
+package: iproute
+package: iputils
+package: kbd
+package: passwd
+package: procps-ng
+package: readline
+package: rootfiles
+package: rpm
+package: setserial
+package: setup
+package: vim-enhanced
+package: shadow-utils
+package: cronie-anacron
+package: at
+package: authconfig
+package: bc
+package: bind-utils
+package: bzip2
+package: crontabs
+package: dhclient
+package: diffutils
+package: ethtool
+package: logrotate
+package: libnl
+package: lsof
+package: mailcap
+package: nano
+package: nmap-ncat
+package: openssh-clients
+package: parted
+package: pciutils
+package: psacct
+package: quota
+package: rsh
+package: rsync
+package: sendmail
+package: sudo
+package: telnet
+package: traceroute
+package: time
+package: tmpwatch
+package: tcpdump
+package: openssh-server
+package: wget
+package: yum
+package: curl
+package: gzip
+package: iptables
+package: dracut
+package: ntp
+package: perl
+package: python
+package: tar
+package: expect
+package: nfs-utils
+package: openvpn
+package: vconfig
+package<=f18: PyXML
+
+#
+# platform-dependent
+#
+package: rsyslog
+package: util-linux
+package: cronie
+
+#
+# planetlab
+#
+package: wireless-tools
+package: nodemanager-lxc
+package: NodeUpdate
+package: codemux
+package: pl_sshd
+package: ipod
+package: sliceimage-@pldistro@-@fcdistro@-@arch@
+package: sliceimage-system-@pldistro@-@fcdistro@-@arch@
+package: lxc-sliceimage
+#package: pl_mom
+package: fprobe-ulog
+package: vsys
+package: vsys-scripts
+# ??? package: monitor-client
+# ??? package: monitor-runlevelagent
+package: net-tools
+
+### used to be in the onelab umts extension, but doesn't hurt anyone
+package: planetlab-umts-tools-backend ppp comgt
+
+### convenience
+package: less
+package: emacs-nox
+
+package>=f20: libvirt
+
+
+# ###### NorNet customisation ###############################################
+package: bind-utils
+package: colordiff
+package: ethtool
+package: git
+package: joe
+package: htop
+package: libidn
+package: kernel-modules-extra
+package: lksctp-tools
+package: net-snmp-utils
+package: nfs-utils
+package: nmap
+package: nuttcp
+package: tcpdump
+package: tftp
+package: whois
+package: wireshark
+package: xauth
+
+package: open-vm-tools
+package: smartmontools
+
+package: netperfmeter
+package: rsplib
+package: subnetcalc
+package: tracebox
+package: tsctp
+# ###########################################################################
