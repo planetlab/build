@@ -33,6 +33,7 @@ VIF_GUEST=eth0
 
 ##########
 FEDORA_MIRROR_BASE="http://mirror.onelab.eu/fedora/"
+FEDORA_MIRROR_KEYS="http://mirror.onelab.eu/keys/"
 FEDORA_PREINSTALLED="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils openssh-server openssh-clients"
 DEBIAN_PREINSTALLED="openssh-server openssh-client"
 
@@ -321,7 +322,7 @@ baseurl=$FEDORA_MIRROR_BASE/releases/\$releasever/Everything/\$basearch/os/
 enabled=1
 metadata_expire=7d
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-\$releasever-\$basearch
+gpgkey=$FEDORA_MIRROR_KEYS/RPM-GPG-KEY-fedora-$release-primary
 
 [updates]
 name=Fedora \$releasever - \$basearch - Updates
@@ -329,7 +330,7 @@ baseurl=$FEDORA_MIRROR_BASE/updates/\$releasever/\$basearch/
 enabled=1
 metadata_expire=7d
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-\$releasever-\$basearch
+gpgkey=$FEDORA_MIRROR_KEYS/keys/RPM-GPG-KEY-fedora-$release-primary
 EOF
 
     # for using vtest-init-lxc.sh as a general-purpose lxc creation wrapper
