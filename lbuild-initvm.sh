@@ -330,7 +330,7 @@ baseurl=$FEDORA_MIRROR_BASE/updates/\$releasever/\$basearch/
 enabled=1
 metadata_expire=7d
 gpgcheck=1
-gpgkey=$FEDORA_MIRROR_KEYS/keys/RPM-GPG-KEY-fedora-$release-primary
+gpgkey=$FEDORA_MIRROR_KEYS/RPM-GPG-KEY-fedora-$release-primary
 EOF
 
     # for using vtest-init-lxc.sh as a general-purpose lxc creation wrapper
