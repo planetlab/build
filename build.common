@@ -573,6 +573,8 @@ function pl_parsePkgs () {
 # usage: pl_getPackages [-a arch] fcdistro pldistro pkg-file[..s]
 function pl_getPackages() { pl_parsePkgs package "$@" ; }
 function pl_getGroups() { pl_parsePkgs group "$@" ; }
+function pl_getPips() { pl_parsePkgs pip "$@" ; }
+function pl_getGems() { pl_parsePkgs gem "$@" ; }
 
 ##############################
 

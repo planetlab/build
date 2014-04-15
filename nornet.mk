@@ -487,18 +487,6 @@ IN_MYPLC += pyplnet
 IN_BOOTCD += pyplnet
 
 #
-# for OMF resource controller as a gem : rvm-ruby has right version of ruby and related gem stuff
-#
-ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20)"
-rvm-ruby-MODULES := rvm-ruby
-rvm-ruby-SPEC := rpm/rvm-ruby.spec
-rvm-ruby-STOCK-DEVEL-RPMS := chrpath libyaml-devel libffi-devel libxslt-devel
-# Since Oct 22. 2013, f18 has a new release of openssl that ruby is not too happy to build against
-# turning this off for now, Christoph Dwertmann to monitor the status of this bug/incompatibility upstream
-ALL += rvm-ruby
-endif
-
-#
 # OML measurement library
 #
 oml-MODULES := oml

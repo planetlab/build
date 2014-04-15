@@ -1,8 +1,14 @@
 #
-groupname: rvm-ruby
-groupdesc: rvm and pre-installed ruby for easily deploying omf-rc as a gem
-# unfortunately the rvm-ruby build got broken on f18 at some point because of 
-# changes in openssl - see lxc.mk
-# however it's best to define a valid extension here because otherwise
-# the omf sliceimage is not known, and slices cannot be instantiated
-package>=f22: rvm-ruby
+groupname: omf-resctl
+groupdesc: OMF resource controller
+
+# for versions up to f14, the mainstream version of ruby is too old
+# we use the rvm-ruby package, that relies on rvm to install the right ruby
+# plus the omf_resctl gem
+package<=f14: rvm-ruby
+
+# starting with f18 the mainstream versions of ruby is fine for omf resctl
+package>=f18: ruby ruby-devel
+gem>=f18: omf_rc
+
+package: oml
