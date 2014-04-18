@@ -11,4 +11,4 @@ package<=f14: rvm-ruby
 package>=f18: ruby ruby-devel
 gem>=f18: omf_rc
 
-package: oml
+package: liboml
