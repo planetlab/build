@@ -8,8 +8,8 @@ drupal
 fprobe-ulog
 ipfw
 iptables
-libvirt-python:1.2.1
-libvirt:1.2.1
+libvirt-python:1.2.3
+libvirt:1.2.3
 linux-2.6:32
 lxc-userspace
 madwifi
