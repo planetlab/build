@@ -1,5 +1,5 @@
 lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-11
-transforward-GITPATH            := git://git.planet-lab.org/transforward.git@master
+transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-6
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-4
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
 comgt-SVNPATH			:= http://svn.onelab.eu/comgt/imports/0.3
