@@ -54,6 +54,7 @@ package: rsyslog
 package: strace lsof
 package: net-tools
 package: ansible
+package: git
 
 #################### formerly in prep.sh
 junk: lib/obsolete
