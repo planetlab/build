@@ -633,21 +633,25 @@ function devel_or_vtest_tools () {
 function post_install () {
     lxc=$1; shift 
     personality=$1; shift
-    if [ -n "$BUILD_MODE" ] ; then
-	post_install_build $lxc $personality
-	virsh -c lxc:/// start $lxc
-	# manually run dhclient in guest - somehow this network won't start on its own
-	virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "dhclient $VIF_GUEST"
-    else
-	post_install_myplc $lxc $personality
-	virsh -c lxc:/// start $lxc
-# it sounds like we don't need ssh per se any more
-# it still makes sense to wait for network readiness though
-# some day maybe...
-	wait_for_ssh $lxc
-    fi
     # setup localtime from the host
     cp /etc/localtime $lxc_root/etc/localtime
+    if [ -n "$BUILD_MODE" ] ; then
+	post_install_build $lxc $personality
+	if [ -n "$START_VM" ] ; then
+	    virsh -c lxc:/// start $lxc
+	    # manually run dhclient in guest - somehow this network won't start on its own
+            virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "dhclient $VIF_GUEST"
+	fi
+    else
+	post_install_myplc $lxc $personality
+	if [ -n "$START_VM" ] ; then
+	    virsh -c lxc:/// start $lxc
+	    # it sounds like we don't need ssh per se any more
+	    # it still makes sense to wait for network readiness though
+	    # some day maybe...
+	    wait_for_ssh $lxc
+	fi
+    fi
 }
 
 function post_install_build () {
@@ -750,6 +754,7 @@ function usage () {
     echo "    by default we use devel.pkgs (build mode) or runtime.pkgs (test mode)"
     echo " -i image - the location of the rootfs"
     echo " -m memory - the amount of allocated memory in MB - defaults to $DEFAULT_MEMORY MB"
+    echo " -s do not start VM"
     echo " -v be verbose"
     exit 1
 }
@@ -765,7 +770,8 @@ function main () {
           exit 1
     fi
 
-    while getopts "n:f:d:p:r:P:i:m:v" opt ; do
+    START_VM=true
+    while getopts "n:f:d:p:r:P:i:m:sv" opt ; do
 	case $opt in
 	    n) GUEST_HOSTNAME=$OPTARG;;
 	    f) fcdistro=$OPTARG;;
@@ -775,6 +781,7 @@ function main () {
 	    P) PREINSTALLED=$OPTARG;;
             i) IMAGE=$OPTARG;;
             m) MEMORY=$OPTARG;;
+	    s) START_VM= ;;
 	    v) VERBOSE=true; set -x;;
 	    *) usage ;;
 	esac
