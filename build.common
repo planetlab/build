@@ -20,7 +20,7 @@ function pl_getDistro() {
 	case $distro in Scientific*) distro="SL" ; esac
     elif [ -f /etc/lsb-release ] ; then
 	. /etc/lsb-release
-	echo $DISTRIB_CODENAME 
+	distro=$DISTRIB_CODENAME 
     elif [ -f /etc/debian_version ] ; then
 	case $(cat /etc/debian_version) in
 	    6.*) distro=squeeze ;;
