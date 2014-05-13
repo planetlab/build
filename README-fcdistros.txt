@@ -13,7 +13,7 @@
 #
 # the build utilities can now produce a build VM for the most recent
 # debians (squeeze, wheezy, jessie) and ubuntus ( oreinic, precise, quantal,
-# raring, saucy )
+# raring, saucy, trusty )
 # 
 # of course we're nowhere close to supporting the whole PLC on these
 # systems, as packaging for debian requires manual tweaks in every
