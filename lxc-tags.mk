@@ -49,6 +49,6 @@ myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.3-
 
 #
 sfa-BRANCH			:= geni-v3
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-4
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@master
 #
 tests-GITPATH                   := git://git.onelab.eu/tests.git@master
