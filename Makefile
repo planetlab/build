@@ -721,7 +721,7 @@ $(1)-debian: $(1)-tarball
 	$(call dpkgapt_install_local_debs,$(1))
 	$(call dpkgapt_install_stock_debs,$(1))
 	mkdir -p DEBIAN/$(1)
-	rsync -a MODULES/$(1)/ DEBIAN/$(1)/
+	rsync -a MODULES/$($(1).module)/ DEBIAN/$(1)/
 	make -C DEBIAN/$(1) "RPMTARBALL=$(HOME)/$($(1).tarballs)" "RPMVERSION=$($(1).rpm-version)" "RPMRELEASE=$($(1).rpm-release)" "RPMNAME=$($(1).rpm-name)" debian
 	$(call dpkgapt_uninstall_stock_debs,$(1))
 endef
