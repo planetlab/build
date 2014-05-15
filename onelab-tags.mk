@@ -52,7 +52,7 @@ DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRate
 
 #
 sfa-BRANCH			:= geni-v3
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@geni-v3
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@geni-v3
 #
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.3-4
