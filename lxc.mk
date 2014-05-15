@@ -101,15 +101,10 @@ IN_NODEIMAGE += plnode-utils
 #
 # nodemanager
 #
-nodemanager-lib-MODULES := nodemanager
-nodemanager-lib-SPEC := nodemanager-lib.spec
-ALL += nodemanager-lib
-IN_NODEIMAGE += nodemanager-lib
-
-nodemanager-lxc-MODULES := nodemanager
-nodemanager-lxc-SPEC := nodemanager-lxc.spec
-ALL += nodemanager-lxc
-IN_NODEIMAGE += nodemanager-lxc
+nodemanager-MODULES := nodemanager
+nodemanager-SPEC := nodemanager.spec
+ALL += nodemanager
+IN_NODEIMAGE += nodemanager
 
 #
 # pl_sshd

@@ -194,15 +194,10 @@ IN_NODEIMAGE += plnode-utils
 #
 # nodemanager
 #
-nodemanager-lib-MODULES := nodemanager
-nodemanager-lib-SPEC := nodemanager-lib.spec
-ALL += nodemanager-lib
-IN_NODEIMAGE += nodemanager-lib
-
-nodemanager-vs-MODULES := nodemanager
-nodemanager-vs-SPEC := nodemanager-vs.spec
-ALL += nodemanager-vs
-IN_NODEIMAGE += nodemanager-vs
+nodemanager-MODULES := nodemanager
+nodemanager-SPEC := nodemanager.spec
+ALL += nodemanager
+IN_NODEIMAGE += nodemanager
 
 #
 # pl_sshd
