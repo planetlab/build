@@ -53,8 +53,12 @@ package: e2fsprogs
 package: rsyslog 
 package: strace lsof
 package: net-tools
+# for the new ansible-based hooks
 package: ansible
 package: git
+# experimentally ship qemu on the bootcd
+package: qemu
+package: bridge-utils
 
 #################### formerly in prep.sh
 junk: lib/obsolete
