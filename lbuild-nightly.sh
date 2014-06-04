@@ -305,7 +305,7 @@ function run_log () {
     ssh -n ${testmaster_ssh} rm -rf ${testdir} ${testdir}.git
 
     # check it out in the build
-    virsh -c lxc:/// lxc-enter-namespace $BASE /bin/bash -c "make -C /build tests-module"
+    virsh -c lxc:/// lxc-enter-namespace $BASE /bin/bash -c "make -C /build tests-module ${MAKEVARS[@]}"
     
     # push it onto the testmaster - just the 'system' subdir is enough
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/tests/system/ ${testmaster_ssh}:${BASE}
