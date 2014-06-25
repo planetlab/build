@@ -214,6 +214,9 @@ function fedora_configure() {
     # set the hostname
     case "$fcdistro" in 
 	f18|f2?)
+            cat <<EOF > ${lxc_root}/etc/sysconfig/network
+NETWORKING=yes
+EOF
 	    cat <<EOF > ${lxc_root}/etc/hostname
 $GUEST_HOSTNAME
 EOF
