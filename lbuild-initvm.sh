@@ -19,6 +19,8 @@ export PATH=$PATH:/bin:/sbin
 
 . build.common
 
+# XXX fixme : when creating a 32bits VM we need to call linux32 as appropriate...s
+
 DEFAULT_FCDISTRO=f20
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
