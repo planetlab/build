@@ -277,8 +277,8 @@ function fedora_configure_init() {
     # don't mount devpts, for pete's sake
     sed -i 's/^.*dev.pts.*$/#\0/' ${lxc_root}/etc/rc.sysinit
     sed -i 's/^.*dev.pts.*$/#\0/' ${lxc_root}/etc/rc.d/rc.sysinit
-    chroot ${lxc_root} chkconfig udev-post off
-    chroot ${lxc_root} chkconfig network on
+    chroot ${lxc_root} $personality chkconfig udev-post off
+    chroot ${lxc_root} $personality chkconfig network on
 }
 
 # this code of course is for guests that do run on systemd
@@ -301,7 +301,7 @@ function fedora_configure_systemd() {
     ln -sf /dev/null ${lxc_root}/etc/systemd/system/"getty@.service"
     rm -f ${lxc_root}/etc/systemd/system/getty.target.wants/*service || :
 # can't seem to handle this one with systemctl
-    chroot ${lxc_root} chkconfig network on
+    chroot ${lxc_root} $personality chkconfig network on
 }
 
 # overwrite container yum config
@@ -315,7 +315,7 @@ function fedora_configure_yum () {
     pldistro=$1; shift
 
     # rpm --rebuilddb
-    chroot $lxc_root rpm --rebuilddb
+    chroot ${lxc_root} $personality rpm --rebuilddb
 
     echo "Initializing yum.repos.d in $lxc"
     rm -f $lxc_root/etc/yum.repos.d/*
@@ -384,10 +384,10 @@ function debian_install () {
     debootstrap --arch $arch $fcdistro $lxc_root $mirror
     # just like with fedora we ensure a few packages get installed as well
     # not started yet
-    #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get update"
-    #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
-    chroot $lxc_root apt-get update
-    chroot $lxc_root apt-get -y install $DEBIAN_PREINSTALLED
+    #virsh -c lxc:/// lxc-enter-namespace $lxc /usr/bin/$personality /bin/bash -c "apt-get update"
+    #virsh -c lxc:/// lxc-enter-namespace $lxc /usr/bin/$personality /bin/bash -c "apt-get -y install $DEBIAN_PREINSTALLED"
+    chroot ${lxc_root} $personality apt-get update
+    chroot ${lxc_root} $personality apt-get -y install $DEBIAN_PREINSTALLED
     # configure hostname
     cat <<EOF > ${lxc_root}/etc/hostname
 $GUEST_HOSTNAME
@@ -592,22 +592,22 @@ function devel_or_vtest_tools () {
     ### install individual packages, then groups
     # get target arch - use uname -i here (we want either x86_64 or i386)
    
-    lxc_arch=$(chroot $lxc_root uname -i)
+    lxc_arch=$(chroot ${lxc_root} $personality uname -i)
     # on debian systems we get arch through the 'arch' command
-    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot $lxc_root arch)
+    [ "$lxc_arch" = "unknown" ] && lxc_arch=$(chroot ${lxc_root} $personality arch)
 
     packages=$(pl_getPackages -a $lxc_arch $fcdistro $pldistro $pkgsfile)
     groups=$(pl_getGroups -a $lxc_arch $fcdistro $pldistro $pkgsfile)
 
     case "$pkg_method" in
 	yum)
-	    [ -n "$packages" ] && chroot $lxc_root yum -y install $packages
+	    [ -n "$packages" ] && chroot ${lxc_root} $personality yum -y install $packages
 	    for group_plus in $groups; do
 		group=$(echo $group_plus | sed -e "s,+++, ,g")
-		chroot $lxc_root yum -y groupinstall "$group"
+		chroot ${lxc_root} $personality yum -y groupinstall "$group"
 	    done
 	    # store current rpm list in /init-lxc.rpms in case we need to check the contents
-	    chroot $lxc_root rpm -aq > $lxc_root/init-lxc.rpms
+	    chroot ${lxc_root} $personality rpm -aq > $lxc_root/init-lxc.rpms
 	    ;;
 	debootstrap)
 	    # for ubuntu
@@ -622,8 +622,8 @@ function devel_or_vtest_tools () {
 	    fi
 	    for package in $packages ; do
 		# container not started yet
-	        #virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "apt-get install -y $package" || :
-		chroot $lxc_root apt-get install -y $package || :
+	        #virsh -c lxc:/// lxc-enter-namespace $lxc /usr/bin/$personality /bin/bash -c "apt-get install -y $package" || :
+		chroot ${lxc_root} $personality apt-get install -y $package || :
 	    done
 	    ### xxx todo install groups with apt..
 	    ;;
@@ -645,7 +645,7 @@ function post_install () {
 	if [ -n "$START_VM" ] ; then
 	    virsh -c lxc:/// start $lxc
 	    # manually run dhclient in guest - somehow this network won't start on its own
-            virsh -c lxc:/// lxc-enter-namespace $lxc /bin/bash -c "dhclient $VIF_GUEST"
+            virsh -c lxc:/// lxc-enter-namespace $lxc /usr/bin/$personality /bin/bash -c "dhclient $VIF_GUEST"
 	fi
     else
 	post_install_myplc $lxc $personality
@@ -670,7 +670,7 @@ function post_install_build () {
 
 ### From myplc-devel-native.spec
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $lxc_root bash -x
+    cat << EOF | chroot ${lxc_root} $personality bash -x
     
     # customize root's prompt
     /bin/cat << PROFILE > /root/.profile
@@ -690,7 +690,7 @@ function post_install_myplc  () {
     personality=$1; shift
 
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
-    cat << EOF | chroot $lxc_root bash -x
+    cat << EOF | chroot ${lxc_root} $personality bash -x
 
     # create /etc/sysconfig/network if missing
     [ -f /etc/sysconfig/network ] || /bin/echo NETWORKING=yes > /etc/sysconfig/network
