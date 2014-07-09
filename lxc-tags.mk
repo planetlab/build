@@ -1,4 +1,4 @@
-lxc-userspace-GITPATH           := git://git.onelab.eu/lxc-userspace.git@lxc-userspace-1.0-11
+lxc-userspace-GITPATH           := git://git.onelab.eu/lxc-userspace.git@master
 transforward-GITPATH            := git://git.onelab.eu/transforward.git@transforward-0.1-6
 procprotect-GITPATH             := git://git.onelab.eu/procprotect.git@procprotect-0.4-4
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@ipfw-20130423-1
