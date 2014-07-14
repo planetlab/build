@@ -55,4 +55,4 @@ sfa-BRANCH			:= geni-v3
 sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-8
 #
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.3-6
+tests-GITPATH                   := git://git.onelab.eu/tests.git@master
