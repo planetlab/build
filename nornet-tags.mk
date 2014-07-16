@@ -30,7 +30,7 @@ tsctp-GITPATH                   := git://github.com/dreibh/tsctp.git@master
 # ipfw-GITPATH                    := git://github.com/dreibh/planetlab-lxc-ipfw.git@master
 # #####################################
 
-lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-11
+lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-12
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-6
 procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-4
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@155b6cd31089b4763297d579e9c9945393f00c40
