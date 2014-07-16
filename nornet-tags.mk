@@ -32,7 +32,7 @@ tsctp-GITPATH                   := git://github.com/dreibh/tsctp.git@master
 
 lxc-userspace-GITPATH           := git://git.planet-lab.org/lxc-userspace.git@lxc-userspace-1.0-12
 transforward-GITPATH            := git://git.planet-lab.org/transforward.git@transforward-0.1-6
-procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-4
+procprotect-GITPATH             := git://git.planet-lab.org/procprotect.git@procprotect-0.4-5
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@155b6cd31089b4763297d579e9c9945393f00c40
 comgt-GITPATH			:= git://git.onelab.eu/comgt.git@0.3
 planetlab-umts-tools-GITPATH    := git://git.onelab.eu/planetlab-umts-tools.git@planetlab-umts-tools-0.7-1
