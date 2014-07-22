@@ -3,7 +3,8 @@ groupname: PlanetLabDevel
 groupdesc: Building PlanetLab
 #
 # general utilities
-package: sendmail sendmail-cf mailx 
+# !!! NorNet uses postfix !!! package: sendmail
+package: postfix mailx 
 package: make git
 package: glibc glibc-common 
 package: bzip2 gzip
@@ -104,8 +105,8 @@ package>=f8:inotify-tools-devel
 ##########
 # openvswitch
 # starting with f16 we use the stock kernel, and openvswitch needs kernel-devel
-# ????? package>=f16: kernel-devel
-# ????? NorNet: commented out !!!!!
+# !!! NorNet uses own kernel !!! package>=f16: kernel-devel
+# !!! NorNet uses own kernel !!! package>=f16: kernel-modules-extra
 ##########
 # zabbix/monitor
 package=centos5: krb5-devel.@arch@ e2fsprogs-devel.@arch@ libidn-devel.@arch@
@@ -122,6 +123,15 @@ package: python-lxml
 package: libxml2-devel
 # myplc-docs
 package>=f18: texlive-ec
+# libvirt
+package: gettext
+package: gettext-devel
+package: gnutls-devel
+package: gnutls-utils
+package: libgcrypt-devel
+package: libtasn1-devel
+package: nmap-ncat
+package: pkgconfig
 
 
 # ###### NorNet customisation ###############################################
@@ -134,14 +144,17 @@ package: qt-devel
 package: libpcap-devel
 package: libdnet-devel
 package: lua-devel
+package: iptables-services 
+package: nmap-ncat
+package: xorg-x11-xauth
 
 # The following packages are needed to build the 3.11+ kernel:
 package: hmaccalc
 package: net-tools
 package: bc
 package: elfutils-devel
+package: elfutils-libelf-devel
 package: audit-libs-devel
-package: gettext
 package: pesign
 package: openssl
 # ###########################################################################

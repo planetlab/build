@@ -39,7 +39,7 @@ kernel-RPMFLAGS += --without smp --without pae --without debug --without doc --w
 kernel-WHITELIST-RPMS := kernel,kernel-headers,kernel-devel,kernel-modules-extra,kernel-tools,kernel-tools-libs,kernel-tools-libs-devel
 kernel-SPECVARS += kernelconfig=planetlab
 KERNELS += kernel
-kernel-STOCK-DEVEL-RPMS += elfutils-libelf-devel
+#kernel-STOCK-DEVEL-RPMS +=
 
 kernels: $(KERNELS)
 kernels-clean: $(foreach package,$(KERNELS),$(package)-clean)
@@ -85,10 +85,11 @@ IN_NODEIMAGE += subnetcalc
 #
 # tracebox
 #
-tracebox-MODULES := tracebox
-tracebox-SPEC := rpm/tracebox.spec
-ALL += tracebox
-IN_NODEIMAGE += tracebox
+# tracebox-MODULES := tracebox
+# tracebox-SPEC := rpm/tracebox.spec
+# tracebox-STOCK-DEVEL-RPMS := fakeroot
+# ALL += tracebox
+# IN_NODEIMAGE += tracebox
 
 #
 # tsctp
@@ -262,7 +263,7 @@ libvirt-MODULES := libvirt
 libvirt-SPEC    := libvirt.spec
 libvirt-BUILD-FROM-SRPM := yes
 # The --without options are breaking spec2make : hard-wired in the specfile instead
-libvirt-STOCK-DEVEL-RPMS += xhtml1-dtds gettext gettext-devel libtasn1-devel gnutls-devel 
+libvirt-STOCK-DEVEL-RPMS += xhtml1-dtds
 libvirt-STOCK-DEVEL-RPMS += libattr-devel augeas libpciaccess-devel yajl-devel 
 libvirt-STOCK-DEVEL-RPMS += libpcap-devel radvd ebtables device-mapper-devel 
 libvirt-STOCK-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub 
@@ -270,7 +271,7 @@ libvirt-STOCK-DEVEL-RPMS += ceph-devel numactl-devel libcap-ng-devel scrub
 libvirt-STOCK-DEVEL-RPMS += libblkid-devel glusterfs-api-devel glusterfs-devel
 # strictly speaking fuse-devel is not required anymore but we might wish to turn fuse back on again in the future
 libvirt-STOCK-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad 
-libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-ipv6 libgcrypt-devel netcf-devel
+libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-services netcf-devel
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
@@ -285,7 +286,7 @@ ifeq "$(separate_libvirt_python)" "true"
 libvirt-python-MODULES := libvirt-python
 libvirt-python-SPEC    := libvirt-python.spec
 libvirt-python-BUILD-FROM-SRPM := yes
-libvirt-python-STOCK-DEVEL-RPMS += gnutls-utils nc pm-utils 
+libvirt-python-STOCK-DEVEL-RPMS += pm-utils
 libvirt-python-LOCAL-DEVEL-RPMS += libvirt-devel libvirt-docs libvirt-client
 libvirt-python-RPMFLAGS :=     --define 'packager PlanetLab'
 ALL += libvirt-python
@@ -355,13 +356,18 @@ vsys-scripts-SPEC := root-context/vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
+vsys-wrapper-MODULES := vsys-scripts
+vsys-wrapper-SPEC := slice-context/vsys-wrapper.spec
+IN_SLICEIMAGE += vsys-wrapper
+ALL += vsys-wrapper
+
 #
 # bind_public
 #
-bind_public-MODULES := bind_public
-bind_public-SPEC := bind_public.spec
-IN_SLICEIMAGE += bind_public
-ALL += bind_public
+# bind_public-MODULES := bind_public
+# bind_public-SPEC := bind_public.spec
+# IN_SLICEIMAGE += bind_public
+# ALL += bind_public
 
 #
 # sliver-openvswitch
