@@ -17,8 +17,8 @@ package: bridge-utils
 package: dnsmasq
 package: bash-completion
 package: kernel
-package: kernel-firmware
-package: udev
+package: linux-firmware
+package: systemd
 package: basesystem
 package: filesystem
 package: lvm2
@@ -36,7 +36,7 @@ package: iproute
 package: iputils
 package: kbd
 package: passwd
-package: procps
+package: procps-ng
 package: readline
 package: rootfiles
 package: rpm
@@ -59,7 +59,7 @@ package: libnl
 package: lsof
 package: mailcap
 package: nano
-package: nc
+package: nmap-ncat
 package: openssh-clients
 package: parted
 package: pciutils
@@ -95,7 +95,7 @@ package<=f18: PyXML
 # platform-dependent
 #
 package: rsyslog
-package: util-linux-ng
+package: util-linux
 package: cronie
 
 #
@@ -114,8 +114,8 @@ package: lxc-sliceimage
 package: fprobe-ulog
 package: vsys
 package: vsys-scripts
-package: monitor-client
-package: monitor-runlevelagent
+# ??? package: monitor-client
+# ??? package: monitor-runlevelagent
 package: net-tools
 
 ### used to be in the onelab umts extension, but doesn't hurt anyone

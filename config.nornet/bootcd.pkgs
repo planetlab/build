@@ -49,12 +49,17 @@ package: ntp
 package: pypcilib
 package: openvpn
 package: vim-enhanced
-# make this explicit for f14 as we need mkfs.ext2 in bm
 package: e2fsprogs
-# used to be installed until f12, make it explicit for f14, might come in handy
-package>=f14: rsyslog 
+package: rsyslog 
 package: strace lsof
-package>=f18: net-tools
+package: net-tools
+# for the new ansible-based hooks
+package: ansible
+package: git
+# experimentally ship qemu on the bootcd
+package: qemu
+package: bridge-utils
+
 #################### formerly in prep.sh
 junk: lib/obsolete
 junk: lib/tls

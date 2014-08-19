@@ -67,7 +67,8 @@ package: psacct
 package: quota
 package: rsh
 package: rsync
-package: sendmail
+# !!! NorNet uses postfix !!! package: sendmail
+package: postfix
 package: sudo
 package: telnet
 package: traceroute
@@ -80,6 +81,7 @@ package: yum
 package: curl
 package: gzip
 package: iptables
+package: iptables-services
 package: dracut
 package: ntp
 package: perl
@@ -135,9 +137,12 @@ package: ethtool
 package: git
 package: joe
 package: htop
+package: info
 package: libidn
 package: kernel-modules-extra
 package: lksctp-tools
+package: man-db
+package: mlocate
 package: net-snmp-utils
 package: nfs-utils
 package: nmap
@@ -146,14 +151,16 @@ package: tcpdump
 package: tftp
 package: whois
 package: wireshark
-package: xauth
+package: xorg-x11-xauth
+package: yum-utils
 
 package: open-vm-tools
 package: smartmontools
 
+package: nornet-nn
 package: netperfmeter
 package: rsplib
 package: subnetcalc
-package: tracebox
+# package: tracebox
 package: tsctp
 # ###########################################################################
