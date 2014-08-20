@@ -85,6 +85,6 @@ myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-2
 
 #
 sfa-BRANCH			:= geni-v3
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-9
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-10
 #
 tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.3-8
