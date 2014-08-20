@@ -26,7 +26,7 @@ vsys-scripts-GITPATH            := git://git.onelab.eu/vsys-scripts.git@vsys-scr
 autoconf-GITPATH		:= git://git.onelab.eu/autoconf@autoconf-2.69-1
 bind_public-GITPATH             := git://git.onelab.eu/bind_public.git@bind_public-0.1-2
 sliver-openvswitch-GITPATH      := git://git.onelab.eu/sliver-openvswitch.git@sliver-openvswitch-2.2.90-1
-plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.3-4
+plcapi-GITPATH                  := git://git.onelab.eu/plcapi.git@plcapi-5.3-5
 drupal-GITPATH                  := git://git.onelab.eu/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.onelab.eu/plewww.git@plewww-5.2-4
 www-register-wizard-SVNPATH     := http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
@@ -52,7 +52,7 @@ DistributedRateLimiting-SVNPATH	:= http://svn.planet-lab.org/svn/DistributedRate
 
 #
 sfa-BRANCH			:= geni-v3
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-9
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-10
 #
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.3-7
+tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-5.3-8

@@ -33,7 +33,7 @@ inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inoti
 openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@master
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-49
-plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.3-4
+plcapi-GITPATH                  := git://git.planet-lab.org/plcapi.git@plcapi-5.3-5
 drupal-GITPATH                  := git://git.planet-lab.org/drupal.git@drupal-4.7-15
 plewww-GITPATH                  := git://git.planet-lab.org/plewww.git@plewww-5.2-4
 www-register-wizard-SVNPATH	:= http://svn.planet-lab.org/svn/www-register-wizard/tags/www-register-wizard-4.3-5
@@ -44,7 +44,7 @@ pyopenssl-GITPATH               := git://git.planet-lab.org/pyopenssl.git@pyopen
 pyaspects-GITPATH		:= git://git.planet-lab.org/pyaspects.git@pyaspects-0.4.1-3
 omf-GITPATH                     := git://git.onelab.eu/omf.git@omf-5.3-11
 ###
-sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-9
+sfa-GITPATH                     := git://git.planet-lab.org/sfa.git@sfa-3.1-10
 sface-GITPATH                   := git://git.planet-lab.org/sface.git@sface-0.9-9
 nodeconfig-GITPATH              := git://git.planet-lab.org/nodeconfig.git@nodeconfig-5.2-4
 bootmanager-GITPATH             := git://git.planet-lab.org/bootmanager.git@bootmanager-5.2-5
@@ -57,4 +57,4 @@ sliceimage-GITPATH              := git://git.planet-lab.org/sliceimage.git@slice
 nodeimage-GITPATH               := git://git.planet-lab.org/nodeimage.git@nodeimage-5.2-3
 myplc-GITPATH                   := git://git.planet-lab.org/myplc.git@myplc-5.3-2
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.3-7
+tests-GITPATH                   := git://git.planet-lab.org/tests.git@tests-5.3-8
