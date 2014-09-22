@@ -38,8 +38,6 @@ IN_NODEIMAGE += procprotect
 #
 # ipfw: root context module, and slice companion
 #
-# this module won't build yet under f20
-ifeq "$(DISTRONAME)" "f18"
 ipfwroot-MODULES := ipfw
 ipfwroot-SPEC := planetlab/ipfwroot.spec
 ALL += ipfwroot
@@ -48,7 +46,6 @@ IN_NODEIMAGE += ipfwroot
 ipfwslice-MODULES := ipfw
 ipfwslice-SPEC := planetlab/ipfwslice.spec
 ALL += ipfwslice
-endif
 
 #
 # comgt - a companion to umts tools
