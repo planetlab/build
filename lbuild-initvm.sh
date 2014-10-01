@@ -453,9 +453,11 @@ function setup_lxc() {
     # Enable cgroup -- xxx -- is this really useful ?
     [ -d $lxc_root/cgroup ] || mkdir $lxc_root/cgroup
     
-    # set up resolv.conf
+    ### set up resolv.conf from host
+    # ubuntu precise and on, /etc/resolv.conf is a symlink to ../run/resolvconf/resolv.conf
+    [ -h $lxc_root/etc/resolv.conf ] && rm -f $lxc_root/etc/resolv.conf
     cp /etc/resolv.conf $lxc_root/etc/resolv.conf
-    # and /etc/hosts for at least localhost
+    ### and /etc/hosts for at least localhost
     [ -f $lxc_root/etc/hosts ] || echo "127.0.0.1 localhost localhost.localdomain" > $lxc_root/etc/hosts
     
     # grant ssh access from host to guest
