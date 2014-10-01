@@ -9,7 +9,7 @@ planetlab-umts-tools-GITPATH    := git://git.onelab.eu/planetlab-umts-tools.git@
 nodeupdate-GITPATH              := git://git.onelab.eu/nodeupdate.git@nodeupdate-0.5-11
 PingOfDeath-SVNPATH		:= http://svn.planet-lab.org/svn/PingOfDeath/tags/PingOfDeath-2.2-1
 plnode-utils-GITPATH            := git://git.onelab.eu/plnode-utils.git@plnode-utils-0.2-2
-nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@nodemanager-5.2-15
+nodemanager-GITPATH             := git://git.onelab.eu/nodemanager.git@master
 #
 pl_sshd-SVNPATH			:= http://svn.planet-lab.org/svn/pl_sshd/tags/pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.onelab.eu/codemux.git@codemux-0.1-15
