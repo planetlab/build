@@ -31,7 +31,7 @@ pl_centos_url=rsync://ftp.tpnet.pl/centos
 pl_epel_url=rsync://ftp.icm.edu.pl/pub/Linux/fedora/linux/epel
 
 default_distroname="f20"
-all_distronames="f20"
+all_distronames="f20 f21"
 default_arch="x86_64"
 all_archs="x86_64"
 
