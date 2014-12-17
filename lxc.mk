@@ -122,10 +122,11 @@ IN_NODEIMAGE += codemux
 #
 # fprobe-ulog
 #
+# xxx temporarily turning this off
 fprobe-ulog-MODULES := fprobe-ulog
 fprobe-ulog-SPEC := fprobe-ulog.spec
-ALL += fprobe-ulog
-IN_NODEIMAGE += fprobe-ulog
+#ALL += fprobe-ulog
+#IN_NODEIMAGE += fprobe-ulog
 
 #################### libvirt version selection
 # settling with using version 1.2.1 on all fedoras
