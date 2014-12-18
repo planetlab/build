@@ -166,9 +166,12 @@ function fedora_download() {
     RELEASE_URL1="$MIRROR_URL/Packages/fedora-release-$release-1.noarch.rpm"
     # with fedora18 the rpms are scattered by first name
     RELEASE_URL2="$MIRROR_URL/Packages/f/fedora-release-$release-1.noarch.rpm"
+    # with fedora21 somehow this one came numbered -2
+    RELEASE_URL2="$MIRROR_URL/Packages/f/fedora-release-$release-2.noarch.rpm"
+   
     RELEASE_TARGET=$INSTALL_ROOT/fedora-release-$release.noarch.rpm
     found=""
-    for attempt in $RELEASE_URL1 $RELEASE_URL2; do
+    for attempt in $RELEASE_URL1 $RELEASE_URL2 $RELEASE_URL3; do
 	if curl -f $attempt -o $RELEASE_TARGET ; then
 	    echo "Retrieved $attempt"
 	    found=true
