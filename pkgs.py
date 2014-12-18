@@ -35,7 +35,7 @@ default_arch='x86_64'
 known_arch = ['i386', 'i686', 'x86_64']
 default_fcdistro='f14'
 known_fcdistros = [ 'centos5','centos6',
-                    'f8', 'f10','f12', 'f14', 'f16', 'f18','f20','f22',
+                    'f8', 'f10','f12', 'f14', 'f16', 'f18','f20','f21',
                     'sl6', 
                     # debians
                     'squeeze','wheezy','jessie',
