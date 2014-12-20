@@ -170,6 +170,16 @@ libvirt-python-MODULES := libvirt-python
 libvirt-python-SPEC    := libvirt-python.spec
 libvirt-python-BUILD-FROM-SRPM := yes
 libvirt-python-STOCK-DEVEL-RPMS += pm-utils
+# for 1.2.11
+libvirt-python-STOCK-DEVEL-RPMS += python-nose
+# it would make sense to do something like this if we wanted to
+# build against python3 as well, but for now I turned this feature off
+# in libvirt-python
+#ifeq "$(distro)" "Fedora"
+#xxx if $(distrorelease) > 18
+#libvirt-python-STOCK-DEVEL-RPMS += python3-devel python3-nose python3-lxml
+#endif
+#endif
 libvirt-python-LOCAL-DEVEL-RPMS += libvirt-devel libvirt-docs libvirt-client
 libvirt-python-RPMFLAGS :=     --define 'packager PlanetLab'
 ALL += libvirt-python
