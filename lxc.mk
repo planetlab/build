@@ -122,11 +122,13 @@ IN_NODEIMAGE += codemux
 #
 # fprobe-ulog
 #
-# xxx temporarily turning this off
+# xxx temporarily turning this off on f21
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f21)"
 fprobe-ulog-MODULES := fprobe-ulog
 fprobe-ulog-SPEC := fprobe-ulog.spec
-#ALL += fprobe-ulog
-#IN_NODEIMAGE += fprobe-ulog
+ALL += fprobe-ulog
+IN_NODEIMAGE += fprobe-ulog
+endif
 
 #################### libvirt version selection
 # settling with using version 1.2.1 on all fedoras
@@ -249,10 +251,13 @@ vsys-scripts-SPEC := root-context/vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
+# xxx temporarily turning this off on f21
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f21)"
 vsys-wrapper-MODULES := vsys-scripts
 vsys-wrapper-SPEC := slice-context/vsys-wrapper.spec
 IN_SLICEIMAGE += vsys-wrapper
 ALL += vsys-wrapper
+endif
 
 #
 # bind_public
