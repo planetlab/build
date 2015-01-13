@@ -157,6 +157,7 @@ libvirt-STOCK-DEVEL-RPMS += fuse-devel libssh2-devel dbus-devel numad
 libvirt-STOCK-DEVEL-RPMS += systemd-devel libnl3-devel iptables-services netcf-devel
 # 1.2.11
 libvirt-STOCK-DEVEL-RPMS += wireshark-devel
+libvirt-STOCK-DEVEL-RPMS += ceph-devel-compat
 ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
