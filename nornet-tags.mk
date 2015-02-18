@@ -81,7 +81,7 @@ oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 # !!! Using NorNet customisation! !!! bootcd-GITPATH                  := git://git.planet-lab.org/bootcd.git@bootcd-5.2-4
 sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@master
 nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-5.2-4
-myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-2
+myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-3
 
 #
 sfa-BRANCH			:= geni-v3
