@@ -1,5 +1,5 @@
 lxc-userspace-GITPATH           := git://git.onelab.eu/lxc-userspace.git@lxc-userspace-1.0-12
-transforward-GITPATH            := git://git.onelab.eu/transforward.git@master
+transforward-GITPATH            := git://git.onelab.eu/transforward.git@transforward-0.1-8
 procprotect-GITPATH             := git://git.onelab.eu/procprotect.git@master
 ipfw-GITPATH                    := https://code.google.com/p/dummynet@master
 # this was known to work with f18 but not f20

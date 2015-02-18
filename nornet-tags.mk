@@ -34,7 +34,7 @@ nodemanager-GITPATH             := git://github.com/dreibh/planetlab-lxc-nodeman
 # #####################################
 
 lxc-userspace-GITPATH           := git://git.onelab.eu/lxc-userspace.git@lxc-userspace-1.0-12
-transforward-GITPATH            := git://git.onelab.eu/transforward.git@transforward-0.1-7
+transforward-GITPATH            := git://git.onelab.eu/transforward.git@transforward-0.1-8
 procprotect-GITPATH             := git://git.onelab.eu/procprotect.git@procprotect-0.4-5
 # !!! ipfw still needs newer version! !!!
 ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@155b6cd31089b4763297d579e9c9945393f00c40
