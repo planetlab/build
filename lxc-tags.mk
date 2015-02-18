@@ -1,7 +1,7 @@
 lxc-userspace-GITPATH           := git://git.onelab.eu/lxc-userspace.git@lxc-userspace-1.0-12
 transforward-GITPATH            := git://git.onelab.eu/transforward.git@transforward-0.1-8
 procprotect-GITPATH             := git://git.onelab.eu/procprotect.git@procprotect-0.4-6
-ipfw-GITPATH                    := https://code.google.com/p/dummynet@master
+ipfw-GITPATH                    := https://code.google.com/p/dummynet@e717cdd4bef764a4aa7babedc54220b35b04c777
 # this was known to work with f18 but not f20
 #ipfw-GITPATH                    := git://git.code.sf.net/p/dummynet/code@155b6cd31089b4763297d579e9c9945393f00c40
 comgt-GITPATH			:= git://git.onelab.eu/comgt.git@0.3
@@ -44,8 +44,8 @@ pcucontrol-GITPATH              := git://git.onelab.eu/pcucontrol.git@pcucontrol
 # omf-resctl now comes from yum and gem, no need for rvm-ruby anymore
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
-sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@master
+bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.2-4
+sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@sliceimage-5.1-9
 nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@nodeimage-5.2-4
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-3
 
