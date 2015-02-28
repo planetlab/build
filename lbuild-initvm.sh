@@ -167,7 +167,7 @@ function fedora_download() {
     # with fedora18 the rpms are scattered by first name
     RELEASE_URL2="$MIRROR_URL/Packages/f/fedora-release-$release-1.noarch.rpm"
     # with fedora21 somehow this one came numbered -2
-    RELEASE_URL2="$MIRROR_URL/Packages/f/fedora-release-$release-2.noarch.rpm"
+    RELEASE_URL3="$MIRROR_URL/Packages/f/fedora-release-$release-2.noarch.rpm"
    
     RELEASE_TARGET=$INSTALL_ROOT/fedora-release-$release.noarch.rpm
     found=""
