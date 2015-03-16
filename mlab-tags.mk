@@ -26,10 +26,10 @@ NodeManager-optin-SVNPATH	:= http://svn.planet-lab.org/svn/NodeManager-optin/tru
 #
 pl_sshd-GITPATH			:= git://git.planet-lab.org/pl_sshd.git@pl_sshd-1.0-11
 codemux-GITPATH			:= git://git.planet-lab.org/codemux.git@codemux-0.1-15
-fprobe-ulog-SVNPATH             := http://svn.planet-lab.org/svn/fprobe-ulog/tags/fprobe-ulog-1.1.3-3
+fprobe-ulog-GITPATH             := git://git.onelab.eu/fprobe-ulog.git@fprobe-ulog-1.1.4-3
 pf2slice-GITPATH		:= git://git.planet-lab.org/pf2slice.git@pf2slice-1.0-2
 mom-GITPATH			:= git://git.planet-lab.eu/mom.git@mom-2.3-4
-inotify-tools-SVNPATH		:= http://svn.planet-lab.org/svn/inotify-tools/tags/inotify-tools-3.13-2
+inotify-tools-GITPATH		:= git://git.planet-lab.org/inotify-tools.git@inotify-tools-3.13-2
 openvswitch-GITPATH		:= git://git.planet-lab.org/openvswitch.git@master
 vsys-GITPATH			:= git://git.planet-lab.org/vsys.git@vsys-0.99-3
 vsys-scripts-GITPATH		:= git://git.planet-lab.org/vsys-scripts@vsys-scripts-0.95-50
