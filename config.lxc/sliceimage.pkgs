@@ -43,3 +43,6 @@ package: ipfwslice
 
 # convenience
 package: less emacs-nox
+
+# 03/2015: let's move on
+package: python3

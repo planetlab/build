@@ -130,3 +130,6 @@ package>=f20: libvirt
 # https://bugzilla.redhat.com/show_bug.cgi?id=1094297
 # this is required so that bootmanager can run authconfig in the context of the nodeimage
 package>=f21: policycoreutils
+
+# 03/2015: let's move on
+package: python3

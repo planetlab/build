@@ -133,3 +133,6 @@ package: ipfwroot
 package: nrpe
 # convenience
 package: emacs-nox
+
+# 03/2015: let's move on
+package: python3

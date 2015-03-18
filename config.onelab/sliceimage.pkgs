@@ -38,3 +38,6 @@ package: sliver-openvswitch
 
 package: planetlab-umts-tools-frontend
 package: ipfwslice
+
+# 03/2015: let's move on
+package: python3
