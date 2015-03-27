@@ -30,10 +30,14 @@ IN_NODEIMAGE += transforward
 #
 # procprotect: root context module for protecting against weaknesses in /proc
 #
+### an attempt to remove procprotect from the nodes on f21 now that it has 3.19
+# xxx if that works then we should also tweak nodeimage.pkgs accordingly
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f21)"
 procprotect-MODULES := procprotect
 procprotect-SPEC := procprotect.spec
 ALL += procprotect
 IN_NODEIMAGE += procprotect
+endif
 
 #
 # ipfw: root context module, and slice companion
