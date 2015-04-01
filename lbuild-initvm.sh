@@ -21,7 +21,7 @@ export PATH=$PATH:/bin:/sbin
 
 # XXX fixme : when creating a 32bits VM we need to call linux32 as appropriate...s
 
-DEFAULT_FCDISTRO=f20
+DEFAULT_FCDISTRO=f21
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
 DEFAULT_MEMORY=1024
@@ -479,6 +479,15 @@ function setup_lxc() {
     return 0
 }
 
+# this part does not belong in a domain any more
+# but goes in a network object of its own existence
+#      <network>
+#        <name>host-bridge</name>
+#        <forward mode="bridge"/>
+#        <bridge name="br0"/>
+#      </network>
+#
+
 function write_lxc_xml_test () {
     lxc=$1; shift
     cat <<EOF
@@ -509,11 +518,6 @@ function write_lxc_xml_test () {
     </interface>
     <console type='pty' />
   </devices>
-  <network>
-    <name>host-bridge</name>
-    <forward mode="bridge"/>
-    <bridge name="$PUBLIC_BRIDGE"/>
-  </network>
 </domain>
 EOF
 }
