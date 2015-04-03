@@ -1,8 +1,11 @@
 ###
 linux-2.6-BRANCH		:= 32
 linux-2.6-GITPATH               := git://git.onelab.eu/linux-2.6.git@linux-2.6-32-36
+# ipfw-sourceforge.git (obsolete) mirrored on git.onelab.eu from git://git.code.sf.net/p/dummynet/code
+# ipfw-GITPATH			:= git://git.onelab.eu/ipfw-sourceforge.git@ipfw-20130423-1
+# ipfw-google.git (current) is mirrored on git.onelab.eu from https://code.google.com/p/dummynet
+ipfw-GITPATH                    := git://git.onelab.eu/ipfw-google.git@e717cdd4bef764a4aa7babedc54220b35b04c777
 
-ipfw-GITPATH                    := git://git.onelab.eu/ipfw-sourceforge.git@ipfw-20130423-1
 madwifi-GITPATH                 := git://git.onelab.eu/madwifi.git@madwifi-4132-6
 iptables-GITPATH                := git://git.onelab.eu/iptables.git@iptables-1.4.10-5
 ###
