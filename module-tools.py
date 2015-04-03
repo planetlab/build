@@ -280,9 +280,10 @@ class GitRepository:
                 return line.split()[2]
 
     @classmethod
-    def clone(cls, remote, local, options, depth=0):
+    def clone(cls, remote, local, options, depth=None):
         Command("rm -rf %s" % local, options).run_silent()
-        Command("git clone --depth %d %s %s" % (depth, remote, local), options).run_fatal()
+        depth_option = "" if depth is None else " --depth {}".format(depth)
+        Command("git clone{} {} {}".format(depth_option, remote, local), options).run_fatal()
         return GitRepository(local, options)
 
     @classmethod
