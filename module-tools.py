@@ -7,34 +7,6 @@ import tempfile
 from glob import glob
 from optparse import OptionParser
 
-# HARDCODED NAME CHANGES
-#
-# Moving to git we decided to rename some of the repositories. Here is
-# a map of name changes applied in git repositories.
-RENAMED_SVN_MODULES = {
-    "PLEWWW" : "plewww",
-    "PLCAPI" : "plcapi",
-    "BootManager" : "bootmanager",
-    "BootCD": "bootcd",
-    "MyPLC": "myplc",
-    "CoDemux": "codemux",
-    "NodeManager": "nodemanager",
-    "NodeUpdate": "nodeupdate",
-    "Monitor": "monitor",
-    }
-
-def svn_to_git_name(module):
-    if module in RENAMED_SVN_MODULES:
-        return RENAMED_SVN_MODULES[module]
-    return module
-
-def git_to_svn_name(module):
-    for key in RENAMED_SVN_MODULES:
-        if module == RENAMED_SVN_MODULES[key]:
-            return key
-    return module
-    
-
 # e.g. other_choices = [ ('d','iff') , ('g','uess') ] - lowercase 
 def prompt (question, default=True, other_choices=[], allow_outside=False):
     if not isinstance (other_choices, list):
@@ -103,7 +75,7 @@ class Command:
     def __init__ (self, command, options):
         self.command = command
         self.options = options
-        self.tmp = "/tmp/command-%d"%os.getpid()
+        self.tmp = "/tmp/command-{}".format(os.getpid())
 
     def run (self):
         if self.options.dry_run:
@@ -159,109 +131,6 @@ class Command:
             print('Done', end=' ')
         return result
     
-class SvnRepository:
-    type = "svn"
-
-    def __init__(self, path, options):
-        self.path = path
-        self.options = options
-
-    def name(self):
-        return os.path.basename(self.path)
-
-    def pathname(self):
-        # for svn modules pathname is just the name of the module as
-        # all modules are at the root
-        return self.name()
-
-    def url(self):
-        out = Command("svn info {}".format(self.path), self.options).output_of()
-        for line in out.split('\n'):
-            if line.startswith("URL:"):
-                return line.split()[1].strip()
-
-    def repo_root(self):
-        out = Command("svn info {}".format(self.path), self.options).output_of()
-        for line in out.split('\n'):
-            if line.startswith("Repository Root:"):
-                root = line.split()[2].strip()
-                return "{}/{}".format(root, self.pathname())
-
-    @classmethod
-    def clone(cls, remote, local, options, recursive=False):
-        if recursive:
-            svncommand = "svn co %s %s" % (remote, local)
-        else:
-            svncommand = "svn co -N %s %s" % (remote, local)
-        Command("rm -rf %s" % local, options).run_silent()
-        Command(svncommand, options).run_fatal()
-
-        return SvnRepository(local, options)
-
-    @classmethod
-    def remote_exists(cls, remote, options):
-        return Command ("svn list %s &> /dev/null" % remote , options).run()==0
-
-    def tag_exists(self, tagname):
-        url = "%s/tags/%s" % (self.repo_root(), tagname)
-        return SvnRepository.remote_exists(url, self.options)
-
-    def update(self, subdir="", recursive=True, branch=None):
-        path = os.path.join(self.path, subdir)
-        if recursive:
-            svncommand = "svn up %s" % path
-        else:
-            svncommand = "svn up -N %s" % path
-        Command(svncommand, self.options).run_fatal()
-
-    def commit(self, logfile):
-        # add all new files to the repository
-        Command("svn status %s | grep '^\?' | sed -e 's/? *//' | sed -e 's/ /\\ /g' | xargs svn add" %
-                self.path, self.options).output_of()
-        Command("svn commit -F %s %s" % (logfile, self.path), self.options).run_fatal()
-
-    def to_branch(self, branch):
-        remote = "%s/branches/%s" % (self.repo_root(), branch)
-        SvnRepository.clone(remote, self.path, self.options, recursive=True)
-
-    def to_tag(self, tag):
-        remote = "%s/tags/%s" % (self.repo_root(), branch)
-        SvnRepository.clone(remote, self.path, self.options, recursive=True)
-
-    def tag(self, tagname, logfile):
-        tag_url = "%s/tags/%s" % (self.repo_root(), tagname)
-        self_url = self.url()
-        Command("svn copy -F %s %s %s" % (logfile, self_url, tag_url), self.options).run_fatal()
-
-    def diff(self, f=""):
-        if f:
-            f = os.path.join(self.path, f)
-        else:
-            f = self.path
-        return Command("svn diff %s" % f, self.options).output_of(True)
-
-    def diff_with_tag(self, tagname):
-        tag_url = "%s/tags/%s" % (self.repo_root(), tagname)
-        return Command("svn diff %s %s" % (tag_url, self.url()),
-                       self.options).output_of(True)
-
-    def revert(self, f=""):
-        if f:
-            Command("svn revert %s" % os.path.join(self.path, f), self.options).run_fatal()
-        else:
-            # revert all
-            Command("svn revert %s -R" % self.path, self.options).run_fatal()
-            Command("svn status %s | grep '^\?' | sed -e 's/? *//' | sed -e 's/ /\\ /g' | xargs rm -rf " %
-                    self.path, self.options).run_silent()
-
-    def is_clean(self):
-        command="svn status %s" % self.path
-        return len(Command(command,self.options).output_of(True)) == 0
-
-    def is_valid(self):
-        return os.path.exists(os.path.join(self.path, ".svn"))
-    
-
 class GitRepository:
     type = "git"
 
@@ -333,7 +202,7 @@ class GitRepository:
         self.__run_command_in_repo("git fetch origin --tags")
         self.__run_command_in_repo("git fetch origin")
         if not self.__is_commit_id(branch):
-            # we don't need to merge anythign for commit ids.
+            # we don't need to merge anything for commit ids.
             self.__run_command_in_repo("git merge --ff origin/{}".format(branch))
 
     def to_branch(self, branch, remote=True):
@@ -380,8 +249,8 @@ class GitRepository:
 
     def is_clean(self):
         def check_commit():
-            command="git status"
-            s="nothing to commit (working directory clean)"
+            command = "git status"
+            s = "nothing to commit, working directory clean"
             return Command(command, self.options).output_of(True).find(s) >= 0
         return self.__run_in_repo(check_commit)
 
@@ -390,28 +259,24 @@ class GitRepository:
     
 
 class Repository:
-    """ Generic repository """
-    supported_repo_types = [SvnRepository, GitRepository]
+    """ 
+    Generic repository 
+    From old times when we had svn and git
+    """
+    supported_repo_types = [ GitRepository ]
 
     def __init__(self, path, options):
         self.path = path
         self.options = options
-        for repo in self.supported_repo_types:
-            self.repo = repo(self.path, self.options)
+        for repo_class in self.supported_repo_types:
+            self.repo = repo_class(self.path, self.options)
             if self.repo.is_valid():
                 break
 
     @classmethod
-    def has_moved_to_git(cls, module, config,options):
-        module = svn_to_git_name(module)
-        # check if the module is already in Git
-        return GitRepository.remote_exists(Module.git_remote_dir(module), options)
-
-
-    @classmethod
     def remote_exists(cls, remote, options):
-        for repo in Repository.supported_repo_types:
-            if repo.remote_exists(remote, options):
+        for repo_class in Repository.supported_repo_types:
+            if repo_class.remote_exists(remote, options):
                 return True
         return False
 
@@ -423,12 +288,14 @@ class Repository:
 # support for tagged module is minimal, and is for the Build class only
 class Module:
 
-    edit_magic_line="--This line, and those below, will be ignored--"
+    edit_magic_line = "--This line, and those below, will be ignored--"
     setting_tag_format = "Setting tag {}"
     
-    redirectors=[ # ('module_name_varname', 'name'),
-                  ('module_version_varname', 'version'),
-                  ('module_taglevel_varname', 'taglevel'), ]
+    redirectors = [
+        # ('module_name_varname', 'name'),
+        ('module_version_varname', 'version'),
+        ('module_taglevel_varname', 'taglevel'),
+    ]
 
     # where to store user's config
     config_storage = "CONFIG"
@@ -436,14 +303,13 @@ class Module:
     config = {}
 
     import subprocess
-    configKeys=[ ('svnpath', "Enter your toplevel svnpath",
-                  "svn+ssh://%s@svn.planet-lab.org/svn/"%subprocess.getoutput("id -un")),
-                 ('gitserver', "Enter your git server's hostname", "git.onelab.eu"),
-                 ('gituser', "Enter your user name (login name) on git server", subprocess.getoutput("id -un")),
-                 ("build", "Enter the name of your build module", "build"),
-                 ('username', "Enter your firstname and lastname for changelogs", ""),
-                 ("email", "Enter your email address for changelogs", ""),
-                 ]
+    configKeys = [
+        ('gitserver', "Enter your git server's hostname", "git.onelab.eu"),
+        ('gituser', "Enter your user name (login name) on git server", subprocess.getoutput("id -un")),
+        ("build", "Enter the name of your build module", "build"),
+        ('username', "Enter your firstname and lastname for changelogs", ""),
+        ("email", "Enter your email address for changelogs", ""),
+    ]
 
     @classmethod
     def prompt_config_option(cls, key, message, default):
@@ -456,45 +322,43 @@ class Module:
             while not cls.config[key]:
                 cls.prompt_config_option(key, message, default)
 
-    # for parsing module spec name:branch                                                                                                                                                                     
-    matcher_branch_spec=re.compile("\A(?P<name>[\w\.\-\/]+):(?P<branch>[\w\.\-]+)\Z")                                                                                                                         
-    # special form for tagged module - for Build                                                                                                                                                              
-    matcher_tag_spec=re.compile("\A(?P<name>[\w\.\-\/]+)@(?P<tagname>[\w\.\-]+)\Z")
+    # for parsing module spec name:branch
+    matcher_branch_spec = re.compile("\A(?P<name>[\w\.\-\/]+):(?P<branch>[\w\.\-]+)\Z")                                                                                                                         
+    # special form for tagged module - for Build
+    matcher_tag_spec = re.compile("\A(?P<name>[\w\.\-\/]+)@(?P<tagname>[\w\.\-]+)\Z")
+
     # parsing specfiles
-    matcher_rpm_define=re.compile("%(define|global)\s+(\S+)\s+(\S*)\s*")
+    matcher_rpm_define = re.compile("%(define|global)\s+(\S+)\s+(\S*)\s*")
 
     @classmethod
     def parse_module_spec(cls, module_spec):
         name = branch_or_tagname = module_type = ""
 
-        attempt=Module.matcher_branch_spec.match(module_spec)
+        attempt = Module.matcher_branch_spec.match(module_spec)
         if attempt:
             module_type = "branch"
             name=attempt.group('name')
             branch_or_tagname=attempt.group('branch')
         else:
-            attempt=Module.matcher_tag_spec.match(module_spec)
+            attempt = Module.matcher_tag_spec.match(module_spec)
             if attempt:
                 module_type = "tag"
                 name=attempt.group('name')
                 branch_or_tagname=attempt.group('tagname')
             else:
-                name=module_spec
+                name = module_spec
         return name, branch_or_tagname, module_type
 
 
-    def __init__ (self,module_spec,options):
+    def __init__ (self, module_spec, options):
         # parse module spec
         self.pathname, branch_or_tagname, module_type = self.parse_module_spec(module_spec)
         self.name = os.path.basename(self.pathname)
 
         if module_type == "branch":
-            self.branch=branch_or_tagname
+            self.branch = branch_or_tagname
         elif module_type == "tag":
-            self.tagname=branch_or_tagname
-
-        # when available prefer to use git module name internally
-        self.name = svn_to_git_name(self.name)
+            self.tagname = branch_or_tagname
 
         self.options=options
         self.module_dir="{}/{}".format(options.workdir,self.pathname)
@@ -510,10 +374,10 @@ class Module:
         if not self.options.verbose:
             while True:
                 choice = prompt(message, True, ('s','how'))
-                if choice is True:
+                if choice:
                     fun(*args)
                     return
-                elif choice is False:
+                else:
                     print('About to run function:', fun_msg)
         else:
             question = "{} - want to run function: {}".format(message, fun_msg)
@@ -532,25 +396,6 @@ class Module:
     def git_remote_dir (cls, name):
         return "{}@{}:/git/{}.git".format(cls.config['gituser'], cls.config['gitserver'], name)
 
-    @classmethod
-    def svn_remote_dir (cls, name):
-        name = git_to_svn_name(name)
-        svn = cls.config['svnpath']
-        if svn.endswith('/'):
-            return "%s%s" % (svn, name)
-        return "%s/%s" % (svn, name)
-
-    def svn_selected_remote(self):
-        svn_name = git_to_svn_name(self.name)
-        remote = self.svn_remote_dir(svn_name)
-        if hasattr(self, 'branch'):
-            remote = "{}/branches/{}".format(remote, self.branch)
-        elif hasattr(self,'tagname'):
-            remote = "{}/tags/{}".format(remote, self.tagname)
-        else:
-            remote = "{}/trunk".format(remote)
-        return remote
-
     ####################
     @classmethod
     def init_homedir (cls, options):
@@ -559,7 +404,7 @@ class Module:
         storage="{}/{}".format(options.workdir, cls.config_storage)
         # sanity check. Either the topdir exists AND we have a config/storage
         # or topdir does not exist and we create it
-        # to avoid people use their own daily svn repo
+        # to avoid people use their own daily work repo
         if os.path.isdir(options.workdir) and not os.path.isfile(storage):
             print("""The directory {} exists and has no CONFIG file
 If this is your regular working directory, please provide another one as the
@@ -594,7 +439,7 @@ that for other purposes than tagging""".format(options.workdir))
                 Module.config['build'] = options.build_module
 
         if not os.path.isdir (options.workdir):
-            print("Cannot find",options.workdir,"let's create it")
+            print("Cannot find {}, let's create it".format(options.workdir))
             Command("mkdir -p {}".format(options.workdir), options).run_silent()
             cls.prompt_config()
             clone_build()
@@ -633,39 +478,23 @@ that for other purposes than tagging""".format(options.workdir))
 
     def init_module_dir (self):
         if self.options.verbose:
-            print('Checking for',self.module_dir)
+            print('Checking for', self.module_dir)
 
         if not os.path.isdir (self.module_dir):
-            if Repository.has_moved_to_git(self.pathname, Module.config, self.options):
-                self.repository = GitRepository.clone(self.git_remote_dir(self.pathname),
-                                                      self.module_dir,
-                                                      self.options)
-            else:
-                remote = self.svn_selected_remote()
-                self.repository = SvnRepository.clone(remote,
-                                                      self.module_dir,
-                                                      self.options, recursive=False)
+            self.repository = GitRepository.clone(self.git_remote_dir(self.pathname),
+                                                  self.module_dir,
+                                                  self.options)
 
         self.repository = Repository(self.module_dir, self.options)
-        if self.repository.type == "svn":
-            # check if module has moved to git    
-            if Repository.has_moved_to_git(self.pathname, Module.config, self.options):
-                Command("rm -rf %s" % self.module_dir, self.options).run_silent()
-                self.init_module_dir()
-            # check if we have the required branch/tag
-            if self.repository.url() != self.svn_selected_remote():
-                Command("rm -rf %s" % self.module_dir, self.options).run_silent()
-                self.init_module_dir()
 
-        elif self.repository.type == "git":
+        if self.repository.type == "git":
             if hasattr(self, 'branch'):
                 self.repository.to_branch(self.branch)
             elif hasattr(self, 'tagname'):
                 self.repository.to_tag(self.tagname)
-
         else:
-            raise Exception('Cannot find {} - check module name'.format(self.module_dir))
-
+            raise Exception('Cannot find {} - or not a git module'.format(self.module_dir))
+                
 
     def revert_module_dir (self):
         if self.options.fast_checks:
@@ -841,17 +670,14 @@ that for other purposes than tagging""".format(options.workdir))
             raise Exception('Something is wrong with module {}, cannot determine {} - exiting'\
                             .format(self.name, err))
 
-    def tag_name (self, spec_dict, old_svn_name=False):
-        base_tag_name = self.name
-        if old_svn_name:
-            base_tag_name = git_to_svn_name(self.name)
-        return "{}-{}".format(base_tag_name, self.last_tag(spec_dict))
+    def tag_name (self, spec_dict):
+        return "{}-{}".format(self.name, self.last_tag(spec_dict))
     
 
-    pattern_format="\A\s*{module}-(SVNPATH|GITPATH)\s*(=|:=)\s*(?P<url_main>[^\s]+)/{module}[^\s]+"
+    pattern_format="\A\s*{module}-(GITPATH)\s*(=|:=)\s*(?P<url_main>[^\s]+)/{module}[^\s]+"
 
     def is_mentioned_in_tagsfile (self, tagsfile):
-        # so that %(module)s gets replaced from format
+        # so that {module} gets replaced from format
         module = self.name
         module_matcher = re.compile(Module.pattern_format.format(**locals()))
         with open(tagsfile) as f:
@@ -862,7 +688,7 @@ that for other purposes than tagging""".format(options.workdir))
 
 ##############################
     # using fine_grain means replacing only those instances that currently refer to this tag
-    # otherwise, <module>-{SVNPATH,GITPATH} is replaced unconditionnally
+    # otherwise, <module>-GITPATH is replaced unconditionnally
     def patch_tags_file (self, tagsfile, oldname, newname, fine_grain=True):
         newtagsfile = "{}.new".format(tagsfile)
 
@@ -881,10 +707,10 @@ that for other purposes than tagging""".format(options.workdir))
                             begin, end = matcher.match(line).groups()
                             new.write(begin+newname+end+"\n")
                             matches += 1
-                # brute-force : change uncommented lines that define <module>-SVNPATH
+                # brute-force : change uncommented lines that define <module>-GITPATH
                 else:
                     if self.options.verbose:
-                        print('Searching for -SVNPATH or -GITPATH lines referring to /{}/\n\tin {} .. '\
+                        print('Searching for -GITPATH lines referring to /{}/\n\tin {} .. '\
                               .format(self.pathname, tagsfile), end=' ')
                     # so that {module} gets replaced from format
                     module = self.name
@@ -897,9 +723,9 @@ that for other purposes than tagging""".format(options.workdir))
                                 replacement = "{:<32}:= {}/{}.git@{}\n"\
                                     .format(modulepath, attempt.group('url_main'), self.pathname, newname)
                             else:
-                                modulepath = "{}-SVNPATH".format(self.name)
-                                replacement = "{:-32}:= {}/{}/tags/{}\n"\
-                                              .format(modulepath, attempt.group('url_main'), self.name, newname)
+                                print("Could not locate {}-GITPATH (be aware that support for svn has been removed)"\
+                                      .format(self.name))
+                                return
                             if self.options.verbose:
                                 print(' ' + modulepath, end=' ') 
                             new.write(replacement)
@@ -912,19 +738,12 @@ that for other purposes than tagging""".format(options.workdir))
             print("{} changes".format(matches))
         return matches
 
-    def check_tag(self, tagname, need_it=False, old_svn_tag_name=None):
+    def check_tag(self, tagname, need_it=False):
         if self.options.verbose:
             print("Checking {} repository tag: {} - ".format(self.repository.type, tagname), end=' ')
 
         found_tagname = tagname
         found = self.repository.tag_exists(tagname)
-        if not found and old_svn_tag_name:
-            if self.options.verbose:
-                print("KO")
-                print("Checking {} repository tag: {} - ".format(self.repository.type, old_svn_tag_name), end=' ')
-            found = self.repository.tag_exists(old_svn_tag_name)
-            if found:
-                found_tagname = old_svn_tag_name
 
         if (found and need_it) or (not found and not need_it):
             if self.options.verbose:
@@ -971,7 +790,7 @@ that for other purposes than tagging""".format(options.workdir))
         if not self.options.bypass:
             diff_output = self.repository.diff_with_tag(old_tag_name)
             if len(diff_output) == 0:
-                if not prompt ("No pending difference in module %s, want to tag anyway"%self.pathname,False):
+                if not prompt ("No pending difference in module {}, want to tag anyway".format(self.pathname), False):
                     return
 
         # side effect in head's specfile
@@ -1002,8 +821,7 @@ Please write a changelog for this new tag in the section below
 
         # edit it        
         self.run("{} {}".format(self.options.editor, changelog_plain))
-        # strip magic line in second file - looks like svn has changed its magic line with 1.6
-        # so we do the job ourselves
+        # strip magic line in second file
         self.strip_magic_line_filename(changelog_plain, changelog_strip, new_tag_name)
         # insert changelog in spec
         if self.options.changelog:
@@ -1055,8 +873,8 @@ Please write a changelog for this new tag in the section below
                     else:
                         name = self.name
                         print(
-"""y: change {name}-{{SVNPATH,GITPATH}} only if it currently refers to {old_tag_name}
-f: unconditionnally change any line that assigns {name}-SVNPATH to using {new_tag_name}
+"""y: change {name}-GITPATH only if it currently refers to {old_tag_name}
+f: unconditionnally change any line that assigns {name}-GITPATH to using {new_tag_name}
 d: show current diff for this tag file
 r: revert that tag file
 c: cat the current tag file
@@ -1122,10 +940,9 @@ n: move to next file""".format(**locals()))
 
         # side effects
         tag_name = self.tag_name(spec_dict)
-        old_svn_tag_name = self.tag_name(spec_dict, old_svn_name=True)
 
         # sanity check
-        tag_name = self.check_tag(tag_name, need_it=True, old_svn_tag_name=old_svn_tag_name)
+        tag_name = self.check_tag(tag_name, need_it=True)
 
         if self.options.verbose:
             print('Getting diff')
@@ -1247,9 +1064,8 @@ class Build(Module):
         for line in open(tagfile):
             try:
                 name, url = line.split(':=')
-                name, git_or_svn_path = name.rsplit('-', 1)
-                name = svn_to_git_name(name.strip())
-                modules[name] = (git_or_svn_path.strip(), url.strip())
+                name, git_path = name.rsplit('-', 1)
+                modules[name] = (git_path.strip(), url.strip())
             except:
                 pass
         return modules
@@ -1351,10 +1167,7 @@ def release_changelog(options, buildtag_old, buildtag_new):
         os.system('rm -rf {}'.format(m.module_dir)) # cleanup module dir
         m.init_module_dir()
 
-        if m.repository.type == "svn":
-            print(' * from', first, m.repository.url())
-        else:
-            print(' * from', first, m.repository.gitweb())
+        print(' * from', first, m.repository.gitweb())
 
         specfile = m.main_specname()
         (tmpfd, tmpfile) = tempfile.mkstemp()
@@ -1371,10 +1184,7 @@ def release_changelog(options, buildtag_old, buildtag_new):
             continue
         specfile = m.main_specname()
 
-        if m.repository.type == "svn":
-            print(' * to', second, m.repository.url())
-        else:
-            print(' * to', second, m.repository.gitweb())
+        print(' * to', second, m.repository.gitweb())
 
         print('{{{')
         os.system("diff -u {} {} | sed -e 's,{},[[previous version]],'"\
@@ -1433,7 +1243,7 @@ Branches:
 """
     adopt_usage="""Usage: %prog [options] tag-file[s]
   With this command you can adopt a specifi tag or branch in your tag files
-    This should be run in your daily build workdir; no call of git nor svn is done
+    This should be run in your daily build workdir; no call of git is done
   Examples:
     adopt-tag -m "plewww plcapi" -m Monitor onelab*tags.mk
     adopt-tag -m sfa -t sfa-1.0-33 *tags.mk
@@ -1554,7 +1364,7 @@ Branches:
                           help="""name for dedicated working dir - defaults to ~/modules
 ** THIS MUST NOT ** be your usual working directory""")
         parser.add_option("-F","--fast-checks",action="store_true",dest="fast_checks",default=False,
-                          help="skip safety checks, such as svn updates -- use with care")
+                          help="skip safety checks, such as git pulls -- use with care")
         parser.add_option("-B","--build-module",action="store",dest="build_module",default=None,
                           help="specify a build module to owerride the one in the CONFIG")
 
@@ -1567,7 +1377,7 @@ Branches:
         else:
             parser.add_option("-q","--quiet", action="store_false", dest="verbose", default=True,
                               help="run in quiet (non-verbose) mode")
-        (options, args) = parser.parse_args()
+        options, args = parser.parse_args()
         options.mode=mode
         if not hasattr(options,'dry_run'):
             options.dry_run=False
@@ -1590,7 +1400,7 @@ Branches:
         
 
         if mode in Main.regular_modes:
-            modules = [ Module(modname,options) for modname in args ]
+            modules = [ Module(modname, options) for modname in args ]
             # hack: create a dummy Module to store errors/warnings
             error_module = Module('__errors__',options)
 
@@ -1610,7 +1420,7 @@ Branches:
                     else:
                         import traceback
                         traceback.print_exc()
-                        print('Skipping module {}: {}'.format(modname,e))
+                        print('Skipping module {}: {}'.format(module.name,e))
     
             if options.www:
                 if mode == "diff":
