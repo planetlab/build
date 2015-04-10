@@ -518,6 +518,7 @@ function write_lxc_xml_publicip () {
 EOF
 }
 
+# grant build guests the ability to do mknods
 function write_lxc_xml_natip () { 
     lxc=$1; shift
     cat <<EOF
@@ -530,6 +531,9 @@ function write_lxc_xml_natip () {
   </os>
   <features>
     <acpi/>
+    <capabilities policy='default'>
+      <mknod state='on'/>
+    </capabilities>
   </features>
   <vcpu>1</vcpu>
   <clock offset='utc'/>
