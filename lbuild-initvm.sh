@@ -657,7 +657,7 @@ function post_install () {
 	    # we need the --noseclabel flag with recent libvirt's
 	    # was not required with f20/libvirt-1.2.5
 	    # but is now with f21/libvirt-1.2.9
-            virsh -c lxc:/// lxc-enter-namespace --noseclabel $lxc /usr/bin/$personality /bin/bash -c "dhclient $VIF_GUEST"
+            virsh -c lxc:/// lxc-enter-namespace --noseclabel $lxc /usr/bin/$personality /bin/bash -c "dhclient $VIF_GUEST" || :
 	fi
     else
 	post_install_myplc $lxc $personality
