@@ -732,7 +732,7 @@ function wait_for_ssh () {
     lxc=$1; shift
 
     # if run in public_ip mode, we know the IP of the guest and it is specified here
-    guest_ip=$1; shift
+    [ -n "$1" ] && { guest_ip=$1; shift; }
 
     #wait max 2 min for sshd to start 
     success=""
