@@ -231,6 +231,19 @@ function in_root_context () {
     rpm -q libvirt > /dev/null 
 }
 
+### lxc-enter-namespace being broken, let us try to work around this issue
+# lbuild-initvm.sh stores the guest ipv4 address in /vservers/<container>/ipv4
+function guest_ipv4 () {
+    buildname=$1; shift
+    cat /vservers/$buildname/ipv4
+}
+    
+# convenient for simple commands
+function run_in_build_guest () {
+    buildname=$1; shift
+    ssh -o "StrictHostKeyChecking no" root@$(guest_ipv4 $buildname) "$@"
+}
+
 # run in the vm - do not manage success/failure, will be done from the root ctx
 function build () {
     set -x
@@ -305,7 +318,7 @@ function run_log () {
     ssh -n ${testmaster_ssh} rm -rf ${testdir} ${testdir}.git
 
     # check it out in the build
-    virsh -c lxc:/// lxc-enter-namespace --noseclabel $BASE /bin/bash -c "make -C /build tests-module ${MAKEVARS[@]}"
+    run_in_build_guest /bin/bash -c "make -C /build tests-module ${MAKEVARS[@]}"
     
     # push it onto the testmaster - just the 'system' subdir is enough
     rsync --verbose --archive $(rootdir $BASE)/build/MODULES/tests/system/ ${testmaster_ssh}:${BASE}
@@ -644,17 +657,17 @@ function main () {
 	    # start in case e.g. we just rebooted
 	    virsh -c lxc:/// start ${BASE} || :
 	    # retrieve environment from the previous run
-	    FCDISTRO=$(virsh -c lxc:/// lxc-enter-namespace --noseclabel ${BASE} /build/getdistroname.sh)
-	    BUILD_SCM_URL=$(virsh -c lxc:/// lxc-enter-namespace --noseclabel ${BASE} /bin/bash -c "make --no-print-directory -C /build stage1=skip +build-GITPATH")
+	    FCDISTRO=$(run_in_build_guest $BASE /build/getdistroname.sh)
+	    BUILD_SCM_URL=$(run_in_build_guest $BASE make --no-print-directory -C /build stage1=skip +build-GITPATH)
 	    # for efficiency, crop everything in one make run
 	    tmp=/tmp/${BASE}-env.sh
-	    virsh -c lxc:/// lxc-enter-namespace --noseclabel ${BASE} /bin/bash -c "make --no-print-directory -C /build stage1=skip \
-		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILDEST ++WEBPATH ++TESTBUILDURL ++WEBROOT" > $tmp
+	    run_in_build_guest $BASE make --no-print-directory -C /build stage1=skip \
+		++PLDISTRO ++PLDISTROTAGS ++PERSONALITY ++MAILDEST ++WEBPATH ++TESTBUILDURL ++WEBROOT > $tmp
 	    . $tmp
 	    rm -f $tmp
 	    # update build
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    virsh -c lxc:/// lxc-enter-namespace --noseclabel $BASE /bin/bash -c "cd /build; git pull; make tests-clean"
+	    run_in_build_guest $BASE "(cd /build; git pull; make tests-clean)"
 	    # make sure we refresh the tests place in case it has changed
 	    rm -f /build/MODULES/tests
 	    options=(${options[@]} -d $PLDISTRO -t $PLDISTROTAGS -s $BUILD_SCM_URL)
@@ -704,7 +717,7 @@ function main () {
 	    rm -rf $tmpdir
 	    # Extract build again - in the vm
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    virsh -c lxc:/// lxc-enter-namespace --noseclabel $BASE /bin/bash -c "git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG"
+	    run_in_build_guest_raw $BASE "(git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG)"
 	fi
 	echo "XXXXXXXXXX $COMMAND: preparation of vm $BASE done" $(date)
 
@@ -736,8 +749,8 @@ function main () {
 	    cp $COMMANDPATH $(rootdir ${BASE})/build/
 
 	    # invoke this command in the vm for building (-T)
-	    virsh -c lxc:/// lxc-enter-namespace --noseclabel ${BASE} /bin/bash -c "chmod +x /build/$COMMAND"
-	    virsh -c lxc:/// lxc-enter-namespace --noseclabel ${BASE} /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
+	    run_in_build_guest $BASE chmod +x /build/$COMMAND
+	    run_in_build_guest $BASE /build/$COMMAND "${options[@]}" -b "${BASE}" "${MAKEVARS[@]}" "${MAKETARGETS[@]}"
 	fi
 
 	# publish to the web so run_log can find them
@@ -752,7 +765,7 @@ function main () {
 	else
 	    # run scanpackages so we can use apt-get on this
 	    # (not needed on fedora b/c this is done by the regular build already)
-	    virsh -c lxc:/// lxc-enter-namespace --noseclabel $BASE /bin/bash -c "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
+	    run_in_build_guest $BASE "(cd /build ; dpkg-scanpackages DEBIAN/ | gzip -9c > Packages.gz)"
 	    webpublish mkdir -p $WEBPATH/$BASE/DEBIAN
 	    webpublish_rsync_files $WEBPATH/$BASE/DEBIAN/ $(rootdir $BASE)/build/DEBIAN/*.deb 
 	    webpublish_rsync_files $WEBPATH/$BASE/ $(rootdir $BASE)/build/Packages.gz

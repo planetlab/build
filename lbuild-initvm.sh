@@ -265,7 +265,7 @@ EOF
     fi
 
     guest_ifcfg=${lxc_root}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
-    ( [ -n "$BUILD_MODE" ] && write_guest_ifcfg_build || write_guest_ifcfg_test ) > $guest_ifcfg
+    ( [ -n "$NAT_MODE" ] && write_guest_ifcfg_natip || write_guest_ifcfg_publicip ) > $guest_ifcfg
 
     [ -z "$IMAGE" ] && fedora_configure_yum $lxc $fcdistro $pldistro
 
@@ -294,12 +294,8 @@ function fedora_configure_systemd() {
     ln -sf /lib/systemd/system/multi-user.target ${lxc_root}/etc/systemd/system/default.target
     touch ${lxc_root}/etc/fstab
     ln -sf /dev/null ${lxc_root}/etc/systemd/system/udev.service
-# Thierry - Feb 2013
-# this was intended for f16 initially, in order to enable getty that otherwise would not start
-# having a getty running is helpful only if ssh won't start though, and we see a correlation between
-# VM's that refuse to lxc-stop and VM's that run crazy getty's
+# Thierry - Feb 2013 relying on getty is looking for trouble
 # so, turning getty off for now instead
-#   #dependency on a device unit fails it specially that we disabled udev
 #    sed -i 's/After=dev-%i.device/After=/' ${lxc_root}/lib/systemd/system/getty\@.service
     ln -sf /dev/null ${lxc_root}/etc/systemd/system/"getty@.service"
     rm -f ${lxc_root}/etc/systemd/system/getty.target.wants/*service || :
@@ -341,7 +337,7 @@ gpgcheck=1
 gpgkey=$FEDORA_MIRROR_KEYS/RPM-GPG-KEY-fedora-$release-primary
 EOF
 
-    # for using vtest-init-lxc.sh as a general-purpose lxc creation wrapper
+    # for using this script as a general-purpose lxc creation wrapper
     # just mention 'none' as the repo url
     if [ -n "$REPO_URL" ] ; then
 	if [ ! -d $lxc_root/etc/yum.repos.d ] ; then
@@ -400,17 +396,17 @@ EOF
 
 function debian_configure () {
     guest_interfaces=${lxc_root}/etc/network/interfaces
-    ( [ -n "$BUILD_MODE" ] && write_guest_interfaces_build || write_guest_interfaces_test ) > $guest_interfaces
+    ( [ -n "$NAT_MODE" ] && write_guest_interfaces_natip || write_guest_interfaces_publicip ) > $guest_interfaces
 }
 
-function write_guest_interfaces_build () {
+function write_guest_interfaces_natip () {
     cat <<EOF
 auto $VIF_GUEST
 iface $VIF_GUEST inet dhcp
 EOF
 }
 
-function write_guest_interfaces_test () {
+function write_guest_interfaces_publicip () {
     cat <<EOF
 auto $VIF_GUEST
 iface $VIF_GUEST inet static
@@ -471,7 +467,7 @@ function setup_lxc() {
 
     # don't keep the input xml, this can be retrieved at all times with virsh dumpxml
     config_xml=/tmp/$lxc.xml
-    ( [ -n "$BUILD_MODE" ] && write_lxc_xml_build $lxc || write_lxc_xml_test $lxc ) > $config_xml
+    ( [ -n "$NAT_MODE" ] && write_lxc_xml_natip $lxc || write_lxc_xml_publicip $lxc ) > $config_xml
     
     # define lxc container for libvirt
     virsh -c lxc:/// define $config_xml
@@ -488,7 +484,7 @@ function setup_lxc() {
 #      </network>
 #
 
-function write_lxc_xml_test () {
+function write_lxc_xml_publicip () {
     lxc=$1; shift
     cat <<EOF
 <domain type='lxc'>
@@ -522,7 +518,7 @@ function write_lxc_xml_test () {
 EOF
 }
 
-function write_lxc_xml_build () { 
+function write_lxc_xml_natip () { 
     lxc=$1; shift
     cat <<EOF
 <domain type='lxc'>
@@ -556,7 +552,7 @@ EOF
 }
 
 # this one is dhcp-based
-function write_guest_ifcfg_build () {
+function write_guest_ifcfg_natip () {
     cat <<EOF
 DEVICE=$VIF_GUEST
 BOOTPROTO=dhcp
@@ -568,7 +564,7 @@ EOF
 }
 
 # use fixed GUEST_IP as specified by GUEST_HOSTNAME
-function write_guest_ifcfg_test () {
+function write_guest_ifcfg_publicip () {
     cat <<EOF
 DEVICE=$VIF_GUEST
 BOOTPROTO=static
@@ -583,7 +579,7 @@ MTU=1500
 EOF
 }
 
-function devel_or_vtest_tools () {
+function devel_or_test_tools () {
 
     set -x 
     set -e 
@@ -649,29 +645,21 @@ function post_install () {
     personality=$1; shift
     # setup localtime from the host
     cp /etc/localtime $lxc_root/etc/localtime
-    if [ -n "$BUILD_MODE" ] ; then
-	post_install_build $lxc $personality
-	if [ -n "$START_VM" ] ; then
-	    virsh -c lxc:/// start $lxc
-	    # manually run dhclient in guest - somehow this network won't start on its own
-	    # we need the --noseclabel flag with recent libvirt's
-	    # was not required with f20/libvirt-1.2.5
-	    # but is now with f21/libvirt-1.2.9
-            virsh -c lxc:/// lxc-enter-namespace --noseclabel $lxc /usr/bin/$personality /bin/bash -c "dhclient $VIF_GUEST" || :
-	fi
-    else
-	post_install_myplc $lxc $personality
-	if [ -n "$START_VM" ] ; then
-	    virsh -c lxc:/// start $lxc
-	    # it sounds like we don't need ssh per se any more
-	    # it still makes sense to wait for network readiness though
-	    # some day maybe...
+    # post install hook
+    [ -n "$NAT_MODE" ] && post_install_natip $lxc $personality || post_install_myplc $lxc $personality
+    # start the VM unless specified otherwise
+    if [ -n "$START_VM" ] ; then
+	echo Starting guest $lxc
+	virsh -c lxc:/// start $lxc
+	if [ -n "$NAT_MODE" ] ; then
 	    wait_for_ssh $lxc
+	else
+	    wait_for_ssh $lxc $GUEST_IP
 	fi
     fi
 }
 
-function post_install_build () {
+function post_install_natip () {
 
     set -x 
     set -e 
@@ -718,31 +706,52 @@ PROFILE
 EOF
 }
 
+# workaround for broken lxc-enter-namespace
+# relies on virsh net-dhcp-leases
+# when successful we store result in /vservers/<container>/ipv4
+# because the lease expires afer a while 
+function guest_ipv4_cached_or_from_virsh_leases() {
+    lxc=$1; shift
+    network=default
+    
+    # place to cache result
+    cache=/vservers/$lxc/ipv4
+    ipv4=$(cat $cache 2> /dev/null)
+    [ -z "$ipv4" ] && ipv4=$(virsh net-dhcp-leases $network | sed -e 's,  *, ,g' | grep " $lxc " | grep ipv4 |  cut -d' ' -f6 | cut -d/ -f1)
+    echo $ipv4
+    # cache if needed
+    [ -n "$ipv4" -a ! -f $cache ] && echo $ipv4 > $cache
+    # always return 0
+    return 0
+}
+
 function wait_for_ssh () {
     set -x
     set -e
-    #trap failure ERR INT
 
     lxc=$1; shift
-  
-    echo network in guest is up, waiting for ssh...
+
+    # if run in public_ip mode, we know the IP of the guest and it is specified here
+    guest_ip=$1; shift
 
     #wait max 2 min for sshd to start 
-    ssh_up=""
+    success=""
     current_time=$(date +%s)
     stop_time=$(($current_time + 120))
     
     counter=1
     while [ "$current_time" -lt "$stop_time" ] ; do
          echo "$counter-th attempt to reach sshd in container $lxc ..."
-         ssh -o "StrictHostKeyChecking no" $GUEST_IP 'uname -i' && { ssh_up=true; echo "SSHD in container $lxc is UP"; break ; } || :
-         sleep 10
-         current_time=$(($current_time + 10))
+	 [ -z "$guest_ip" ] && guest_ip=$(guest_ipv4_cached_or_from_virsh_leases $lxc)
+	 [ -n "$guest_ip" ] && ssh -o "StrictHostKeyChecking no" $guest_ip 'uname -i' && { 
+		 success=true; echo "SSHD in container $lxc is UP on IP $guest_ip"; break ; } || :
          counter=$(($counter+1))
+         sleep 10
+	 current_time=$(date +%s)
     done
 
     # Thierry: this is fatal, let's just exit with a failure here
-    [ -z $ssh_up ] && { echo "SSHD in container $lxc is not running" ; exit 1 ; } 
+    [ -z $success ] && { echo "SSHD in container $lxc could not be reached (guest_ip=$guest_ip)" ; exit 1 ; } 
     return 0
 }
 
@@ -829,8 +838,8 @@ function main () {
     # check we've exhausted the arguments
     [[ -n "$@" ]] && usage
 
-    # BUILD_MODE is true unless we specified a hostname
-    [ -n "$GUEST_HOSTNAME" ] || BUILD_MODE=true
+    # NAT_MODE is true unless we specified a hostname
+    [ -n "$GUEST_HOSTNAME" ] || NAT_MODE=true
 
     # set default values
     [ -z "$fcdistro" ] && fcdistro=$DEFAULT_FCDISTRO
@@ -843,14 +852,14 @@ function main () {
     
     # the set of preinstalled packages - depends on mode
     if [ -z "$PREINSTALLED" ] ; then
-	if [ -n "$BUILD_MODE" ] ; then
+	if [ -n "$NAT_MODE" ] ; then
 	    PREINSTALLED=devel.pkgs
 	else
 	    PREINSTALLED=runtime.pkgs
 	fi
     fi
 
-    if [ -n "$BUILD_MODE" ] ; then
+    if [ -n "$NAT_MODE" ] ; then
 	# we can now set GUEST_HOSTNAME safely
         [ -z "$GUEST_HOSTNAME" ] && GUEST_HOSTNAME=$(echo $lxc | sed -e 's,\.,-,g')
     else
@@ -879,7 +888,7 @@ function main () {
 
     # compute networking details for the test mode
     # (build mode relies entirely on dhcp on the private subnet)
-    if [ -z "$BUILD_MODE" ] ; then
+    if [ -z "$NAT_MODE" ] ; then
 
 	#create_bridge_if_needed $PUBLIC_BRIDGE
 	lbuild-bridge.sh $PUBLIC_BRIDGE
@@ -894,7 +903,9 @@ function main () {
 
     setup_lxc $lxc $fcdistro $pldistro $personality 
 
-    devel_or_vtest_tools $lxc $fcdistro $pldistro $personality
+    # historically this command is for setting up a build or a test VM
+    # kind of patchy right now though
+    devel_or_test_tools $lxc $fcdistro $pldistro $personality
 
     # container gets started here
     post_install $lxc $personality
