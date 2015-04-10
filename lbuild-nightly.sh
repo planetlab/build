@@ -717,7 +717,7 @@ function main () {
 	    rm -rf $tmpdir
 	    # Extract build again - in the vm
 	    [ -n "$SSH_KEY" ] && setupssh ${BASE} ${SSH_KEY}
-	    run_in_build_guest_raw $BASE "(git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG)"
+	    run_in_build_guest $BASE "(git clone $GIT_REPO /build; cd /build; git checkout $GIT_TAG)"
 	fi
 	echo "XXXXXXXXXX $COMMAND: preparation of vm $BASE done" $(date)
 
