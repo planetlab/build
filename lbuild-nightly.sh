@@ -52,6 +52,20 @@ function logfile () {
     echo /vservers/$slice.log.txt
 }
 
+########################################
+# workaround for broken lxc-enter-namespace
+# 1st version was relying on virsh net-dhcp-leases
+# however this was too fragile, would not work for fedora14 containers
+# WARNING: this code is duplicated in lbuild-initvm.sh
+function guest_ipv4() {
+    lxc=$1; shift
+
+    mac=$(virsh -c lxc:/// domiflist $lxc | egrep 'network|bridge' | awk '{print $5;}')
+    # sanity check
+    [ -z "$mac" ] && return 0
+    arp -en | grep "$mac" | awk '{print $1;}'
+}
+
 # wrap a quick summary of suspicious stuff
 # this is to focus on installation that go wrong
 # use with care, a *lot* of other things can go bad as well

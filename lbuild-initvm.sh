@@ -710,6 +710,20 @@ PROFILE
 EOF
 }
 
+########################################
+# workaround for broken lxc-enter-namespace
+# 1st version was relying on virsh net-dhcp-leases
+# however this was too fragile, would not work for fedora14 containers
+# WARNING: this code is duplicated in lbuild-nightly.sh
+function guest_ipv4() {
+    lxc=$1; shift
+
+    mac=$(virsh -c lxc:/// domiflist $lxc | egrep 'network|bridge' | awk '{print $5;}')
+    # sanity check
+    [ -z "$mac" ] && return 0
+    arp -en | grep "$mac" | awk '{print $1;}'
+}
+
 function wait_for_ssh () {
     set -x
     set -e
