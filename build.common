@@ -750,3 +750,16 @@ function yumconf_exclude () {
     sed -i -e "/#baseurl=.*$/i\\
 $yumexclude_line" $repo
 }
+
+########################################
+# workaround for broken lxc-enter-namespace
+# 1st version was relying on virsh net-dhcp-leases
+# however this was too fragile, would not work for fedora14 containers
+function guest_ipv4() {
+    lxc=$1; shift
+
+    mac=$(virsh -c lxc:/// domiflist $lxc | egrep 'network|bridge' | awk '{print $5;}')
+    # sanity check
+    [ -z "$mac" ] && return 0
+    arp -en | grep "$mac" | awk '{print $1;}'
+}

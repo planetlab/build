@@ -710,25 +710,6 @@ PROFILE
 EOF
 }
 
-# workaround for broken lxc-enter-namespace
-# relies on virsh net-dhcp-leases
-# when successful we store result in /vservers/<container>/ipv4
-# because the lease expires afer a while 
-function guest_ipv4_cached_or_from_virsh_leases() {
-    lxc=$1; shift
-    network=default
-    
-    # place to cache result
-    cache=/vservers/$lxc/ipv4
-    ipv4=$(cat $cache 2> /dev/null)
-    [ -z "$ipv4" ] && ipv4=$(virsh net-dhcp-leases $network | sed -e 's,  *, ,g' | grep " $lxc " | grep ipv4 |  cut -d' ' -f6 | cut -d/ -f1)
-    echo $ipv4
-    # cache if needed
-    [ -n "$ipv4" -a ! -f $cache ] && echo $ipv4 > $cache
-    # always return 0
-    return 0
-}
-
 function wait_for_ssh () {
     set -x
     set -e
@@ -746,7 +727,7 @@ function wait_for_ssh () {
     counter=1
     while [ "$current_time" -lt "$stop_time" ] ; do
          echo "$counter-th attempt to reach sshd in container $lxc ..."
-	 [ -z "$guest_ip" ] && guest_ip=$(guest_ipv4_cached_or_from_virsh_leases $lxc)
+	 [ -z "$guest_ip" ] && guest_ip=$(guest_ipv4 $lxc)
 	 [ -n "$guest_ip" ] && ssh -o "StrictHostKeyChecking no" $guest_ip 'uname -i' && { 
 		 success=true; echo "SSHD in container $lxc is UP on IP $guest_ip"; break ; } || :
          counter=$(($counter+1))

@@ -231,13 +231,6 @@ function in_root_context () {
     rpm -q libvirt > /dev/null 
 }
 
-### lxc-enter-namespace being broken, let us try to work around this issue
-# lbuild-initvm.sh stores the guest ipv4 address in /vservers/<container>/ipv4
-function guest_ipv4 () {
-    buildname=$1; shift
-    cat /vservers/$buildname/ipv4
-}
-    
 # convenient for simple commands
 function run_in_build_guest () {
     buildname=$1; shift
