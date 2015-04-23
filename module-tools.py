@@ -807,7 +807,7 @@ that for other purposes than tagging""".format(options.workdir))
             f.write("""
 {}
 {}
-Please write a changelog for this new tag in the section below
+Please write a changelog for this new tag in the section above
 """.format(Module.edit_magic_line, setting_tag_line))
 
         if self.options.bypass: 
