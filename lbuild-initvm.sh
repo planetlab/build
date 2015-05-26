@@ -701,7 +701,7 @@ function post_install () {
 function sshd_disable_password_auth () {
     lxc=$1; shift 
     lxc_root=$(lxcroot $lxc)
-    sed --inplace=.password -e 's,^#\?PasswordAuthentication.*,PasswordAuthentication no,' \
+    sed --in-place=.password -e 's,^#\?PasswordAuthentication.*,PasswordAuthentication no,' \
 	$lxc_root/etc/ssh/sshd_config
 }
 
