@@ -361,6 +361,8 @@ EOF
 }    
 
 ##############################
+# apparently ubuntu exposes a mirrors list by country at
+# http://mirrors.ubuntu.com/mirrors.txt
 # need to specify the right mirror for debian variants like ubuntu and the like
 function debian_mirror () {
     fcdistro=$1; shift
@@ -368,7 +370,8 @@ function debian_mirror () {
 	squeeze|wheezy|jessie) 
 	    echo http://ftp2.fr.debian.org/debian/ ;;
 	oneiric|precise|quantal|raring|saucy|trusty|utopic|vivid) 
-	    echo http://mir1.ovh.net/ubuntu/ubuntu/ ;;
+#	    echo http://mir1.ovh.net/ubuntu/ubuntu/ ;;
+	    echo http://www-ftp.lip6.fr/pub/linux/distributions/Ubuntu/archive/ ;;
 	*) echo unknown distro $fcdistro; exit 1;;
     esac
 }
@@ -380,7 +383,7 @@ function debian_install () {
     mkdir -p $lxc_root
     arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
-    debootstrap --arch $arch $fcdistro $lxc_root $mirror
+    debootstrap --no-check-gpg --arch $arch $fcdistro $lxc_root $mirror
     # just like with fedora we ensure a few packages get installed as well
     # not started yet
     #virsh -c lxc:/// lxc-enter-namespace $lxc /usr/bin/$personality /bin/bash -c "apt-get update"
