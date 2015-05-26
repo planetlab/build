@@ -19,6 +19,15 @@ export PATH=$PATH:/bin:/sbin
 
 . build.common
 
+# xxx fixme : we pass $lxc around in functions,
+# but in fact then we use lxc_root which is a global..
+# it works, but this really is poor practice
+# we should have an lxc_root function instead
+function lxcroot () {
+    lxc=$1; shift
+    echo /vservers/$lxc
+}
+
 # XXX fixme : when creating a 32bits VM we need to call linux32 as appropriate...s
 
 DEFAULT_FCDISTRO=f21
@@ -105,6 +114,9 @@ function almost_empty () {
 function fedora_install() {
     set -x
     set -e
+
+    lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
 
     cache=/var/cache/lxc/fedora/$arch/$release
     mkdir -p $cache
@@ -212,6 +224,9 @@ function fedora_configure() {
     set -x
     set -e
 
+    lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
+
     # disable selinux in fedora
     mkdir -p $lxc_root/selinux
     echo 0 > $lxc_root/selinux/enforce
@@ -259,9 +274,9 @@ EOF
     mknod -m 666 ${dev_path}/ptmx c 5 2
 
     if [ "$(echo $fcdistro | cut -d"f" -f2)" -le "14" ]; then
-	fedora_configure_init
+	fedora_configure_init $lxc
     else
-	fedora_configure_systemd
+	fedora_configure_systemd $lxc
     fi
 
     guest_ifcfg=${lxc_root}/etc/sysconfig/network-scripts/ifcfg-$VIF_GUEST
@@ -275,6 +290,9 @@ EOF
 function fedora_configure_init() {
     set -e
     set -x
+    lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
+
     sed -i 's|.sbin.start_udev||' ${lxc_root}/etc/rc.sysinit
     sed -i 's|.sbin.start_udev||' ${lxc_root}/etc/rc.d/rc.sysinit
     # don't mount devpts, for pete's sake
@@ -288,6 +306,9 @@ function fedora_configure_init() {
 function fedora_configure_systemd() {
     set -e
     set -x
+    lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
+
     # so ignore if we can't find /etc/systemd at all 
     [ -d ${lxc_root}/etc/systemd ] || return 0
     # otherwise let's proceed
@@ -313,6 +334,7 @@ function fedora_configure_yum () {
     fcdistro=$1; shift
     pldistro=$1; shift
 
+    lxc_root=$(lxcroot $lxc)
     # rpm --rebuilddb
     chroot ${lxc_root} $personality rpm --rebuilddb
 
@@ -380,6 +402,7 @@ function debian_install () {
     set -e
     set -x
     lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
     mkdir -p $lxc_root
     arch=$(canonical_arch $personality $fcdistro)
     mirror=$(debian_mirror $fcdistro)
@@ -430,15 +453,17 @@ function setup_lxc() {
     pldistro=$1; shift
     personality=$1; shift
 
+    lxc_root=$(lxcroot $lxc)
+
     # create lxc container 
     
     pkg_method=$(package_method $fcdistro)
     case $pkg_method in
 	yum)
             if [ -z "$IMAGE" ]; then
-                fedora_install ||  { echo "failed to install fedora root image"; exit 1 ; }
+                fedora_install $lxc ||  { echo "failed to install fedora root image"; exit 1 ; }
             fi
-	    fedora_configure || { echo "failed to configure fedora for a container"; exit 1 ; }
+	    fedora_configure $lxc || { echo "failed to configure fedora for a container"; exit 1 ; }
 	    ;;
 	debootstrap)
             if [ -z "$IMAGE" ]; then
@@ -489,6 +514,7 @@ function setup_lxc() {
 
 function write_lxc_xml_publicip () {
     lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
     cat <<EOF
 <domain type='lxc'>
   <name>$lxc</name>
@@ -524,6 +550,7 @@ EOF
 # grant build guests the ability to do mknods
 function write_lxc_xml_natip () { 
     lxc=$1; shift
+    lxc_root=$(lxcroot $lxc)
     cat <<EOF
 <domain type='lxc'>
   <name>$lxc</name>
@@ -597,6 +624,8 @@ function devel_or_test_tools () {
     pldistro=$1; shift
     personality=$1; shift
 
+    lxc_root=$(lxcroot $lxc)
+
     pkg_method=$(package_method $fcdistro)
 
     pkgsfile=$(pl_locateDistroFile $DIRNAME $pldistro $PREINSTALLED)
@@ -650,8 +679,10 @@ function devel_or_test_tools () {
 function post_install () {
     lxc=$1; shift 
     personality=$1; shift
+    lxc_root=$(lxcroot $lxc)
     # setup localtime from the host
     cp /etc/localtime $lxc_root/etc/localtime
+    sshd_disable_password_auth $lxc
     # post install hook
     [ -n "$NAT_MODE" ] && post_install_natip $lxc $personality || post_install_myplc $lxc $personality
     # start the VM unless specified otherwise
@@ -666,6 +697,14 @@ function post_install () {
     fi
 }
 
+# just in case, let's stay on the safe side
+function sshd_disable_password_auth () {
+    lxc=$1; shift 
+    lxc_root=$(lxcroot $lxc)
+    sed --inplace=.password -e 's,^#\?PasswordAuthentication.*,PasswordAuthentication no,' \
+	$lxc_root/etc/ssh/sshd_config
+}
+
 function post_install_natip () {
 
     set -x 
@@ -674,6 +713,7 @@ function post_install_natip () {
 
     lxc=$1; shift
     personality=$1; shift
+    lxc_root=$(lxcroot $lxc)
 
 ### From myplc-devel-native.spec
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
@@ -695,6 +735,7 @@ function post_install_myplc  () {
 
     lxc=$1; shift
     personality=$1; shift
+    lxc_root=$(lxcroot $lxc)
 
 # be careful to backslash $ in this, otherwise it's the root context that's going to do the evaluation
     cat << EOF | chroot ${lxc_root} $personality bash -x
@@ -820,7 +861,7 @@ function main () {
     # parse fixed arguments
     [[ -z "$@" ]] && usage
     lxc=$1 ; shift
-    lxc_root=/vservers/$lxc
+    lxc_root=$(lxcroot $lxc)
 
     # rainchecks
     almost_empty $lxc_root || \
@@ -835,7 +876,6 @@ function main () {
         { echo "$IMAGE rootfs folder does not exist - exiting" ; exit 1 ; }
         rsync -a $IMAGE/ $lxc_root/
     fi
-
 
     # check we've exhausted the arguments
     [[ -n "$@" ]] && usage
