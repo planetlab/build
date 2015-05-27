@@ -8,8 +8,8 @@ from glob import glob
 from optparse import OptionParser
 
 # e.g. other_choices = [ ('d','iff') , ('g','uess') ] - lowercase 
-def prompt (question, default=True, other_choices=[], allow_outside=False):
-    if not isinstance (other_choices, list):
+def prompt(question, default=True, other_choices=[], allow_outside=False):
+    if not isinstance(other_choices, list):
         other_choices = [ other_choices ]
     chars = [ c for (c,rest) in other_choices ]
 
@@ -65,19 +65,19 @@ def default_editor():
 ### fold long lines
 fold_length = 132
 
-def print_fold (line):
+def print_fold(line):
     while len(line) >= fold_length:
         print(line[:fold_length],'\\')
         line = line[fold_length:]
     print(line)
 
 class Command:
-    def __init__ (self, command, options):
+    def __init__(self, command, options):
         self.command = command
         self.options = options
         self.tmp = "/tmp/command-{}".format(os.getpid())
 
-    def run (self):
+    def run(self):
         if self.options.dry_run:
             print('dry_run', self.command)
             return 0
@@ -86,7 +86,7 @@ class Command:
             sys.stdout.flush()
         return os.system(self.command)
 
-    def run_silent (self):
+    def run_silent(self):
         if self.options.dry_run:
             print('dry_run', self.command)
             return 0
@@ -109,7 +109,7 @@ class Command:
             raise Exception("Command {} failed".format(self.command))
 
     # returns stdout, like bash's $(mycommand)
-    def output_of (self, with_stderr=False):
+    def output_of(self, with_stderr=False):
         if self.options.dry_run:
             print('dry_run', self.command)
             return 'dry_run output'
@@ -165,7 +165,7 @@ class GitRepository:
 
     @classmethod
     def remote_exists(cls, remote, options):
-        return Command ("git --no-pager ls-remote {} &> /dev/null".format(remote), options).run()==0
+        return Command("git --no-pager ls-remote {} &> /dev/null".format(remote), options).run()==0
 
     def tag_exists(self, tagname):
         command = 'git tag -l | grep "^{}$"'.format(tagname)
@@ -316,7 +316,7 @@ class Module:
         cls.config[key]=input("{} [{}] : ".format(message,default)).strip() or default
 
     @classmethod
-    def prompt_config (cls):
+    def prompt_config(cls):
         for (key,message,default) in cls.configKeys:
             cls.config[key]=""
             while not cls.config[key]:
@@ -350,7 +350,7 @@ class Module:
         return name, branch_or_tagname, module_type
 
 
-    def __init__ (self, module_spec, options):
+    def __init__(self, module_spec, options):
         # parse module spec
         self.pathname, branch_or_tagname, module_type = self.parse_module_spec(module_spec)
         self.name = os.path.basename(self.pathname)
@@ -365,11 +365,11 @@ class Module:
         self.repository = None
         self.build = None
 
-    def run (self,command):
+    def run(self,command):
         return Command(command,self.options).run()
-    def run_fatal (self,command):
+    def run_fatal(self,command):
         return Command(command,self.options).run_fatal()
-    def run_prompt (self,message,fun, *args):
+    def run_prompt(self,message,fun, *args):
         fun_msg = "{}({})".format(fun.__name__, ",".join(args))
         if not self.options.verbose:
             while True:
@@ -384,7 +384,7 @@ class Module:
             if prompt(question, True):
                 fun(*args)
 
-    def friendly_name (self):
+    def friendly_name(self):
         if hasattr(self, 'branch'):
             return "{}:{}".format(self.pathname, self.branch)
         elif hasattr(self, 'tagname'):
@@ -393,12 +393,12 @@ class Module:
             return self.pathname
 
     @classmethod
-    def git_remote_dir (cls, name):
+    def git_remote_dir(cls, name):
         return "{}@{}:/git/{}.git".format(cls.config['gituser'], cls.config['gitserver'], name)
 
     ####################
     @classmethod
-    def init_homedir (cls, options):
+    def init_homedir(cls, options):
         if options.verbose and options.mode not in Main.silent_modes:
             print('Checking for', options.workdir)
         storage="{}/{}".format(options.workdir, cls.config_storage)
@@ -438,7 +438,7 @@ that for other purposes than tagging""".format(options.workdir))
             if options.build_module:
                 Module.config['build'] = options.build_module
 
-        if not os.path.isdir (options.workdir):
+        if not os.path.isdir(options.workdir):
             print("Cannot find {}, let's create it".format(options.workdir))
             Command("mkdir -p {}".format(options.workdir), options).run_silent()
             cls.prompt_config()
@@ -476,11 +476,11 @@ that for other purposes than tagging""".format(options.workdir))
             for (key,message,default) in Module.configKeys:
                 print('\t{} = {}'.format(key,Module.config[key]))
 
-    def init_module_dir (self):
+    def init_module_dir(self):
         if self.options.verbose:
             print('Checking for', self.module_dir)
 
-        if not os.path.isdir (self.module_dir):
+        if not os.path.isdir(self.module_dir):
             self.repository = GitRepository.clone(self.git_remote_dir(self.pathname),
                                                   self.module_dir,
                                                   self.options)
@@ -496,7 +496,7 @@ that for other purposes than tagging""".format(options.workdir))
             raise Exception('Cannot find {} - or not a git module'.format(self.module_dir))
                 
 
-    def revert_module_dir (self):
+    def revert_module_dir(self):
         if self.options.fast_checks:
             if self.options.verbose: print('Skipping revert of {}'.format(self.module_dir))
             return
@@ -506,7 +506,7 @@ that for other purposes than tagging""".format(options.workdir))
         if not self.repository.is_clean():
             self.repository.revert()
 
-    def update_module_dir (self):
+    def update_module_dir(self):
         if self.options.fast_checks:
             if self.options.verbose: print('Skipping update of {}'.format(self.module_dir))
             return
@@ -520,9 +520,9 @@ that for other purposes than tagging""".format(options.workdir))
         else:
             self.repository.update()
 
-    def main_specname (self):
+    def main_specname(self):
         attempt = "{}/{}.spec".format(self.module_dir, self.name)
-        if os.path.isfile (attempt):
+        if os.path.isfile(attempt):
             return attempt
         pattern1 = "{}/*.spec".format(self.module_dir)
         level1 = glob(pattern1)
@@ -536,21 +536,21 @@ that for other purposes than tagging""".format(options.workdir))
         raise Exception('Cannot guess specfile for module {} -- patterns were {} or {}'\
                         .format(self.pathname,pattern1,pattern2))
 
-    def all_specnames (self):
+    def all_specnames(self):
         level1 = glob("{}/*.spec".format(self.module_dir))
         if level1:
             return level1
         level2 = glob("{}/*/*.spec".format(self.module_dir))
         return level2
 
-    def parse_spec (self, specfile, varnames):
+    def parse_spec(self, specfile, varnames):
         if self.options.verbose:
             print('Parsing',specfile, end=' ')
             for var in varnames:
                 print("[{}]".format(var), end=' ')
             print("")
         result={}
-        with open(specfile) as f:
+        with open(specfile, encoding='utf-8') as f:
             for line in f.readlines():
                 attempt = Module.matcher_rpm_define.match(line)
                 if attempt:
@@ -565,7 +565,7 @@ that for other purposes than tagging""".format(options.workdir))
                 
     # stores in self.module_name_varname the rpm variable to be used for the module's name
     # and the list of these names in self.varnames
-    def spec_dict (self):
+    def spec_dict(self):
         specfile = self.main_specname()
         redirector_keys = [ varname for (varname, default) in Module.redirectors]
         redirect_dict = self.parse_spec(specfile, redirector_keys)
@@ -580,21 +580,21 @@ that for other purposes than tagging""".format(options.workdir))
                 setattr(self, varname, default)
                 varnames += [ default ] 
         self.varnames = varnames
-        result = self.parse_spec (specfile, self.varnames)
+        result = self.parse_spec(specfile, self.varnames)
         if self.options.debug:
             print('2st pass parsing done, varnames={} result={}'.format(varnames, result))
         return result
 
-    def patch_spec_var (self, patch_dict,define_missing=False):
+    def patch_spec_var(self, patch_dict,define_missing=False):
         for specfile in self.all_specnames():
             # record the keys that were changed
-            changed = dict ( [ (x,False) for x in list(patch_dict.keys()) ] )
+            changed = {x : False  for x in list(patch_dict.keys()) }
             newspecfile = "{}.new".format(specfile)
             if self.options.verbose:
                 print('Patching', specfile, 'for', list(patch_dict.keys()))
 
-            with open (specfile) as spec:
-                with open(newspecfile, "w") as new:
+            with open(specfile, encoding='utf-8') as spec:
+                with open(newspecfile, "w", encoding='utf-8') as new:
                     for line in spec.readlines():
                         attempt = Module.matcher_rpm_define.match(line)
                         if attempt:
@@ -615,7 +615,7 @@ that for other purposes than tagging""".format(options.workdir))
             os.rename(newspecfile, specfile)
 
     # returns all lines until the magic line
-    def unignored_lines (self, logfile):
+    def unignored_lines(self, logfile):
         result = []
         white_line_matcher = re.compile("\A\s*\Z")
         with open(logfile) as f:
@@ -629,19 +629,19 @@ that for other purposes than tagging""".format(options.workdir))
         return result
 
     # creates a copy of the input with only the unignored lines
-    def strip_magic_line_filename (self, filein, fileout ,new_tag_name):
+    def strip_magic_line_filename(self, filein, fileout ,new_tag_name):
        with open(fileout,'w') as f:
            f.write(self.setting_tag_format.format(new_tag_name) + '\n')
            for line in self.unignored_lines(filein):
                f.write(line)
 
-    def insert_changelog (self, logfile, newtag):
+    def insert_changelog(self, logfile, newtag):
         for specfile in self.all_specnames():
             newspecfile = "{}.new".format(specfile)
             if self.options.verbose:
                 print('Inserting changelog from {} into {}'.format(logfile, specfile))
 
-            with open (specfile) as spec:
+            with open(specfile) as spec:
                 with open(newspecfile,"w") as new:
                     for line in spec.readlines():
                         new.write(line)
@@ -657,12 +657,12 @@ that for other purposes than tagging""".format(options.workdir))
                             new.write("\n")
             os.rename(newspecfile,specfile)
             
-    def show_dict (self, spec_dict):
+    def show_dict(self, spec_dict):
         if self.options.verbose:
             for k, v in spec_dict.items():
                 print('{} = {}'.format(k, v))
 
-    def last_tag (self, spec_dict):
+    def last_tag(self, spec_dict):
         try:
             return "{}-{}".format(spec_dict[self.module_version_varname],
                                   spec_dict[self.module_taglevel_varname])
@@ -670,13 +670,13 @@ that for other purposes than tagging""".format(options.workdir))
             raise Exception('Something is wrong with module {}, cannot determine {} - exiting'\
                             .format(self.name, err))
 
-    def tag_name (self, spec_dict):
+    def tag_name(self, spec_dict):
         return "{}-{}".format(self.name, self.last_tag(spec_dict))
     
 
     pattern_format="\A\s*{module}-(GITPATH)\s*(=|:=)\s*(?P<url_main>[^\s]+)/{module}[^\s]+"
 
-    def is_mentioned_in_tagsfile (self, tagsfile):
+    def is_mentioned_in_tagsfile(self, tagsfile):
         # so that {module} gets replaced from format
         module = self.name
         module_matcher = re.compile(Module.pattern_format.format(**locals()))
@@ -689,7 +689,7 @@ that for other purposes than tagging""".format(options.workdir))
 ##############################
     # using fine_grain means replacing only those instances that currently refer to this tag
     # otherwise, <module>-GITPATH is replaced unconditionnally
-    def patch_tags_file (self, tagsfile, oldname, newname, fine_grain=True):
+    def patch_tags_file(self, tagsfile, oldname, newname, fine_grain=True):
         newtagsfile = "{}.new".format(tagsfile)
 
         with open(tagsfile) as tags:
@@ -759,7 +759,7 @@ that for other purposes than tagging""".format(options.workdir))
 
 
 ##############################
-    def do_tag (self):
+    def do_tag(self):
         self.init_module_dir()
         self.revert_module_dir()
         self.update_module_dir()
@@ -773,13 +773,13 @@ that for other purposes than tagging""".format(options.workdir))
             # sanity check
             old_tag_name = self.check_tag(old_tag_name, need_it=True)
 
-        if (self.options.new_version):
+        if self.options.new_version:
             # new version set on command line
             spec_dict[self.module_version_varname] = self.options.new_version
             spec_dict[self.module_taglevel_varname] = 0
         else:
             # increment taglevel
-            new_taglevel = str ( int (spec_dict[self.module_taglevel_varname]) + 1)
+            new_taglevel = str( int(spec_dict[self.module_taglevel_varname]) + 1)
             spec_dict[self.module_taglevel_varname] = new_taglevel
 
         new_tag_name = self.tag_name(spec_dict)
@@ -790,7 +790,7 @@ that for other purposes than tagging""".format(options.workdir))
         if not self.options.bypass:
             diff_output = self.repository.diff_with_tag(old_tag_name)
             if len(diff_output) == 0:
-                if not prompt ("No pending difference in module {}, want to tag anyway".format(self.pathname), False):
+                if not prompt("No pending difference in module {}, want to tag anyway".format(self.pathname), False):
                     return
 
         # side effect in head's specfile
@@ -825,7 +825,7 @@ Please write a changelog for this new tag in the section above
         self.strip_magic_line_filename(changelog_plain, changelog_strip, new_tag_name)
         # insert changelog in spec
         if self.options.changelog:
-            self.insert_changelog (changelog_plain, new_tag_name)
+            self.insert_changelog(changelog_plain, new_tag_name)
 
         ## update build
         build_path = os.path.join(self.options.workdir, Module.config['build'])
@@ -836,7 +836,7 @@ Please write a changelog for this new tag in the section above
             build.revert()
 
         tagsfiles = glob(build.path+"/*-tags.mk")
-        tagsdict = dict( [ (x,'todo') for x in tagsfiles ] )
+        tagsdict = { x : 'todo' for x in tagsfiles }
         default_answer = 'y'
         tagsfiles.sort()
         while True:
@@ -844,7 +844,7 @@ Please write a changelog for this new tag in the section above
             if self.options.bypass:
                 break
             for tagsfile in tagsfiles:
-                if not self.is_mentioned_in_tagsfile (tagsfile):
+                if not self.is_mentioned_in_tagsfile(tagsfile):
                     if self.options.verbose:
                         print("tagsfile {} does not mention {} - skipped".format(tagsfile, self.name))
                     continue
@@ -852,7 +852,7 @@ Please write a changelog for this new tag in the section above
                 basename = os.path.basename(tagsfile)
                 print(".................... Dealing with {}".format(basename))
                 while tagsdict[tagsfile] == 'todo' :
-                    choice = prompt ("insert {} in {}    ".format(new_tag_name, basename),
+                    choice = prompt("insert {} in {}    ".format(new_tag_name, basename),
                                      default_answer,
                                      [ ('y','es'), ('n', 'ext'), ('f','orce'), 
                                        ('d','iff'), ('r','evert'), ('c', 'at'), ('h','elp') ] ,
@@ -881,7 +881,7 @@ c: cat the current tag file
 n: move to next file""".format(**locals()))
 
             if prompt("Want to review changes on tags files", False):
-                tagsdict = dict ( [ (x, 'todo') for x in tagsfiles ] )
+                tagsdict = {x : 'todo' for x in tagsfiles }
                 default_answer = 'd'
             else:
                 break
@@ -909,7 +909,7 @@ n: move to next file""".format(**locals()))
 
 
 ##############################
-    def do_version (self):
+    def do_version(self):
         self.init_module_dir()
         self.revert_module_dir()
         self.update_module_dir()
@@ -919,19 +919,19 @@ n: move to next file""".format(**locals()))
                                   .format(self.friendly_name(), self.last_tag(spec_dict)))
         for varname in self.varnames:
             if varname not in spec_dict:
-                self.html_print ('Could not find %define for {}'.format(varname))
+                self.html_print('Could not find %define for {}'.format(varname))
                 return
             else:
-                self.html_print ("{:<16} {}".format(varname, spec_dict[varname]))
-        self.html_print ("{:<16} {}".format('url', self.repository.url()))
+                self.html_print("{:<16} {}".format(varname, spec_dict[varname]))
+        self.html_print("{:<16} {}".format('url', self.repository.url()))
         if self.options.verbose:
-            self.html_print ("{:<16} {}".format('main specfile:', self.main_specname()))
-            self.html_print ("{:<16} {}".format('specfiles:', self.all_specnames()))
+            self.html_print("{:<16} {}".format('main specfile:', self.main_specname()))
+            self.html_print("{:<16} {}".format('specfiles:', self.all_specnames()))
         self.html_print_end()
 
 
 ##############################
-    def do_diff (self):
+    def do_diff(self):
         self.init_module_dir()
         self.revert_module_dir()
         self.update_module_dir()
@@ -958,9 +958,9 @@ n: move to next file""".format(**locals()))
                 self.html_store_title("Diffs in module {} ({}) : {} chars"\
                                       .format(thename, self.last_tag(spec_dict), len(diff_output)))
 
-                self.html_store_raw ('<p> &lt; (left) {} </p>'"{:<16} {}".format(tag_name))
-                self.html_store_raw ('<p> &gt; (right) {} </p>'"{:<16} {}".format(thename))
-                self.html_store_pre (diff_output)
+                self.html_store_raw('<p> &lt; (left) {} </p>'"{:<16} {}".format(tag_name))
+                self.html_store_raw('<p> &gt; (right) {} </p>'"{:<16} {}".format(thename))
+                self.html_store_pre(diff_output)
             elif not self.options.www:
                 print('x'*30, 'module', thename)
                 print('x'*20, '<', tag_name)
@@ -970,34 +970,34 @@ n: move to next file""".format(**locals()))
 ##############################
     # store and restitute html fragments
     @staticmethod 
-    def html_href (url,text):
+    def html_href(url,text):
         return '<a href="{}">{}</a>'.format(url, text)
 
     @staticmethod 
-    def html_anchor (url,text):
+    def html_anchor(url,text):
         return '<a name="{}">{}</a>'.format(url,text)
 
     @staticmethod
-    def html_quote (text):
+    def html_quote(text):
         return text.replace('&', '&#38;').replace('<', '&lt;').replace('>', '&gt;')
 
     # only the fake error module has multiple titles
-    def html_store_title (self, title):
+    def html_store_title(self, title):
         if not hasattr(self,'titles'):
             self.titles=[]
         self.titles.append(title)
 
-    def html_store_raw (self, html):
+    def html_store_raw(self, html):
         if not hasattr(self,'body'):
             self.body=''
         self.body += html
 
-    def html_store_pre (self, text):
+    def html_store_pre(self, text):
         if not hasattr(self,'body'):
             self.body=''
         self.body += '<pre>{}</pre>'.format(self.html_quote(text))
 
-    def html_print (self, txt):
+    def html_print(self, txt):
         if not self.options.www:
             print(txt)
         else:
@@ -1006,9 +1006,9 @@ n: move to next file""".format(**locals()))
                 self.in_list = True
             self.html_store_raw('<li>{}</li>'.format(txt))
 
-    def html_print_end (self):
+    def html_print_end(self):
         if self.options.www:
-            self.html_store_raw ('</ul>')
+            self.html_store_raw('</ul>')
 
     @staticmethod
     def html_dump_header(title):
@@ -1200,7 +1200,7 @@ def release_changelog(options, buildtag_old, buildtag_new):
         print('=== {} : removed package from build {} ==='.format(tagfile_new, module))
 
 
-def adopt_tag (options, args):
+def adopt_tag(options, args):
     modules=[]
     for module in options.modules:
         modules += module.split()
@@ -1273,7 +1273,7 @@ Branches:
     regular_modes = set(modes.keys()).difference(set(['changelog','adopt']))
 
     @staticmethod
-    def optparse_list (option, opt, value, parser):
+    def optparse_list(option, opt, value, parser):
         try:
             setattr(parser.values,option.dest,getattr(parser.values,option.dest)+value.split())
         except:
@@ -1321,7 +1321,7 @@ Branches:
             if len(args)==0 or len(options.modules)==0:
                 parser.print_help()
                 sys.exit(1)
-            adopt_tag (options,args)
+            adopt_tag(options,args)
             return 
 
         # the other commands (module-* and release-changelog) share the same skeleton
