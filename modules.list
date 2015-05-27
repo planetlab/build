@@ -6,13 +6,11 @@ comgt
 DistributedRateLimiting
 drupal
 fprobe-ulog
-ipfw
 iptables
-libvirt-python:1.2.3
-libvirt:1.2.3
+libvirt
+libvirt-python
 linux-2.6:32
 lxc-userspace
-madwifi
 mom
 monitor
 myplc
@@ -35,7 +33,7 @@ pyaspects
 pypcilib
 pyplnet
 rvm-ruby:planetlab
-sfa:geni-v3
+sfa
 sliceimage
 sliver-openvswitch
 tests
