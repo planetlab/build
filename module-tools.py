@@ -958,8 +958,8 @@ n: move to next file""".format(**locals()))
                 self.html_store_title("Diffs in module {} ({}) : {} chars"\
                                       .format(thename, self.last_tag(spec_dict), len(diff_output)))
 
-                self.html_store_raw('<p> &lt; (left) {} </p>'"{:<16} {}".format(tag_name))
-                self.html_store_raw('<p> &gt; (right) {} </p>'"{:<16} {}".format(thename))
+                self.html_store_raw('<p> &lt; (left) {} </p>'.format(tag_name))
+                self.html_store_raw('<p> &gt; (right) {} </p>'.format(thename))
                 self.html_store_pre(diff_output)
             elif not self.options.www:
                 print('x'*30, 'module', thename)
