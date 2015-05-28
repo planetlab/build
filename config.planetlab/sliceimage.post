@@ -49,7 +49,7 @@ rm -f ${vdir}/etc/event.d/tty[23456]
 # use fedora's archive, and other yum-related issues
 if [[ "$vdir" =~ .*f14.* ]] ; then
     echo "* sliceimage.post: rectifying fedora14 slice image with fedora-release-14-2.noarch.rpm"
-    chroot $vdir rpm -U http://mirror.onelab.eu/third-party/fedora-release-14-2.noarch.rpm
+    rpm --root=$vdir -U http://mirror.onelab.eu/third-party/fedora-release-14-2.noarch.rpm
 fi
 
 cd -
