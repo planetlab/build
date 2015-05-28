@@ -54,7 +54,7 @@ myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-3
 DistributedRateLimiting-GITPATH	:= git://git.onelab.eu/distributedratelimiting.git@DistributedRateLimiting-0.1-1
 
 #
-sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-15
+sfa-GITPATH                     := git://git.onelab.eu/sfa.git@master
 #
 # locating the right test directory - see make tests_gitpath
 tests-GITPATH                   := git://git.onelab.eu/tests.git@master
