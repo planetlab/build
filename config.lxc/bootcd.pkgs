@@ -57,6 +57,9 @@ package: net-tools
 # 03/2015: let's move on
 package: python3
 
+# 06/2015: this does not ship anymore by default in f21
+package>=f21: biosdevname
+
 # Thierry : january 2015
 # the bootcd image has grown out of control in terms of size
 # which in turn causes timeouts on the server side and all
