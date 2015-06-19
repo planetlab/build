@@ -30,9 +30,8 @@ IN_NODEIMAGE += transforward
 #
 # procprotect: root context module for protecting against weaknesses in /proc
 #
-### remove procprotect from the nodes on f21 now that it has 3.19
-### as of beg apr 15 f20 also runs 3.19
-ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f20 f21)"
+### remove procprotect from the nodes on f20 and above, needs more work starting with 3.19
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f20 f21 f22)"
 procprotect-MODULES := procprotect
 procprotect-SPEC := procprotect.spec
 ALL += procprotect
@@ -126,8 +125,8 @@ IN_NODEIMAGE += codemux
 #
 # fprobe-ulog
 #
-# xxx temporarily turning this off on f20 and f21
-ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f20 f21)"
+# xxx temporarily turning this off on f20 and above
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f20 f21 f22)"
 fprobe-ulog-MODULES := fprobe-ulog
 fprobe-ulog-SPEC := fprobe-ulog.spec
 ALL += fprobe-ulog
@@ -257,7 +256,7 @@ IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
 # xxx temporarily turning this off on f21
-ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f21)"
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f21 f22)"
 vsys-wrapper-MODULES := vsys-scripts
 vsys-wrapper-SPEC := slice-context/vsys-wrapper.spec
 IN_SLICEIMAGE += vsys-wrapper

@@ -30,10 +30,10 @@ function lxcroot () {
 
 # XXX fixme : when creating a 32bits VM we need to call linux32 as appropriate...s
 
-DEFAULT_FCDISTRO=f21
+DEFAULT_FCDISTRO=f22
 DEFAULT_PLDISTRO=lxc
 DEFAULT_PERSONALITY=linux64
-DEFAULT_MEMORY=2048
+DEFAULT_MEMORY=3072
 
 ##########
 # constant
