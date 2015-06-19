@@ -255,13 +255,10 @@ vsys-scripts-SPEC := root-context/vsys-scripts.spec
 IN_NODEIMAGE += vsys-scripts
 ALL += vsys-scripts
 
-# xxx temporarily turning this off on f21
-ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f21 f22)"
 vsys-wrapper-MODULES := vsys-scripts
 vsys-wrapper-SPEC := slice-context/vsys-wrapper.spec
 IN_SLICEIMAGE += vsys-wrapper
 ALL += vsys-wrapper
-endif
 
 #
 # bind_public
