@@ -26,7 +26,7 @@ package: zlib
 package: zlib-devel
 package: bison flex
 package: libtool 
-package: metadata 
+package<=f21: metadata 
 package: mysql mysql-devel mysql-server 
 package: python python-devel 
 package: doxygen  
