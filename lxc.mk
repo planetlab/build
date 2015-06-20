@@ -134,11 +134,11 @@ IN_NODEIMAGE += fprobe-ulog
 endif
 
 #################### libvirt version selection
-# settling with using version 1.2.1 on all fedoras
-# although this does not solve the slice re-creation issue seen on f20
 
+# use fedora's libvirt starting with f22
+ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20 f21)"
 local_libvirt=true
-separate_libvirt_python=true
+endif
 
 #
 # libvirt
@@ -165,13 +165,9 @@ ALL += libvirt
 IN_NODEREPO += libvirt
 IN_NODEIMAGE += libvirt
 
-endif
-
 #
 ## libvirt-python
 #
-ifeq "$(separate_libvirt_python)" "true"
-
 libvirt-python-MODULES := libvirt-python
 libvirt-python-SPEC    := libvirt-python.spec
 libvirt-python-BUILD-FROM-SRPM := yes
@@ -192,7 +188,7 @@ ALL += libvirt-python
 IN_NODEREPO += libvirt-python
 IN_NODEIMAGE += libvirt-python
 
-endif
+endif # local_libvirt
 
 #
 # DistributedRateLimiting
