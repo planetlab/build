@@ -388,6 +388,7 @@ fi
     yum_options="$yum_options -y"
     yum_options="$yum_options -c $yum_conf"
     yum_options="$yum_options --installroot=$vroot"
+    yum_options="$yum_options --releasever=$releasever"
 
     # glibc must be specified explicitly for the correct arch to be
     # chosen.
