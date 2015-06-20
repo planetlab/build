@@ -7,7 +7,7 @@
 # Copyright (C) 2007 The Trustees of Princeton University
 # Thierry Parmentelat <thierry.parmentelat@inria.fr> INRIA
 #
-# supported distros f12 f14 f16 f18 f20 
+# supported distros f12 f14 f16 f18 f20 f21 f22
 # and debians/ubuntus to a lesser extent
 #
 # for locating pkgs.py
@@ -199,15 +199,15 @@ function pl_root_makedevs() {
     done
 }
 
-function mkfedora_usage() {
+function pl_root_mkfedora_usage() {
     echo "Usage: pl_root_mkfedora [OPTION]... basedir pldistro pkgsfile(s)"
-    echo "	-l url		Fedora mirror location."
-    echo "                      Defaults are searched in <pldistro>.mirrors"
+#    echo "	-l url		Fedora mirror location."
+#    echo "                      Defaults are searched in <pldistro>.mirrors"
     echo "	-v		Be verbose"
     echo "	-h		This message"
-    echo " target selection (defaults based on current build VM context)"
-    echo "	-r release	Fedora release number (default: $releasever)"
-    echo "	-a arch		Fedora architecture (default: $basearch)"
+#    echo " target selection (defaults based on current build VM context)"
+#    echo "	-r release	Fedora release number (default: $releasever)"
+#    echo "	-a arch		Fedora architecture (default: $basearch)"
     exit 1
 }
 
@@ -231,17 +231,17 @@ function pl_root_mkfedora () {
     while getopts "vh" opt ; do
 	case $opt in
 	    v) verbose=1; set -x ;;
-	    h|*) mkfedora_usage ;;
+	    h|*) pl_root_mkfedora_usage ;;
 	esac
     done
 
     shift $(($OPTIND - 1))
-    [[ "$#" -lt 3 ]] && mkfedora_usage
+    [[ "$#" -lt 3 ]] && pl_root_mkfedora_usage
     vroot=$1 ; shift
     pldistro=$1 ; shift
     pkgsfile="$@"
     vroot=$(cd $vroot && pwd -P)
-    [ -d $vroot ] || mkfedora_usage
+    [ -d $vroot ] || pl_root_mkfedora_usage
 
 
     # parse pkgsfile and add to local vars
