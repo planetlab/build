@@ -10,7 +10,8 @@ upstream_url=rsync://mirror2.hs-esslingen.de/fedora/linux
 ###
 fdest="/mirror/fedora"
 # xxx not sure if useful
-excludes_file=/mirror/fedora/fedora-excludes.txt
+#excludes_file=/mirror/fedora/fedora-excludes.txt
+excludes_file=/dev/null
 
 lock=".rsync_updates.lock"
 options="$@"
