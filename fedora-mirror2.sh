@@ -29,22 +29,20 @@ if [ -f ${lock} ]; then
 fi
 
 for version in $current_versions; do
-    if [ -d ${fdest}/releases/${version}/Everything ]; then
-        echo "Synchronizing Fedora ${version}"
-        pushd ${fdest}/releases/${version} >& /dev/null
-            rsync -avH ${upstream_url}/releases/${version}/Everything . --exclude-from=${excludes_file} ${options} \
-                --numeric-ids --delete --delete-after --delay-updates
-        popd >& /dev/null
-        if [ "${version}" == "14" ]; then
-        echo "Synchronizing Fedora updates for version ${version}"
-        pushd ${fdest}/updates/${version} >& /dev/null
-            rsync -avH ${upstream_url}/updates/${version}/ . --exclude-from=${excludes_file} ${options} \
-                --numeric-ids --delete --delete-after --delay-updates
-        popd >& /dev/null
-        fi
-    else
+    if [ ! -d ${fdest}/releases/${version}/Everything ]; then
         echo "Target directory ${fdest}/${releases}/${version}/ not present."
+	continue
     fi
+    echo "Synchronizing Fedora ${version}"
+    pushd ${fdest}/releases/${version} >& /dev/null
+    rsync -avH ${upstream_url}/releases/${version}/Everything . --exclude-from=${excludes_file} ${options} \
+          --numeric-ids --delete --delete-after --delay-updates
+    popd >& /dev/null
+    echo "Synchronizing Fedora updates for version ${version}"
+    pushd ${fdest}/updates/${version} >& /dev/null
+    rsync -avH ${upstream_url}/updates/${version}/ . --exclude-from=${excludes_file} ${options} \
+          --numeric-ids --delete --delete-after --delay-updates
+    popd >& /dev/null
 done
 
 # report to fedora's infra
