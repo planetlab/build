@@ -7,44 +7,22 @@ DATE=$(date '+%Y-%m-%d-%H-%M')
 LOG=${LOGDIR}/${DATE}.log
 
 dry_run=
-verbose=
+verbose=--verbose
 log=
-skip_core=
+skip_core=true
 root=/mirror/
 
 
-dhozac_url=rsync://rpm.hozac.com/dhozac/centos/
-
 us_fedora_url=rsync://mirrors.kernel.org/fedora
-us_centos_url=rsync://mirrors.rit.edu/centos
-us_epel_url=rsync://rsync.gtlib.gatech.edu/fedora-epel
-
-# ircam's fedora8 repo has been turned off
-#eu_fedora_url=rsync://mirrors.ircam.fr/fedora-linux
-#eu_fedora_url=rsync://mirror.ovh.net/download.fedora.redhat.com/linux
-eu_fedora_url=rsync://ftp-stud.hs-esslingen.de/fedora/linux
-eu_centos_url=rsync://mirrors.ircam.fr/CentOS
-eu_epel_url=rsync://mirrors.ircam.fr/fedora-epel
-
-pl_fedora_url=$eu_fedora_url
-pl_centos_url=rsync://ftp.tpnet.pl/centos
-pl_epel_url=rsync://ftp.icm.edu.pl/pub/Linux/fedora/linux/epel
+eu_fedora_url=rsync://mirror1.hs-esslingen.de/fedora/linux
 
 default_distroname="f22"
 all_distronames="f20 f21 f22"
-default_arch="x86_64"
-all_archs="x86_64"
 
-case $(hostname) in 
-    blitz*|*.fr|*.de|*.uk)
-	fedora_url=$eu_fedora_url ; centos_url=$eu_centos_url ; epel_url=$eu_epel_url ;;
-    *.pl)
-	fedora_url=$pl_fedora_url ; centos_url=$pl_centos_url ; epel_url=$pl_epel_url ;;
-    *.jp)
-	fedora_url=$jp_fedora_url ; centos_url=$jp_centos_url ; epel_url=$jp_epel_url ;;
-    *)
-	fedora_url=$us_fedora_url ; centos_url=$us_centos_url ; epel_url=$us_epel_url ;;
-esac
+global_arch="x86_64"
+
+# use EU mirror
+fedora_url=$eu_fedora_url
 
 function mirror_distro_arch () {
     distroname=$1; shift
@@ -52,30 +30,10 @@ function mirror_distro_arch () {
 
     distroname=$(echo $distroname | tr '[A-Z]' '[a-z]')
     case $distroname in
-	fc*[1-6])
-    	    distroindex=$(echo $distroname | sed -e "s,fc,,g")
-	    distro="Fedora Core"
-	    rsyncurl=$fedora_url
-	    ;;
-	f*[7-9]|f[12]?)
+	f*)
 	    distroindex=$(echo $distroname | sed -e "s,f,,g")
 	    distro="Fedora"
 	    rsyncurl=$fedora_url
-	    ;;
-	centos[4-5]|centos[4-5].[0-9])
-	    distroindex=$(echo $distroname | sed -e "s,centos,,g")
-	    distro="CentOS"
-	    rsyncurl=$centos_url
-	    ;;
-	epel[5-6])
-	    distroindex=$(echo $distroname | sed -e "s,epel,,g")
-	    distro=epel
-	    rsyncurl=$epel_url
-	    ;;
-	dhozac)
-	    distroindex=5
-	    distro="dhozac"
-	    rsyncurl=$dhozac_url
 	    ;;
 	*)
 	    echo "WARNING -- Unknown distribution $distroname -- skipped"
@@ -84,83 +42,30 @@ function mirror_distro_arch () {
     esac
 
     excludelist="debug/ iso/ ppc/ source/"
-    options="--archive --compress --delete --delete-excluded $dry_run $verbose"
+    options=""
     [ -n "$(rsync --help | grep no-motd)" ] && options="$options --no-motd"
+    options="$options $dry_run $verbose"
+    options="$options -aH --numeric-ids"
+    options="$options --delete --delete-excluded --delete-after --delay-updates"
     for e in $excludelist; do
 	options="$options --exclude $e"
     done
 
-    echo ">>>>>>>>>>>>>>>>>>>> root=$root distroname=$distroname arch=$arch rsyncurl=$rsyncurl"
+    echo ">>>>>>>>>>>>>>>>>>>> distroname=$distroname arch=$arch rsyncurl=$rsyncurl"
     [ -n "$verbose" ] && echo "rsync options=$options"
 
-    RES=1
     paths=""
-    case $distro in
-	[Ff]edora*)
-            case $distroindex in
-		2|4|6)
-		    [ -z "$skip_core" ] && paths="core/$distroindex/$arch/os/"
-		    paths="$paths core/updates/$distroindex/$arch/ extras/$distroindex/$arch/"
-		    RES=0
-		    ;;
-		7|8|9|1?|2?)
-		    [ -z "$skip_core" ] && paths="releases/$distroindex/Everything/$arch/os/"
-		    paths="$paths updates/$distroindex/$arch/"
-		    # f8 and f9 have the additional newkey repo
-		    case $distroindex in 
-			8|9) paths="$paths updates/$distroindex/${arch}.newkey/" ;;
-		    esac
-		    RES=0
-		    ;;
-	    esac
-	    localpath=fedora
-	    ;;
-    
-	CentOS*)
-	    case $distroindex in
-		5*)
-		    [ -z "$skip_core" ] && paths="$distroindex/os/$arch/"
-		    paths="$paths $distroindex/updates/$arch/"
-		    RES=0
-		    ;;
-	    esac
-	    localpath=centos
-	    ;;
+    [ -z "$skip_core" ] && paths="releases/$distroindex/Everything/$arch/os/"
+    paths="$paths updates/$distroindex/$arch/"
+    localpath=fedora
 
-	epel*)
-	    case $distroindex in
-		5|6)
-		    paths="$paths $distroindex/$arch/"
-		    RES=0
-		    ;;
-	    esac
-	    localpath=epel
-	    ;;
-
-	dhozac*)
-	    case $distroindex in
-		5)
-		    # leave off trailing '/'
-		    paths="$paths $distroindex/vserver/$arch"
-		    RES=0
-		    ;;
-	    esac
-	    localpath=dhozac
-	    ;;
-
-    esac
-
-    if [ "$RES" = 1 ] ; then
-	echo "DISTRIBUTION $distro $distroindex CURRENTLY UNSUPPORTED - skipped"
-    else
-	for repopath in $paths; do
-	    echo "===== $distro -> $distroindex $repopath"
-	    [ -z "$dry_run" ] && mkdir -p ${root}/${localpath}/${repopath}
-	    command="rsync $options ${rsyncurl}/${repopath} ${root}/${localpath}/${repopath}"
-	    echo $command
-	    $command
-	done
-    fi
+    for repopath in $paths; do
+	echo "===== $distro -> $distroindex $repopath"
+	[ -z "$dry_run" ] && mkdir -p ${root}/${localpath}/${repopath}
+	command="rsync $options ${rsyncurl}/${repopath} ${root}/${localpath}/${repopath}"
+	echo $command
+	$command
+    done
 
     echo "<<<<<<<<<<<<<<<<<<<< $distroname $arch"
 
@@ -168,25 +73,17 @@ function mirror_distro_arch () {
 }
 
 function usage () {
-    echo "Usage: $COMMAND [-n] [-v] [-c] [-r root] [-u|U rsyncurl] [-e|-j] [-f distroname|-F] [-a arch|-A]"
-    echo "Defaults to -r $root -f $default_distroname -a $default_arch"
-    echo "Default urls : $fedora_url $centos_url"
+    echo "Usage: $COMMAND [-n] [-v] [-l] [-c] [-e|-s|-u rsyncurl] [-f distroname|-F]"
     echo "Options:"
     echo " -n : dry run"
-    echo " -v : verbose"
+    echo " -v : turn off verbose"
     echo " -l : turns on autologging in $LOGDIR"
-    echo " -c : skips core repository"
-    echo " -C : force syncing core repository (default)"
-    echo " -r root (default is $root)"
-    echo " -u rsyncurl for fedora (default is $fedora_url)"
-    echo " -U rsyncurl for centos (default is $centos_url)"
-    echo " -E rsyncurl for epel (default is $epel_url)"
-    echo " -s : uses standard (US) mirrors $us_fedora_url $us_centos_url $us_epel_url"
-    echo " -e : uses European mirrors $eu_fedora_url $eu_centos_url $eu_epel_url"
-    echo " -f distroname - use vserver convention, e.g. f8 or centos5"
-    echo " -F : for distroname in $all_distronames"
-    echo " -a arch - use yum convention"
-    echo " -A : for arch in $all_archs"
+    echo " -c : also sync core repository (releases)"
+    echo " -s : uses US mirror $us_fedora_url"
+    echo " -e : uses EU mirror $eu_fedora_url"
+    echo " -u <url> : use this (rsync) for fedora (default is $fedora_url)"
+    echo " -f distroname - default is $default_distroname"
+    echo " -F : do on all distros $all_distronames"
     exit 1
 }
 
@@ -202,31 +99,24 @@ function run () {
 
 function main () {
     distronames=""
-    archs=""
-    while getopts "nvlcCr:u:U:E:sef:Fa:Ah" opt ; do
+    archs="$global_arch"
+    while getopts "nvlc:u:sef:Fh" opt ; do
 	case $opt in
 	    n) dry_run=--dry-run ;;
-	    v) verbose=--verbose ;;
+	    v) verbose= ;;
 	    l) log=true ;;
-	    c) skip_core=true ;;
-	    C) skip_core= ;;
-	    r) root=$OPTARG ;;
+	    c) skip_core= ;;
 	    u) fedora_url=$OPTARG ;;
-	    U) centos_url=$OPTARG ;;
-	    E) epel_url=$OPTARG ;;
-	    s) fedora_url=$us_fedora_url ; centos_url=$us_centos_url ; epel_url=$us_epel_url;;
-	    e) fedora_url=$eu_fedora_url ; centos_url=$eu_centos_url ; epel_url=$eu_epel_url ;;
+	    s) fedora_url=$us_fedora_url ;;
+	    e) fedora_url=$eu_fedora_url ;;
 	    f) distronames="$distronames $OPTARG" ;;
 	    F) distronames="$distronames $all_distronames" ;;
-	    a) archs="$archs $OPTARG" ;;
-	    A) archs="$archs $all_archs" ;;
 	    h|*) usage ;;
 	esac
     done
     shift $(($OPTIND-1))
     [[ -n "$@" ]] && usage
     [ -z "$distronames" ] && distronames=$default_distroname
-    [ -z "$archs" ] && archs=$default_arch
 
     # auto log : if specified
     if [ -n "$log" ] ; then
@@ -234,8 +124,15 @@ function main () {
 	run &> $LOG
     else
 	run
+    fi 
+    if [ "$?" == 0 ]; then
+	# report to fedora's infra
+	# can't get the config right...
+	#/usr/bin/report_mirror
+	exit 0
+    else
+	exit 1
     fi
-    exit $?
 }
 
 main "$@"
