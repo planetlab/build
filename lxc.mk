@@ -136,7 +136,7 @@ endif
 #################### libvirt version selection
 
 # use fedora's libvirt starting with f22
-ifneq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20 f21)"
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f18 f20 f21)"
 local_libvirt=true
 endif
 
