@@ -55,7 +55,8 @@ package: dhclient
 package: diffutils
 package: ethtool
 package: logrotate
-package: libnl
+package<=f21: libnl
+package>=f22: libnl3
 package: lsof
 package: mailcap
 package: nano
