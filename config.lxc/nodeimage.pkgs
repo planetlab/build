@@ -7,7 +7,8 @@ groupdesc: PlanetLab Node Root
 package: ipfwroot
 package: lxc-userspace
 package: transforward
-package: procprotect
+# temporarily turned off as it won't build on recent kernels
+package<=f18: procprotect
 # packages to exclude from stock repositories
 yumexclude: @NODEYUMEXCLUDE@
 # fedora-release or centos-release are pulled from deps
