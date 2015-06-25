@@ -17,7 +17,7 @@ us_fedora_url=rsync://mirrors.kernel.org/fedora
 eu_fedora_url=rsync://mirror1.hs-esslingen.de/fedora/linux
 
 default_distroname="f22"
-all_distronames="f20 f21 f22"
+all_distronames="f21 f22"
 
 global_arch="x86_64"
 
