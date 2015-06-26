@@ -47,7 +47,7 @@ rvm-ruby-BRANCH			:= planetlab
 rvm-ruby-GITPATH                := git://git.onelab.eu/rvm-ruby.git@rvm-ruby-1.22.9-1
 oml-GITPATH                     := git://git.onelab.eu/oml.git@oml-2.6.1-1
 ###
-bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@master
+bootcd-GITPATH                  := git://git.onelab.eu/bootcd.git@bootcd-5.3-1
 sliceimage-GITPATH              := git://git.onelab.eu/sliceimage.git@sliceimage-5.1-10
 nodeimage-GITPATH               := git://git.onelab.eu/nodeimage.git@master
 myplc-GITPATH                   := git://git.onelab.eu/myplc.git@myplc-5.3-3
