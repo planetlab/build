@@ -57,4 +57,4 @@ DistributedRateLimiting-GITPATH	:= git://git.onelab.eu/distributedratelimiting.g
 sfa-GITPATH                     := git://git.onelab.eu/sfa.git@sfa-3.1-18
 #
 # locating the right test directory - see make tests_gitpath
-tests-GITPATH                   := git://git.onelab.eu/tests.git@master
+tests-GITPATH                   := git://git.onelab.eu/tests.git@tests-6.0-2
