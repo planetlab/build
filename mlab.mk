@@ -11,7 +11,7 @@
 # mkinitrd
 #
 ifeq "$(PLDISTROTAGS)" "planetlab-k32-tags.mk"
-ifeq "$(DISTRONAME)" "centos5"
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),centos5 centos6)"
 mkinitrd-MODULES := mkinitrd
 mkinitrd-SPEC := mkinitrd.spec
 mkinitrd-BUILD-FROM-SRPM := yes
@@ -332,7 +332,7 @@ monitor-MODULES := monitor
 monitor-SPEC := Monitor.spec
 monitor-DEVEL-RPMS += net-snmp net-snmp-devel
 ALL += monitor
-IN_NODEIMAGE += monitor
+#IN_NODEIMAGE += monitor
 
 #
 # PLC RT
@@ -363,7 +363,7 @@ ALL += pyaspects
 # sfa now uses the with statement that's not supported on python-2.4 - not even through __future__
 # In addition we now use sqlalchemy and 0.5 as per f12 is not compatible with our model
 build_sfa=true
-ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5)"
+ifeq "$(DISTRONAME)" "$(filter $(DISTRONAME),f8 f12 centos5 centos6)"
 build_sfa=false
 endif
 
@@ -414,6 +414,8 @@ IN_NODEIMAGE += pyplnet
 IN_MYPLC += pyplnet
 IN_BOOTCD += pyplnet
 
+build_omf=false
+ifeq "$(build_omf)" "true"
 #
 # OMF resource controller
 #
@@ -428,6 +430,7 @@ IN_SLICEIMAGE += omf-resctl
 omf-expctl-MODULES := omf
 omf-expctl-SPEC := omf-expctl.spec
 ALL += omf-expctl
+endif
 
 #
 # bootcd

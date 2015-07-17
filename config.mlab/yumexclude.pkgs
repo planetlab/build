@@ -7,5 +7,5 @@ plcyumexclude:		drupal
 nodeyumexclude=f8:	kernel* util-vserver* iptables iptables-ipv6 
 nodeyumexclude>=f12:	kernel* util-vserver* iptables iptables-ipv6 
 nodeyumexclude=centos5:	kernel kernel-vserver kernel-devel kernel-headers kernel-debuginfo util-vserver* iptables inotify-tools* libnl
-nodeyumexclude=centos6: kernel kernel-vserver kernel-devel kernel-headers kernel-debuginfo util-vserver* iptables nss*
+nodeyumexclude=centos6: kernel kernel-vserver kernel-devel kernel-headers kernel-debuginfo util-vserver* iptables 
 nodeyumexclude=sl6:	kernel kernel-debug kernel-debug-devel kernel-devel kernel-doc kernel-firmware kernel-headers iptables
