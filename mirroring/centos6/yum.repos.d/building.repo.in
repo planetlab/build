@@ -1,12 +1,12 @@
 [base]
 name=CentOS-$releasever - Base
-baseurl=@MIRRORURL@/centos/6.6/os/$basearch/
+baseurl=@MIRRORURL@/centos/6/os/$basearch/
 gpgcheck=1
 gpgkey=@MIRRORURL@/centos/RPM-GPG-KEY-CentOS-6
 
 [updates]
 name=CentOS-$releasever - Updates
-baseurl=@MIRRORURL@/centos/6.6/updates/$basearch/
+baseurl=@MIRRORURL@/centos/6/updates/$basearch/
 gpgcheck=1
 gpgkey=@MIRRORURL@/centos/RPM-GPG-KEY-CentOS-6
 
