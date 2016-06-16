@@ -307,8 +307,12 @@ else
 $(1)-GITPATH := $$(strip $$($(1)-GITPATH))
 $(1)-SCMPATH := $$(strip $$($(1)-GITPATH))
 $(1).gitrepo := $$(firstword $$(subst @, ,$$($(1)-GITPATH)))
+$(1).githubreposplit := $$(subst /, ,$$($(1).gitrepo))
+$(1).githubrepoorg := $$(word 3,$$($(1).githubreposplit))
+$(1).githubreponame := $$(patsubst %.git,%,$$(word 4,$$($(1).githubreposplit)))
 $(1).gittag := $$(word 2,$$(subst @, ,$$($(1)-GITPATH)))
 $(1).gittag := $$(if $$($(1).gittag),$$($(1).gittag),master)
+$(1).githubrepohttps := https://github.com/$$($(1).githubrepoorg)/$$($(1).githubreponame)/archive/$$($(1).gittag).tar.gz
 endif
 endef
 
@@ -371,11 +375,14 @@ $(foreach package,$(ALL),$(eval $(call target_spec,$(package))))
 define target_extract_module
 MODULES/$(1):
 	@(echo -n "XXXXXXXXXXXXXXX -- BEG MODULE $(1) : $@ " ; date)
+	@(echo -n "XXXXXXXXXXXXXXX -- GITREPO $($(1).gitrepo) : $@ " ; date)
+	@(echo -n "XXXXXXXXXXXXXXX -- GITTAG $($(1).gittag) : $@ " ; date)
 	mkdir -p MODULES
 	cd MODULES && \
 	$(if $($(1)-SVNPATH),\
 	  svn export $($(1)-SVNPATH) $(1),\
 	  mkdir $(1) ; (git archive --remote=$($(1).gitrepo) $($(1).gittag) | tar -C $(1) -xf - ) \
+	   || { (rm -rf $(1); mkdir $(1); curl -L $($(1).githubrepohttps) | tar -C $(1) --strip 1 -xzvf -) } \
 	   || { rm -rf $(1); false; } )
 	@(echo -n "XXXXXXXXXXXXXXX -- END MODULE $(1) : $@ " ; date)
 
