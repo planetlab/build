@@ -448,6 +448,20 @@ IN_MYPLC += bootcdR630
 
 
 #
+# bootcdR420
+#
+bootcdR420-MODULES := bootcd build
+bootcdR420-SPEC := bootcd.spec
+bootcdR420-BUILDSPEC := bootcdR420.spec
+bootcdR420-DEPEND-PACKAGES := $(IN_BOOTCD)
+bootcdR420-DEPEND-FILES := RPMS/yumgroups.xml
+bootcdR420-RPMDATE := yes
+bootcdR420-SPECVARS = _arch=i386-r420
+ALL += bootcdR420
+IN_MYPLC += bootcdR420
+
+
+#
 # bootcd
 #
 bootcd-MODULES := bootcd build
