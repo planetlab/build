@@ -432,6 +432,21 @@ omf-expctl-SPEC := omf-expctl.spec
 ALL += omf-expctl
 endif
 
+
+#
+# bootcdR630 -- This is the bootcd for R630
+#
+bootcdR630-MODULES := bootcd build
+bootcdR630-SPEC := bootcd.spec
+bootcdR630-BUILDSPEC := bootcdR630.spec
+bootcdR630-DEPEND-PACKAGES := $(IN_BOOTCD)
+bootcdR630-DEPEND-FILES := RPMS/yumgroups.xml
+bootcdR630-RPMDATE := yes
+bootcdR630-SPECVARS = _arch=i386-r630
+ALL += bootcdR630
+IN_MYPLC += bootcdR630
+
+
 #
 # bootcd
 #
@@ -442,6 +457,7 @@ bootcd-DEPEND-FILES := RPMS/yumgroups.xml
 bootcd-RPMDATE := yes
 ALL += bootcd
 IN_MYPLC += bootcd
+
 
 #
 # images for slices
