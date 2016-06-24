@@ -442,7 +442,7 @@ bootcdR630-BUILDSPEC := bootcdR630.spec
 bootcdR630-DEPEND-PACKAGES := $(IN_BOOTCD)
 bootcdR630-DEPEND-FILES := RPMS/yumgroups.xml
 bootcdR630-RPMDATE := yes
-bootcdR630-SPECVARS = _arch=i386-r630
+bootcdR630-SPECVARS = _arch=$(HOSTARCH)-r630
 ALL += bootcdR630
 IN_MYPLC += bootcdR630
 
@@ -456,7 +456,7 @@ bootcdR420-BUILDSPEC := bootcdR420.spec
 bootcdR420-DEPEND-PACKAGES := $(IN_BOOTCD)
 bootcdR420-DEPEND-FILES := RPMS/yumgroups.xml
 bootcdR420-RPMDATE := yes
-bootcdR420-SPECVARS = _arch=i386-r420
+bootcdR420-SPECVARS = _arch=$(HOSTARCH)-r420
 ALL += bootcdR420
 IN_MYPLC += bootcdR420
 
